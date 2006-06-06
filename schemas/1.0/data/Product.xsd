@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Marco Aurélio Graciotto Silva (Universidade de São Paulo) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="product">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="isActive" type="xs:boolean"/>
+				<xs:element name="salesStartDate" type="xs:date"/>
+				<xs:element name="salesEndDate" type="xs:date"/>
+				<xs:element name="supportStartDate" type="xs:date"/>
+				<xs:element name="supportExpireDate" type="xs:date"/>
+				<xs:element name="description" type="xs:string"/>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

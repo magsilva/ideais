@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Marco Aurélio Graciotto Silva (Universidade de São Paulo) -->
+<xs:schema xmlns="http://www.dotproject.net/2006/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.dotproject.net/2006/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="project">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="shortName" type="xs:string"/>
+				<xs:element name="owner" type="xs:string"/>
+				<xs:element name="company"/>
+				<xs:element name="departament" type="xs:string" minOccurs="0"/>
+				<xs:element name="startDate" type="xs:date"/>
+				<xs:element name="endDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="targetBudget" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:fractionDigits value="2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="actualBudget" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:fractionDigits value="2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="priority">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="low"/>
+							<xs:enumeration value="normal"/>
+							<xs:enumeration value="high"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="projectType">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Administrative"/>
+							<xs:enumeration value="Operative"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="status">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Proposed"/>
+							<xs:enumeration value="In Planning"/>
+							<xs:enumeration value="In Progress"/>
+							<xs:enumeration value="On Hold"/>
+							<xs:enumeration value="Complete"/>
+							<xs:enumeration value="Template"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="active" type="xs:boolean"/>
+				<xs:element name="description" type="xs:string"/>
+				<!--
+				<xs:element name="contact" maxOccurs="unbounded"/>
+				-->
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
