@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ideais.net/broker"><xsd:element name="User" type="xsd:string"></xsd:element><xsd:element name="Artifact" type="xsd:string"></xsd:element><xsd:element name="subscribeResponse" type="xsd:string"></xsd:element><xsd:element name="namespace" type="xsd:string"></xsd:element><xsd:complexType name="ApplicationInfo"></xsd:complexType>
+	<xsd:complexType name="Subscription">
+		<xsd:all>
+			<xsd:element name="namespace" type="xsd:string"></xsd:element>
+			<xsd:element name="callbackWSDL" type="xsd:string"></xsd:element>
+			<xsd:element name="callbackService" type="xsd:string"></xsd:element>
+		</xsd:all>
+	</xsd:complexType>
+</xsd:schema>

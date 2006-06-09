@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/ApplicationInfo" xmlns:tns="http://www.example.org/ApplicationInfo">
+	<element name="ApplicationInfo">
+		<complexType>
+			<all>
+				<element name="Name" type="string"></element>
+				<element name="Version" type="string"></element>
+			</all>
+		</complexType>
+	</element>
+
+</schema>
