@@ -1,0 +1,19 @@
+
+Os serviços Web do IDEAIS utilizam o método BASIC para autenticação por HTTP. A configuração
+dessa autenticação é realizada pelos arquivos .htaccess (ou equivalentes, veja a variável 
+"AccessFileName" do arquivo de configuração do Apache). Para que seja possível a utilização
+desse arquivo, é necessário que o Apache habilite a configuração da autenticação no arquivo
+.htaccess. Isso é feito no arquivo principal de configuração de Apache, na configuração do
+diretório raiz (ou inferior) do servidor Web. Por exemplo:
+
+   <Directory /var/www/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+   </Directory>
+
+O parâmetro em questão é o "AllowOverride". É necessário que ele seja alterado de "None" para
+"AuthConfig". Se ao invés de "None", ele conter algum valor, que não seja "All", apenas
+acrescente o "AuthConfig" após o último valor do parâmetro. Se o valor definido for "All",
+o "AuthConfig" já está habilitado.
