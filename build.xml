@@ -1,0 +1,20 @@
+<project name="ideais" default="build">
+
+	<!--  all properties are in ideais.properties -->
+	<property file="build.properties" />
+	
+	<taskdef resource="svntask.properties" />
+	
+	<target name="checkout">
+		<delete dir="${ideais.workdir}" />
+		<svn javahl="false">
+			<checkout url="${ideais.scm.trunk}" destPath="${ideais.workdir}" />
+		</svn>
+	</target>
+
+	<target name="build">
+	</target>
+
+	<target name="cruise" depends="build">
+	</target>
+</project>
