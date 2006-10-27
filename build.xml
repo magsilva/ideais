@@ -12,6 +12,12 @@
 		</svn>
 	</target>
 
+	<target name="test-php">
+		<exec dir="${phpunit-testdir}" executable="phpunit" failonerror="true">
+			<arg line="--log-xml ${phpunit-testdir}/phpunit_all.xml AllTest" />
+		</exec>
+	</target>
+
 	<target name="build">
 	</target>
 
