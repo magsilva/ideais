@@ -1,0 +1,71 @@
+<project name="introjms" default="tudo">
+
+    <target name="tudo" depends="limpa, compila, recebe" />
+    
+    <target name="init">
+        <property name="jboss" value="/opt/jboss-4.0.4" />
+        <path id="jms">
+            <pathelement path="${jboss}/client/jboss-j2ee.jar" />
+        </path>
+        <path id="cliente">
+            <fileset dir="${jboss}/client/" includes="*.jar" />
+            <pathelement path="conf" />
+            <pathelement path="classes" />
+        </path>
+    </target>
+    
+    <target name="limpa" depends="init">
+        <delete>
+            <fileset dir="classes" includes="**" />
+        </delete>
+    </target>
+    
+    <target name="compila" depends="init">
+        <javac destdir="classes" srcdir="src" classpathref="jms" />
+    </target>
+    
+    <target name="envia" depends="init">
+        <java classname="EnviaFila" classpathref="cliente" />
+    </target>
+    
+    <target name="recebe" depends="init">
+        <java classname="RecebeFila" classpathref="cliente" />
+    </target>
+    
+    <target name="assincrono" depends="init">
+        <java classname="RecebeAssincrono" classpathref="cliente" />
+    </target>
+    
+    <target name="assina" depends="init">
+        <java classname="Assina" classpathref="cliente" />
+    </target>
+    
+    <target name="publica" depends="init">
+        <java classname="Publica" classpathref="cliente" />
+    </target>
+
+    <target name="publica2" depends="init">
+        <java classname="JMSPublisher" classpathref="cliente" />
+    </target>
+    
+    <target name="assinaassincrono" depends="init">
+        <java classname="AssinaAssincrono" classpathref="cliente" />
+    </target>
+    
+    <target name="assinaduravel" depends="init">
+        <java classname="AssinaDuravel" classpathref="cliente" />
+    </target>
+    
+    <target name="publicaduravel" depends="init">
+        <java classname="PublicaDuravel" classpathref="cliente" />
+    </target>
+    
+    <target name="enviapropriedade" depends="init">
+        <java classname="EnviaComPropriedade" classpathref="cliente" />
+    </target>
+    
+    <target name="recebeseletor" depends="init">
+        <java classname="RecebeComSeletor" classpathref="cliente" />
+    </target>
+    
+</project>
