@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://dotproject.ideais.sf.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="sample_operation" type="ns1:sample_operation" xmlns:ns1="http://dotproject.ideais.sf.net/"/>
+
+  <xs:complexType name="sample_operation">
+    <xs:sequence>
+      <xs:element name="param_name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="sample_operationResponse" type="ns2:sample_operationResponse" xmlns:ns2="http://dotproject.ideais.sf.net/"/>
+
+  <xs:complexType name="sample_operationResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="GetTask" type="ns3:GetTask" xmlns:ns3="http://dotproject.ideais.sf.net/"/>
+
+  <xs:complexType name="GetTask">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="GetTaskResponse" type="ns4:GetTaskResponse" xmlns:ns4="http://dotproject.ideais.sf.net/"/>
+
+  <xs:complexType name="GetTaskResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns5:task" minOccurs="0" xmlns:ns5="http://dotproject.ideais.sf.net/"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="task">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

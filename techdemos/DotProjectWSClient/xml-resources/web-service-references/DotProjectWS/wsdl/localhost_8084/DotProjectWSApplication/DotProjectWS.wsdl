@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns:tns="http://dotproject.ideais.sf.net/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://dotproject.ideais.sf.net/" name="DotProjectWSService">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://dotproject.ideais.sf.net/" schemaLocation="http://localhost:8084/DotProjectWSApplication/DotProjectWS?xsd=1"></xsd:import>
+    </xsd:schema>
+  </types>
+  <message name="sample_operation">
+    <part element="tns:sample_operation" name="parameters"></part>
+  </message>
+  <message name="sample_operationResponse">
+    <part element="tns:sample_operationResponse" name="parameters"></part>
+  </message>
+  <message name="GetTask">
+    <part element="tns:GetTask" name="parameters"></part>
+  </message>
+  <message name="GetTaskResponse">
+    <part element="tns:GetTaskResponse" name="parameters"></part>
+  </message>
+  <portType name="DotProjectWS">
+    <operation name="sample_operation">
+      <input message="tns:sample_operation"></input>
+      <output message="tns:sample_operationResponse"></output>
+    </operation>
+    <operation name="GetTask">
+      <input message="tns:GetTask"></input>
+      <output message="tns:GetTaskResponse"></output>
+    </operation>
+  </portType>
+  <binding type="tns:DotProjectWS" name="DotProjectWSPortBinding">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <operation name="sample_operation">
+      <soap:operation soapAction=""></soap:operation>
+      <input>
+        <soap:body use="literal"></soap:body>
+      </input>
+      <output>
+        <soap:body use="literal"></soap:body>
+      </output>
+    </operation>
+    <operation name="GetTask">
+      <soap:operation soapAction=""></soap:operation>
+      <input>
+        <soap:body use="literal"></soap:body>
+      </input>
+      <output>
+        <soap:body use="literal"></soap:body>
+      </output>
+    </operation>
+  </binding>
+  <service name="DotProjectWSService">
+    <port binding="tns:DotProjectWSPortBinding" name="DotProjectWSPort">
+      <soap:address location="http://localhost:8084/DotProjectWSApplication/DotProjectWS"></soap:address>
+    </port>
+  </service>
+</definitions>

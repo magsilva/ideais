@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="http://dotproject.ideais.sf.net/" name="DotProjectWSService" xmlns:tns="http://dotproject.ideais.sf.net/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://dotproject.ideais.sf.net/" schemaLocation="DotProjectWSService_schema1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="sample_operation">
+    <part name="parameters" element="tns:sample_operation"/>
+  </message>
+  <message name="sample_operationResponse">
+    <part name="parameters" element="tns:sample_operationResponse"/>
+  </message>
+  <message name="GetTask">
+    <part name="parameters" element="tns:GetTask"/>
+  </message>
+  <message name="GetTaskResponse">
+    <part name="parameters" element="tns:GetTaskResponse"/>
+  </message>
+  <portType name="DotProjectWS">
+    <operation name="sample_operation">
+      <input message="tns:sample_operation"/>
+      <output message="tns:sample_operationResponse"/>
+    </operation>
+    <operation name="GetTask">
+      <input message="tns:GetTask"/>
+      <output message="tns:GetTaskResponse"/>
+    </operation>
+  </portType>
+  <binding name="DotProjectWSPortBinding" type="tns:DotProjectWS">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="sample_operation">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetTask">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="DotProjectWSService">
+    <port name="DotProjectWSPort" binding="tns:DotProjectWSPortBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </port>
+  </service>
+</definitions>
+

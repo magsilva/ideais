@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+<system systemId="http://localhost:8084/DotProjectWSApplication/DotProjectWS?wsdl" uri="xml-resources/web-service-references/DotProjectWS/wsdl/localhost_8084/DotProjectWSApplication/DotProjectWS.wsdl"/>
+<system systemId="http://localhost:8084/DotProjectWSApplication/DotProjectWS?xsd=1" uri="xml-resources/web-service-references/DotProjectWS/wsdl/localhost_8084/DotProjectWSApplication/DotProjectWS.xsd=1"/>
+</catalog>
