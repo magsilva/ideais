@@ -9,24 +9,6 @@ import javax.jms.Topic;
 
 public class JMSPublisher extends JMSAgent
 {
-	private Topic topic;
-	
-	public JMSPublisher()
-	{
-		this("topic/testTopic", false, null);
-	}
-
-	public JMSPublisher(String topicName, String subscriptionName)
-	{
-		this(topicName, true, subscriptionName);
-	}
-
-	
-	public JMSPublisher(String topicName, boolean durableTopic, String subscriptionName)
-	{
-		super(topicName, durableTopic, subscriptionName);
-	}
-	
 	protected void startSession()
 	{
 		MessageProducer producer = null;

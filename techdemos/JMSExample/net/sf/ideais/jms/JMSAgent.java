@@ -1,3 +1,21 @@
+/*
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2006 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
+*/
+
 package net.sf.ideais.jms;
 
 import javax.jms.Connection;
@@ -10,7 +28,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-
+/**
+ * JMS Agent. Any JMS client or provider share this class behaviour. 
+ *
+ */
 public abstract class JMSAgent
 {
 	private ConnectionFactory connectionFactory;
@@ -21,34 +42,48 @@ public abstract class JMSAgent
 	
 	protected Session session;
 	
-	protected boolean durableTopic = false;
-	
 	protected String subscriptionName;
 
-	public JMSAgent()
+	/**
+	 * Start a JMS agent for a temporary topic.
+	 * 
+	 * @param topicName The topic the agent will subscribe or publish to.
+	 */
+	public JMSAgent(String topicName)
 	{
-		this("topic/testTopic", false, null);
+		this(topicName, null);
 	}
 
+	/**
+	 * Start a JMS agent for a durable topic.
+	 * 
+	 * @param topicName The topic the agent will subscribe or publish to.
+	 * @param subscriptionName The subscription name.
+	 */
 	public JMSAgent(String topicName, String subscriptionName)
-	{
-		this(topicName, true, subscriptionName);
-	}
-
-	
-	public JMSAgent(String topicName, boolean durableTopic, String subscriptionName)
 	{
 		try {
 			Context messaging = new InitialContext();
 			connectionFactory = (ConnectionFactory) messaging.lookup("ConnectionFactory");
 			topic = (Topic) messaging.lookup(topicName);
-			this.durableTopic = durableTopic;
 			this.subscriptionName = subscriptionName;
 		} catch (NamingException e) {
 		}
 		
 		try {
 			connection = connectionFactory.createConnection();
+			/*
+			 * AUTO_ACKNOWLEDGE: The session automatically acknowledges a client's receipt of a
+			 * message either when the session has successfully returned from a call to receive
+			 * or when the message listener the session has called to process the message
+			 * successfully returns.
+			 * CLIENT_ACKNOWLEDGE: The client acknowledges a consumed message by calling the
+			 * message's acknowledge method.
+			 * DUPS_OK_ACKNOWLEDGE: Instructs the session to lazily acknowledge the delivery of
+			 * messages.
+			 * SESSION_TRANSACTED: This value is returned from the method getAcknowledgeMode if
+			 * the session is transacted.
+			 */
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
 		}

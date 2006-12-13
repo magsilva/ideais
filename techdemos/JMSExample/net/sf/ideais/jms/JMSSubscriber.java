@@ -11,31 +11,12 @@ public class JMSSubscriber extends JMSAgent
 {
 	protected Connection connection = null;
 	
-	protected Topic topic;
-	
 	private boolean durableTopic = false;
 	
 	private String subscriptionName;
 
 	protected MessageConsumer consumer;
 	
-	
-	public JMSSubscriber()
-	{
-		this("topic/testTopic", false, null);
-	}
-
-	public JMSSubscriber(String topicName, String subscriptionName)
-	{
-		this(topicName, true, subscriptionName);
-	}
-
-	
-	public JMSSubscriber(String topicName, boolean durableTopic, String subscriptionName)
-	{
-		super(topicName, durableTopic, subscriptionName);
-	}
-		
 	protected void startSession()
 	{
 		try {
@@ -62,6 +43,7 @@ public class JMSSubscriber extends JMSAgent
 			Message m = consumer.receive();
 			processMessage(m);
 			// session.unsubscribe(subname);
+			m.acknowledge();
 		} catch (JMSException e) {
 			
 		}
