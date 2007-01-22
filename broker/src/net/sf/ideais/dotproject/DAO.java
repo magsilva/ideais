@@ -30,6 +30,8 @@ import java.sql.SQLException;
 public class DAO
 {
     protected Connection conn;
+
+    private String sgbd;
     
     private String hostname;
     
@@ -43,15 +45,16 @@ public class DAO
     /**
     * Creates a new instance of TaskDAO
     */
-    public DAO(String hostname, String database, String username, String password)
+    public DAO(String sgbd, String hostname, String database, String username, String password)
     {
-        this.hostname = hostname;
-        this.database = database;
-        this.username = username;
-        this.password = password;
-
-	loadDriver();
-	connectToDatabase();
+    	setSgbd(sgbd);
+    	setHostname(hostname);
+        setDatabase(database);
+        setUsername(username);
+        setPassword(password);
+        
+        loadDriver();
+        connectToDatabase();
     }
 
     private void loadDriver()
@@ -78,21 +81,26 @@ public class DAO
        }
     }
 
+    private String getConnectionString()
+    {
+    	if (sgbd.equals("mysql")) {
+    		return "jdbc:mysql://%1$s/%2$s?user=%3$s&password=%4$s";
+    	} else {
+    		throw new RuntimeException("Unknown SBGD");
+    	}
+    }
+    
     /**
      * Connect to the DotProject database.
      */
     protected void connectToDatabase()
     {
-       try {
-           conn = DriverManager.getConnection(
-	       String.format("jdbc:mysql://%1$s/%2$s?user=%3$s&password=%4$s",
-	       this.hostname,
-	       this.database,
-	       this.username,
-	       this.password)
-	   );
-       } catch (SQLException e) {
-	    dumpSQLException(e);
+    	try {
+    		String connString = getConnectionString();
+    		conn = DriverManager.getConnection(
+    				String.format(connString, hostname, database, username, password));
+    	} catch (SQLException e) {
+    		dumpSQLException(e);
         }
     }
     
@@ -102,14 +110,39 @@ public class DAO
 
     protected void dumpException(Throwable e)
     {
-	System.out.println(e.getClass().getName() + " " + e.getMessage());
-	dumpStackTrace(e.getStackTrace());
+    	System.out.println(e.getClass().getName() + " " + e.getMessage());
+    	dumpStackTrace(e.getStackTrace());
     }
 
     protected void dumpSQLException(SQLException e)
     {
-	dumpException(e);
+    	dumpException(e);
         System.out.println("SQLState: " + e.getSQLState());
         System.out.println("VendorError: " + e.getErrorCode());
     }
+
+	private void setDatabase(String database)
+	{
+		this.database = database;
+	}
+
+	private void setHostname(String hostname)
+	{
+		this.hostname = hostname;
+	}
+
+	private void setPassword(String password)
+	{
+		this.password = password;
+	}
+
+	private void setSgbd(String sgbd)
+	{
+		this.sgbd = sgbd;
+	}
+
+	private void setUsername(String username)
+	{
+		this.username = username;
+	}
 }
