@@ -42,7 +42,7 @@ public class Task {
             
     public String getDescription()
     {
-        return this.name;
+        return this.description;
     }
     
 }

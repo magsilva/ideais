@@ -13,14 +13,15 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-Copyright (C) magsilva <EMAIL>
- */
+Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
+*/
 
 package net.sf.ideais.dotproject;
 
 import net.sf.ideais.DAO;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -52,7 +53,7 @@ public class ProjectDAO extends DAO
         try {
             project.setName(rs.getString("project_name"));
         } catch (SQLException e) {
-	    dumpSQLException(e);
+        	dumpSQLException(e);
             // Probably an inexistent task was requested.
             project = null;
         }
@@ -73,14 +74,27 @@ public class ProjectDAO extends DAO
        Project project = null;
        
        try {
-           String query = "SELECT * FROM projects WHERE project_id = ?";
+    	   /*
+    	   Statement s = conn.createStatement();
+    	   rs = s.executeQuery("SELECT * FROM projects where project_id=1");
+    	   while ( rs.next() ) {
+     	      String teste = rs.getString("project_name");
+    	      System.out.println(rs.getString("project_name"));
+    	   }
+    	   */
+    	   
+           String query = "SELECT * FROM projects where project_id = ?";
            stmt = conn.prepareStatement(query);
            stmt.setInt(1, project_id);
            rs = stmt.executeQuery();
-	   rs.next();
+           while ( rs.next() ) {
+      	      String teste = rs.getString("project_name");
+     	      System.out.println(rs.getString("project_name"));
+     	   }
+           
            project = createInstance(rs);
        } catch (SQLException sqe) {
-	    dumpSQLException(sqe);
+    	   dumpSQLException(sqe);
            // Probably an inexistent task was request. We may ignore the 
            // Now do something with the ResultSet ....
        } finally {

@@ -13,12 +13,15 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-Copyright (C) 2006 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
+Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 package net.sf.ideais;
 
 import java.util.Enumeration;
+import java.util.PropertyResourceBundle;
+import java.io.InputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -57,15 +60,23 @@ public class DAO
         loadDriver();
         connectToDatabase();
     }
+    
+    public void finalize()
+    {
+    	try {
+    		conn.close();
+    	} catch (SQLException e) {
+    	}
+    }
 
     private void loadDriver()
     {
     	// Check if the driver has been already loaded
-    	String driver = getDriverName();
+    	String driver = getDriverName(sgbd);
     	Enumeration<Driver> drivers = DriverManager.getDrivers();
     	while (drivers.hasMoreElements()) {
     		Driver d = drivers.nextElement();
-    		if (d.getClass().getName().equals(getDriverName())) {
+    		if (d.getClass().getName().equals(driver)) {
     			return;
     		}
 		}
@@ -82,23 +93,45 @@ public class DAO
        }
     }
 
-    private String getDriverName()
+    public static String getDriverName(String sgbd)
     {
-    	if (sgbd.equals("mysql")) {
-    		return "com.mysql.jdbc.Driver";
-    	} else {
-    		throw new RuntimeException("Unknown SBGD");    		
+    	InputStream in = DAO.class.getClass().getResourceAsStream("/net/sf/ideais/dbDriver.properties");
+    	PropertyResourceBundle res = null;
+    	try {
+    		res = new PropertyResourceBundle(in);
+    	} catch (IOException ioe) {
     	}
+    	
+    	Enumeration<String> knownDrivers = res.getKeys();
+    	while (knownDrivers.hasMoreElements()) {
+    		if (knownDrivers.nextElement().equals(sgbd)) {
+    			return res.getString(sgbd);
+    		}
+    	}
+    	
+    	throw new RuntimeException("Unknown SBGD");   		
     }
     
-    private String getConnectionString()
+    public static String getConnectionString(String sgbd)
     {
-    	if (sgbd.equals("mysql")) {
-    		return "jdbc:mysql://%1$s/%2$s?user=%3$s&password=%4$s";
-    	} else {
-    		throw new RuntimeException("Unknown SBGD");
+    	InputStream in = DAO.class.getClass().getResourceAsStream("/net/sf/ideais/dbConnString.properties");
+    	PropertyResourceBundle res = null;
+    	try {
+    		res = new PropertyResourceBundle(in);
+    	} catch (IOException ioe) {
     	}
+    	
+    	Enumeration<String> knownDrivers = res.getKeys();
+    	while (knownDrivers.hasMoreElements()) {
+    		if (knownDrivers.nextElement().equals(sgbd)) {
+    			return res.getString(sgbd);
+    		}
+    	}
+    	
+    	throw new RuntimeException("Unknown SBGD");
     }
+
+    
     
     /**
      * Connect to the DotProject database.
@@ -106,7 +139,7 @@ public class DAO
     protected void connectToDatabase()
     {
     	try {
-    		String connString = getConnectionString();
+    		String connString = getConnectionString(sgbd);
     		conn = DriverManager.getConnection(
     				String.format(connString, hostname, database, username, password));
     	} catch (SQLException e) {
