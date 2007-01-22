@@ -18,6 +18,8 @@ Copyright (C) magsilva <EMAIL>
 
 package net.sf.ideais.dotproject;
 
+import net.sf.ideais.DAO;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,9 +33,9 @@ public class ProjectDAO extends DAO
     /**
     * Creates a new instance of ProjectDAO
     */
-    public ProjectDAO(String hostname, String database, String username, String password)
+    public ProjectDAO(String sgbd, String hostname, String database, String username, String password)
     {
-        super(hostname, database, username, password);
+        super(sgbd, hostname, database, username, password);
     }
   
     /**
@@ -95,7 +97,7 @@ public class ProjectDAO extends DAO
     }    
     
     
-        public int save(Project project)
+  	public int save(Project project)
     {
 	      // assume that conn is an already created JDBC connection
 	      PreparedStatement stmt = null;

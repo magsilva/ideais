@@ -16,8 +16,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2006 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.dotproject;
+package net.sf.ideais;
 
+import java.util.Enumeration;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -59,28 +60,37 @@ public class DAO
 
     private void loadDriver()
     {
-	      /*
-       try {
-		Driver driver = null;
-		driver = DriverManager.getDriver("jdbc:mysql://");
-		if (driver != null) {
-			  return;
+    	// Check if the driver has been already loaded
+    	String driver = getDriverName();
+    	Enumeration<Driver> drivers = DriverManager.getDrivers();
+    	while (drivers.hasMoreElements()) {
+    		Driver d = drivers.nextElement();
+    		if (d.getClass().getName().equals(getDriverName())) {
+    			return;
+    		}
 		}
-       } catch ( SQLException e ) {
-       }
-*/
+    	
+    	// Load the driver
        try {
-	   
-	   Class.forName("com.mysql.jdbc.Driver");
+    	   Class.forName(driver);
        } catch (ClassNotFoundException cnfe) {
-	    dumpException(cnfe);
+    	   dumpException(cnfe);
        } catch (ExceptionInInitializerError eiie) {
-	    dumpException(eiie);
+    	   dumpException(eiie);
        } catch (LinkageError le) {
-	    dumpException(le);
+    	   dumpException(le);
        }
     }
 
+    private String getDriverName()
+    {
+    	if (sgbd.equals("mysql")) {
+    		return "com.mysql.jdbc.Driver";
+    	} else {
+    		throw new RuntimeException("Unknown SBGD");    		
+    	}
+    }
+    
     private String getConnectionString()
     {
     	if (sgbd.equals("mysql")) {
@@ -121,28 +131,43 @@ public class DAO
         System.out.println("VendorError: " + e.getErrorCode());
     }
 
-	private void setDatabase(String database)
+	private void setSgbd(String sgbd)
 	{
-		this.database = database;
+		if (sgbd == null) {
+			throw new NullPointerException();
+		}
+		this.sgbd = sgbd;
 	}
 
 	private void setHostname(String hostname)
 	{
+		if (hostname == null) {
+			throw new NullPointerException();
+		}
 		this.hostname = hostname;
+	}
+
+    private void setDatabase(String database)
+	{
+		if (database == null) {
+			throw new NullPointerException();
+		}
+		this.database = database;
 	}
 
 	private void setPassword(String password)
 	{
+		if (password == null) {
+			password = "";
+		}
 		this.password = password;
-	}
-
-	private void setSgbd(String sgbd)
-	{
-		this.sgbd = sgbd;
 	}
 
 	private void setUsername(String username)
 	{
+		if (password == null) {
+			password = "";
+		}
 		this.username = username;
 	}
 }
