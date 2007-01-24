@@ -29,32 +29,65 @@ import tests.net.sf.ideais.dotproject.DotprojectTest;
 
 public class ProjectDAOTest
 {
-	private ProjectDAO dao;
+	private ProjectDAO remoteDao;
+	private ProjectDAO localDao;
+	
+	private String remoteProjectDescription = "World domination";
+	private String localProjectDescription = "Sausage";
 
 	@Before
 	public void setUp()
 	{
-		dao = new ProjectDAO(DotprojectTest.sgbd, DotprojectTest.hostname,
-				DotprojectTest.database, DotprojectTest.username, DotprojectTest.password);
+		remoteDao = new ProjectDAO(DotprojectTest.sgbd, DotprojectTest.remoteHostname,
+				DotprojectTest.remoteDatabase, DotprojectTest.remoteUsername, DotprojectTest.remotePassword);
+
+		localDao = new ProjectDAO(DotprojectTest.sgbd, DotprojectTest.localHostname,
+			DotprojectTest.localDatabase, DotprojectTest.localUsername, DotprojectTest.localPassword);
+
 	}
 
 	@After
 	public void tearDown()
 	{
-		dao.finalize();
+		remoteDao.finalize();
 	}
 
 	@Test
 	public void testLoadProject()
 	{
-		Project project = dao.loadData(1);
+		Project project = remoteDao.loadData(1);
 		assertNotNull(project);
 	}
 	
 	@Test
-	public void testLoadProject1()
+	public void testLoadProjectFromRemoteDatabase1()
 	{
-		Project project = dao.loadData(1);
-		assertEquals(project.getName(), "World domination");
+		Project project = remoteDao.loadData(1);
+		assertEquals(project.getName(), remoteProjectDescription);
 	}
+
+	@Test
+	public void testLoadProjectFromRemoteDatabase2()
+	{
+		remoteDao.setSqlStatementHackEnabled(true);
+		Project project = remoteDao.loadData(1);
+		assertEquals(project.getName(), remoteProjectDescription);
+	}
+
+	
+	@Test
+	public void testLoadProjectFromLocalDatabase1()
+	{
+		Project project = localDao.loadData(1);
+		assertEquals(project.getName(), localProjectDescription);
+	}
+
+	@Test
+	public void testLoadProjectFromLocalDatabase2()
+	{
+		localDao.setSqlStatementHackEnabled(true);
+		Project project = localDao.loadData(1);
+		assertEquals(project.getName(), localProjectDescription);
+	}	
+	
 }

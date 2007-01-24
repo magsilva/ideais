@@ -21,8 +21,15 @@ package tests.net.sf.ideais.dotproject;
 public class DotprojectTest
 {
 	static final public String sgbd = "mysql";
-	static final public String hostname = "192.168.1.13";
-	static final public String database = "dotproject-dev";
-	static final public String username = "test";
-	static final public String password = "test";
+	
+	static final public String remoteHostname = "192.168.1.13";
+	static final public String remoteDatabase = "dotproject-dev";
+	static final public String remoteUsername = "test";
+	static final public String remotePassword = "test";
+
+	static final public String localHostname = "localhost";
+	static final public String localDatabase = "dotproject";
+	static final public String localUsername = "test";
+	static final public String localPassword = "test";
+
 }

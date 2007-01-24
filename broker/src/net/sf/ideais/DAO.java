@@ -27,6 +27,10 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
+
+// javax.sql.DataSource ds1 = (javax.sql.DataSource)ctx.lookup("java:comp/env/jdbc/database"); 
+
 /**
  * Data Transfer Object for a task available at a DotProject instance.
  * 
@@ -142,6 +146,14 @@ public class DAO
     		String connString = getConnectionString(sgbd);
     		conn = DriverManager.getConnection(
     				String.format(connString, hostname, database, username, password));
+    		
+    		if (sgbd.equals("mysql")) {
+    			com.mysql.jdbc.Connection mysqlConn = (com.mysql.jdbc.Connection)conn;
+    			if (mysqlConn.versionMeetsMinimum(5, 0, 0)) {
+    				mysqlConn.setUseServerPrepStmts(false);
+    			}
+    		}
+    		
     	} catch (SQLException e) {
     		dumpSQLException(e);
         }

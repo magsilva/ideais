@@ -24,13 +24,16 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 /**
  * Data Transfer Object for a Project available at a DotProject instance.
  * 
  */
 public class ProjectDAO extends DAO
-{        
+{
+	boolean sqlStatementHackEnabled = true;
+	
     /**
     * Creates a new instance of ProjectDAO
     */
@@ -68,47 +71,42 @@ public class ProjectDAO extends DAO
      */
     public Project loadData(int project_id)
     {
-       // assume that conn is an already created JDBC connection
-       PreparedStatement stmt = null;
-       ResultSet rs = null;
-       Project project = null;
-       
-       try {
-    	   /*
-    	   Statement s = conn.createStatement();
-    	   rs = s.executeQuery("SELECT * FROM projects where project_id=1");
-    	   while ( rs.next() ) {
-     	      String teste = rs.getString("project_name");
-    	      System.out.println(rs.getString("project_name"));
-    	   }
-    	   */
-    	   
-           String query = "SELECT * FROM projects where project_id = ?";
-           stmt = conn.prepareStatement(query);
-           stmt.setInt(1, project_id);
-           rs = stmt.executeQuery();
-           while ( rs.next() ) {
-      	      String teste = rs.getString("project_name");
-     	      System.out.println(rs.getString("project_name"));
-     	   }
-           
-           project = createInstance(rs);
-       } catch (SQLException sqe) {
-    	   dumpSQLException(sqe);
-           // Probably an inexistent task was request. We may ignore the 
-           // Now do something with the ResultSet ....
-       } finally {
-           // Release resources.
-           if (stmt != null) {
-               try {
-                   stmt.close();
-               } catch (SQLException sqlEx) {
-               }
-           }
-       }
- 
-       return project;
-    }    
+    	Statement stmt = null;
+    	ResultSet rs = null;
+    	Project project = null;
+    	// useServerPrepStmts=false
+    	try {
+    		if (sqlStatementHackEnabled) {
+    			stmt = conn.createStatement();
+    			String rawQuery = "SELECT * FROM projects WHERE project_id=%1$s";
+    			String query = String.format(rawQuery, project_id);
+    			rs = stmt.executeQuery(query);
+    		} else {
+    			PreparedStatement pstmt = null;
+    			String query = "SELECT * FROM projects WHERE project_id = ?";
+    			stmt = conn.prepareStatement(query);
+    			pstmt = (PreparedStatement)stmt;
+    			pstmt.setInt(1, project_id);
+    			pstmt.setObject(1, new Long(project_id), Types.BIGINT);
+    			rs = pstmt.executeQuery();
+    		}
+    		
+    		rs.next();
+    		project = createInstance(rs);
+    	} catch (SQLException sqe) {
+    		dumpSQLException(sqe);
+    		// Probably an inexistent task was requested.
+    	} finally {
+    		// Release resources.
+    		if (stmt != null) {
+    			try {
+    				stmt.close();
+    			} catch (SQLException sqlEx) {
+    			}
+    		}
+    	}
+    	return project;
+    }   
     
     
   	public int save(Project project)
@@ -154,5 +152,15 @@ public class ProjectDAO extends DAO
 	      
 	      return task_id;
     }
+
+	public boolean isSqlStatementHackEnabled()
+	{
+		return sqlStatementHackEnabled;
+	}
+
+	public void setSqlStatementHackEnabled(boolean sqlStatementHackEnabled)
+	{
+		this.sqlStatementHackEnabled = sqlStatementHackEnabled;
+	}
 
 }
