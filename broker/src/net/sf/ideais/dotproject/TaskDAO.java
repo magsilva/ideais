@@ -33,9 +33,9 @@ public class TaskDAO extends DAO
     /**
     * Creates a new instance of TaskDAO
     */
-    public TaskDAO(String sgbd, String hostname, String database, String username, String password)
+    public TaskDAO(String dbms, String hostname, String database, String username, String password)
     {
-    	super(sgbd, hostname, database, username, password);
+    	super(dbms, hostname, database, username, password);
     }
        
     /**

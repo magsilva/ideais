@@ -37,9 +37,9 @@ public class ProjectDAO extends DAO
     /**
     * Creates a new instance of ProjectDAO
     */
-    public ProjectDAO(String sgbd, String hostname, String database, String username, String password)
+    public ProjectDAO(String dbms, String hostname, String database, String username, String password)
     {
-        super(sgbd, hostname, database, username, password);
+        super(dbms, hostname, database, username, password);
     }
   
     /**

@@ -20,7 +20,7 @@ package tests.net.sf.ideais.dotproject;
 
 public class DotprojectTest
 {
-	static final public String sgbd = "mysql";
+	static final public String dbms = "mysql";
 	
 	static final public String remoteHostname = "192.168.1.13";
 	static final public String remoteDatabase = "dotproject-dev";

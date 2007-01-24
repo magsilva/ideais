@@ -29,9 +29,9 @@ import net.sf.ideais.DAO;
 public class DAOTest
 {
 	class DummyDAO extends DAO {
-		 public DummyDAO(String sgbd, String hostname, String database, String username, String password)
+		 public DummyDAO(String dbms, String hostname, String database, String username, String password)
 		 {
-			 super(sgbd, hostname, database, username, password);
+			 super(dbms, hostname, database, username, password);
 		 }
 		 
 		 public Connection getConnection()

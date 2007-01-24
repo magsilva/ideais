@@ -39,7 +39,7 @@ public class DAO
 {
     protected Connection conn;
 
-    private String sgbd;
+    private String dbms;
     
     private String hostname;
     
@@ -53,9 +53,9 @@ public class DAO
     /**
     * Creates a new instance of TaskDAO
     */
-    public DAO(String sgbd, String hostname, String database, String username, String password)
+    public DAO(String dbms, String hostname, String database, String username, String password)
     {
-    	setSgbd(sgbd);
+    	setDbms(dbms);
     	setHostname(hostname);
         setDatabase(database);
         setUsername(username);
@@ -76,7 +76,7 @@ public class DAO
     private void loadDriver()
     {
     	// Check if the driver has been already loaded
-    	String driver = getDriverName(sgbd);
+    	String driver = getDriverName(dbms);
     	Enumeration<Driver> drivers = DriverManager.getDrivers();
     	while (drivers.hasMoreElements()) {
     		Driver d = drivers.nextElement();
@@ -97,7 +97,7 @@ public class DAO
        }
     }
 
-    public static String getDriverName(String sgbd)
+    public static String getDriverName(String dbms)
     {
     	InputStream in = DAO.class.getClass().getResourceAsStream("/net/sf/ideais/dbDriver.properties");
     	PropertyResourceBundle res = null;
@@ -108,15 +108,15 @@ public class DAO
     	
     	Enumeration<String> knownDrivers = res.getKeys();
     	while (knownDrivers.hasMoreElements()) {
-    		if (knownDrivers.nextElement().equals(sgbd)) {
-    			return res.getString(sgbd);
+    		if (knownDrivers.nextElement().equals(dbms)) {
+    			return res.getString(dbms);
     		}
     	}
     	
     	throw new RuntimeException("Unknown SBGD");   		
     }
     
-    public static String getConnectionString(String sgbd)
+    public static String getConnectionString(String dbms)
     {
     	InputStream in = DAO.class.getClass().getResourceAsStream("/net/sf/ideais/dbConnString.properties");
     	PropertyResourceBundle res = null;
@@ -127,8 +127,8 @@ public class DAO
     	
     	Enumeration<String> knownDrivers = res.getKeys();
     	while (knownDrivers.hasMoreElements()) {
-    		if (knownDrivers.nextElement().equals(sgbd)) {
-    			return res.getString(sgbd);
+    		if (knownDrivers.nextElement().equals(dbms)) {
+    			return res.getString(dbms);
     		}
     	}
     	
@@ -143,11 +143,11 @@ public class DAO
     protected void connectToDatabase()
     {
     	try {
-    		String connString = getConnectionString(sgbd);
+    		String connString = getConnectionString(dbms);
     		conn = DriverManager.getConnection(
     				String.format(connString, hostname, database, username, password));
     		
-    		if (sgbd.equals("mysql")) {
+    		if (dbms.equals("mysql")) {
     			com.mysql.jdbc.Connection mysqlConn = (com.mysql.jdbc.Connection)conn;
     			if (mysqlConn.versionMeetsMinimum(5, 0, 0)) {
     				mysqlConn.setUseServerPrepStmts(false);
@@ -176,12 +176,12 @@ public class DAO
         System.out.println("VendorError: " + e.getErrorCode());
     }
 
-	private void setSgbd(String sgbd)
+	private void setDbms(String dbms)
 	{
-		if (sgbd == null) {
+		if (dbms == null) {
 			throw new NullPointerException();
 		}
-		this.sgbd = sgbd;
+		this.dbms = dbms;
 	}
 
 	private void setHostname(String hostname)

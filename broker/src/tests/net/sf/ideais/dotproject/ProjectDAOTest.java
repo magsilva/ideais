@@ -38,10 +38,10 @@ public class ProjectDAOTest
 	@Before
 	public void setUp()
 	{
-		remoteDao = new ProjectDAO(DotprojectTest.sgbd, DotprojectTest.remoteHostname,
+		remoteDao = new ProjectDAO(DotprojectTest.dbms, DotprojectTest.remoteHostname,
 				DotprojectTest.remoteDatabase, DotprojectTest.remoteUsername, DotprojectTest.remotePassword);
 
-		localDao = new ProjectDAO(DotprojectTest.sgbd, DotprojectTest.localHostname,
+		localDao = new ProjectDAO(DotprojectTest.dbms, DotprojectTest.localHostname,
 			DotprojectTest.localDatabase, DotprojectTest.localUsername, DotprojectTest.localPassword);
 
 	}
