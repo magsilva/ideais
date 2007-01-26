@@ -18,73 +18,81 @@ Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
+import net.sf.ideais.Configuration;
+import net.sf.ideais.DbDataSource;
+import net.sf.ideais.HardCodedConfiguration;
+
 import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
 
-import net.sf.ideais.DAO;
 
 
-public class DAOTest
+public class DbDataSourceTest
 {
-	class DummyDAO extends DAO {
-		 public DummyDAO(String dbms, String hostname, String database, String username, String password)
-		 {
-			 super(dbms, hostname, database, username, password);
-		 }
-		 
-		 public Connection getConnection()
-		 {
-			 return conn;
-		 }
-	}
+	Configuration validConf = null;
+	Configuration invalidConf = null;
 	
-	final private String unknownSGBD = "abc123";
-	final private String knownSGBD = "mysql";
+	final private String unknownDbms = "abc123";
+	
+	final private String knownDbms = "mysql";
 	final private String knownDriver = "com.mysql.jdbc.Driver";
 	final private String knownConnectionString = "jdbc:mysql://%1$s/%2$s?user=%3$s&password=%4$s";
-	
-	final private String knownHostname = "192.168.1.13";
+	final private String knownHostname = "localhost";
 	final private String knownDatabase = "dotproject-dev";
 	final private String knownUsername = "test";
 	final private String knownPassword = "test";
+
+	@Before
+	public void setUp() throws Exception
+	{
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		validConf = conf;
+		conf.setProperty(DbDataSource.DBMS, knownDbms);
+		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
+		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
+		conf.setProperty(DbDataSource.USERNAME, knownUsername);
+		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
+		
+		conf = new HardCodedConfiguration();
+		invalidConf = conf;
+		conf.setProperty(DbDataSource.DBMS, unknownDbms);
+	}
 	
 	@Test
 	public void testGetDriverName()
 	{
-		assertEquals(DAO.getDriverName(knownSGBD), knownDriver);
+		assertEquals(DbDataSource.getDriverName(knownDbms), knownDriver);
 	}
 
 	@Test(expected=RuntimeException.class) 
 	public void testGetUnknownDriverName()
 	{
-		DAO.getDriverName(unknownSGBD);
+		DbDataSource.getDriverName(unknownDbms);
 	}
 
 	
 	@Test
 	public void testGetConnectionString() {
-		assertEquals(DAO.getConnectionString(knownSGBD), knownConnectionString);
+		assertEquals(DbDataSource.getConnectionString(knownDbms), knownConnectionString);
 	}
 
 	@Test(expected=RuntimeException.class) 
 	public void testGetConnectionStringForUnknownDriver()
 	{
-		DAO.getConnectionString(unknownSGBD);
+		DbDataSource.getConnectionString(unknownDbms);
 	}
 	
 	@Test
-	public void testDAOInitialization()
+	public void testConfiguration()
 	{
-		DAO dao = new DAO(knownSGBD, knownHostname, knownDatabase, knownUsername, knownPassword);
-		assertNotNull(dao);
-	}
-	
-	@Test
-	public void testDAOConnection()
-	{
-		DummyDAO dao = new DummyDAO(knownSGBD, knownHostname, knownDatabase, knownUsername, knownPassword);
-		assertNotNull(dao.getConnection());
+		DbDataSource ds = new DbDataSource();
+		Connection conn = null;
+		ds.setConfiguration(validConf);
+		conn = ds.getConnection();
+		assertNotNull(conn);
 	}
 }

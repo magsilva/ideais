@@ -18,7 +18,7 @@ Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.dotproject;
 
-import net.sf.ideais.DAO;
+import net.sf.ideais.DbDAO;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * Data Transfer Object for a task available at a DotProject instance.
  * 
  */
-public class TaskDAO extends DAO
+public class TaskDAO extends DbDAO
 {        
     /**
     * Creates a new instance of TaskDAO

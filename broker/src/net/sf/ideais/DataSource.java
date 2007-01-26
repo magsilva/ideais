@@ -18,30 +18,12 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-/**
- * 
- * The implementation is based upon the ideas and examples from Michael Slattery
- * (http://jroller.com/page/MikeSlattery/20050811) and Christian
- * (http://blog.hibernate.org/cgi-bin/blosxom.cgi/2005/09/08#genericdao).
- * 
- * @param <T> The business object implementation class.
- * @param <I> The primary key for the business object.
- */
-public interface DAO<T, I> extends Serializable
+public interface DataSource
 {
-	T create();
+	boolean isReady(boolean force);
 	
-	T find(I id);
-	List<T> findByProperty(String key, Serializable value);
-	List<T> findByExample(T example);
-	List<T> findByExample(Map<String, Serializable> fields);
-
-	void update(T entity);
+	void setConfiguration(Configuration conf);
 	
-	void delete(T entity);
-	void deleteById(I id);	
+	Object manufacture();
+	
 }

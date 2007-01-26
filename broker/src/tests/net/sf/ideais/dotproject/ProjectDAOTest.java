@@ -19,10 +19,12 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 package tests.net.sf.ideais.dotproject;
 
 import static org.junit.Assert.*;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sf.ideais.Configuration;
+import net.sf.ideais.DbDataSource;
+import net.sf.ideais.HardCodedConfiguration;
 import net.sf.ideais.dotproject.Project;
 import net.sf.ideais.dotproject.ProjectDAO;
 import tests.net.sf.ideais.dotproject.DotprojectTest;
@@ -35,34 +37,63 @@ public class ProjectDAOTest
 	private String remoteProjectDescription = "World domination";
 	private String localProjectDescription = "Sausage";
 
+	private class DummyLocalProjectDAO extends ProjectDAO
+	{
+		public DummyLocalProjectDAO()
+		{
+			super();
+		}
+		
+	    protected Configuration getConfiguration()
+	    {
+			HardCodedConfiguration conf = new HardCodedConfiguration();
+			conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);
+			conf.setProperty(DbDataSource.HOSTNAME, DotprojectTest.localHostname);
+			conf.setProperty(DbDataSource.DATABASE, DotprojectTest.localDatabase);
+			conf.setProperty(DbDataSource.USERNAME, DotprojectTest.localUsername);
+			conf.setProperty(DbDataSource.PASSWORD, DotprojectTest.localPassword);		
+			return conf;
+	    }
+	}
+
+	private class DummyRemoteProjectDAO extends ProjectDAO
+	{
+		public DummyRemoteProjectDAO()
+		{
+			super();
+		}
+		
+	    protected Configuration getConfiguration()
+	    {
+			HardCodedConfiguration conf = new HardCodedConfiguration();
+			conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);
+			conf.setProperty(DbDataSource.HOSTNAME, DotprojectTest.remoteHostname);
+			conf.setProperty(DbDataSource.DATABASE, DotprojectTest.remoteDatabase);
+			conf.setProperty(DbDataSource.USERNAME, DotprojectTest.remoteUsername);
+			conf.setProperty(DbDataSource.PASSWORD, DotprojectTest.remotePassword);
+			return conf;
+	    }
+	}
+
+	
 	@Before
 	public void setUp()
 	{
-		remoteDao = new ProjectDAO(DotprojectTest.dbms, DotprojectTest.remoteHostname,
-				DotprojectTest.remoteDatabase, DotprojectTest.remoteUsername, DotprojectTest.remotePassword);
-
-		localDao = new ProjectDAO(DotprojectTest.dbms, DotprojectTest.localHostname,
-			DotprojectTest.localDatabase, DotprojectTest.localUsername, DotprojectTest.localPassword);
-
-	}
-
-	@After
-	public void tearDown()
-	{
-		remoteDao.finalize();
+		remoteDao = new DummyRemoteProjectDAO();
+		localDao = new DummyLocalProjectDAO();
 	}
 
 	@Test
 	public void testLoadProject()
 	{
-		Project project = remoteDao.loadData(1);
+		Project project = remoteDao.find(1);
 		assertNotNull(project);
 	}
 	
 	@Test
 	public void testLoadProjectFromRemoteDatabase1()
 	{
-		Project project = remoteDao.loadData(1);
+		Project project = remoteDao.find(1);
 		assertEquals(project.getName(), remoteProjectDescription);
 	}
 
@@ -70,7 +101,7 @@ public class ProjectDAOTest
 	public void testLoadProjectFromRemoteDatabase2()
 	{
 		remoteDao.setSqlStatementHackEnabled(true);
-		Project project = remoteDao.loadData(1);
+		Project project = remoteDao.find(1);
 		assertEquals(project.getName(), remoteProjectDescription);
 	}
 
@@ -78,7 +109,7 @@ public class ProjectDAOTest
 	@Test
 	public void testLoadProjectFromLocalDatabase1()
 	{
-		Project project = localDao.loadData(1);
+		Project project = localDao.find(1);
 		assertEquals(project.getName(), localProjectDescription);
 	}
 
@@ -86,7 +117,7 @@ public class ProjectDAOTest
 	public void testLoadProjectFromLocalDatabase2()
 	{
 		localDao.setSqlStatementHackEnabled(true);
-		Project project = localDao.loadData(1);
+		Project project = localDao.find(1);
 		assertEquals(project.getName(), localProjectDescription);
 	}	
 	

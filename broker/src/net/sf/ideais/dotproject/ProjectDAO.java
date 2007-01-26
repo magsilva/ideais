@@ -18,28 +18,49 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.dotproject;
 
-import net.sf.ideais.DAO;
+import net.sf.ideais.Configuration;
+import net.sf.ideais.DbDAO;
+import net.sf.ideais.DbDataSource;
+import net.sf.ideais.HardCodedConfiguration;
+import net.sf.ideais.util.SqlUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Data Transfer Object for a Project available at a DotProject instance.
  * 
  */
-public class ProjectDAO extends DAO
+public class ProjectDAO extends DbDAO
 {
-	boolean sqlStatementHackEnabled = true;
+	private	boolean sqlStatementHackEnabled = true;
+
+	public ProjectDAO()
+	{
+		super();
+	}
 	
-    /**
-    * Creates a new instance of ProjectDAO
-    */
-    public ProjectDAO(String dbms, String hostname, String database, String username, String password)
+    protected Configuration getConfiguration()
     {
-        super(dbms, hostname, database, username, password);
+    	String knownDbms = "mysql";
+		String knownHostname = "localhost";
+		String knownDatabase = "dotproject-dev";
+		String knownUsername = "test";
+		String knownPassword = "test";
+
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		conf.setProperty(DbDataSource.DBMS, knownDbms);
+		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
+		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
+		conf.setProperty(DbDataSource.USERNAME, knownUsername);
+		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
+		
+		return conf;
     }
   
     /**
@@ -56,21 +77,77 @@ public class ProjectDAO extends DAO
         try {
             project.setName(rs.getString("project_name"));
         } catch (SQLException e) {
-        	dumpSQLException(e);
+        	SqlUtil.dumpSQLException(e);
             // Probably an inexistent task was requested.
             project = null;
         }
         return project;
     }
     
+    
+
+	public boolean isSqlStatementHackEnabled()
+	{
+		return sqlStatementHackEnabled;
+	}
+
+	public void setSqlStatementHackEnabled(boolean sqlStatementHackEnabled)
+	{
+		this.sqlStatementHackEnabled = sqlStatementHackEnabled;
+	}
+
+	public Object create()
+	{
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int id = 0;
+
+		try {
+			String query = "INSERT INTO projects (project_name, project_description, project_owner, project_company) values (?,?,?,?)";
+			stmt = conn.prepareStatement(query);
+			// Set mandatory attributes
+			stmt.executeUpdate();
+			rs = stmt.getGeneratedKeys();
+			rs.next();
+			id = rs.getInt(1);
+		} catch (SQLException sqe) {
+			SqlUtil.dumpSQLException(sqe);
+			// Probably an inexistent task was request. We may ignore the
+			// Now do something with the ResultSet ....
+		} finally {
+			// Release resources.
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) {
+				}
+			}
+		}
+
+		return find(id);
+	}
+
+	public void delete(Object entity)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteById(Object id)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
     /**
      * Load the data for a task and create a task instance.
      *
-     * @param task_id The task_id.
-     * @return The task (if found) or null.
+     * @param id The project id.
+     * @return The project (if found) or null.
      */
-    public Project loadData(int project_id)
+    public Project find(Object id)
     {
+    	int project_id = (Integer) id;
     	Statement stmt = null;
     	ResultSet rs = null;
     	Project project = null;
@@ -94,7 +171,7 @@ public class ProjectDAO extends DAO
     		rs.next();
     		project = createInstance(rs);
     	} catch (SQLException sqe) {
-    		dumpSQLException(sqe);
+    		SqlUtil.dumpSQLException(sqe);
     		// Probably an inexistent task was requested.
     	} finally {
     		// Release resources.
@@ -108,59 +185,46 @@ public class ProjectDAO extends DAO
     	return project;
     }   
     
-    
-  	public int save(Project project)
-    {
-	      // assume that conn is an already created JDBC connection
-	      PreparedStatement stmt = null;
-	      ResultSet rs = null;
-	      int task_id = 0;
-	      
-	      try
-	      {
-			String query = "INSERT INTO projects (project_name, project_description, project_owner, project_company) values (?,?,?,?)";
+	public List findByExample(Object example)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List findByExample(Map fields)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void update(Object object)
+	{
+		Project project = (Project)object;
+		// assume that conn is an already created JDBC connection
+		PreparedStatement stmt = null;
+
+		try {
+			String query = "UPDATE projects SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, project.getName());
 			stmt.setString(2, project.getDescription());
 			stmt.setInt(3, project.getOwnerId());
 			stmt.setInt(4, project.getCompanyId());
+			stmt.setInt(5, project.getId());
 			stmt.executeUpdate();
-			rs = stmt.getGeneratedKeys();
-			rs.next();
-			task_id = rs.getInt(1);
-	      }
-	      catch (SQLException sqe)
-	      {
-			dumpSQLException(sqe);
+		} catch (SQLException sqe) {
+			SqlUtil.dumpSQLException(sqe);
 			// Probably an inexistent task was request. We may ignore the
 			// Now do something with the ResultSet ....
-	      }
-	      finally
-	      {
+		} finally {
 			// Release resources.
-			if (stmt != null)
-			{
-				  try
-				  {
-					    stmt.close();
-				  }
-				  catch (SQLException sqlEx)
-				  {
-				  }
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) {
+				}
 			}
-	      }
-	      
-	      return task_id;
-    }
-
-	public boolean isSqlStatementHackEnabled()
-	{
-		return sqlStatementHackEnabled;
-	}
-
-	public void setSqlStatementHackEnabled(boolean sqlStatementHackEnabled)
-	{
-		this.sqlStatementHackEnabled = sqlStatementHackEnabled;
+		}
 	}
 
 }
