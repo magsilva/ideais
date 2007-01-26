@@ -29,6 +29,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,17 +128,43 @@ public class ProjectDAO extends DbDAO
 		return find(id);
 	}
 
-	public void delete(Object entity)
+	public void delete(Object object)
 	{
-		// TODO Auto-generated method stub
-		
+		Project project = (Project) object;
+		deleteById(project.getId());
 	}
 
 	public void deleteById(Object id)
 	{
-		// TODO Auto-generated method stub
-		
-	}
+    	int project_id = (Integer) id;
+    	Statement stmt = null;
+    	try {
+    		if (sqlStatementHackEnabled) {
+    			stmt = conn.createStatement();
+    			String rawQuery = "DELETE FROM projects WHERE project_id=%1$s";
+    			String query = String.format(rawQuery, project_id);
+    			stmt.executeUpdate(query);
+    		} else {
+    			PreparedStatement pstmt = null;
+    			String query = "DELETE FROM projects WHERE project_id = ?";
+    			stmt = conn.prepareStatement(query);
+    			pstmt = (PreparedStatement)stmt;
+    			pstmt.setInt(1, project_id);
+    			pstmt.executeUpdate();
+    		}
+    	} catch (SQLException sqe) {
+    		SqlUtil.dumpSQLException(sqe);
+    		// Probably an inexistent task was requested.
+    	} finally {
+    		// Release resources.
+    		if (stmt != null) {
+    			try {
+    				stmt.close();
+    			} catch (SQLException sqlEx) {
+    			}
+    		}
+    	}
+    }   
 
     /**
      * Load the data for a task and create a task instance.
@@ -151,7 +178,6 @@ public class ProjectDAO extends DbDAO
     	Statement stmt = null;
     	ResultSet rs = null;
     	Project project = null;
-    	// useServerPrepStmts=false
     	try {
     		if (sqlStatementHackEnabled) {
     			stmt = conn.createStatement();
@@ -164,10 +190,8 @@ public class ProjectDAO extends DbDAO
     			stmt = conn.prepareStatement(query);
     			pstmt = (PreparedStatement)stmt;
     			pstmt.setInt(1, project_id);
-    			pstmt.setObject(1, new Long(project_id), Types.BIGINT);
     			rs = pstmt.executeQuery();
-    		}
-    		
+    		}   		
     		rs.next();
     		project = createInstance(rs);
     	} catch (SQLException sqe) {
@@ -185,8 +209,45 @@ public class ProjectDAO extends DbDAO
     	return project;
     }   
     
-	public List findByExample(Object example)
+	public List findByExample(Object object)
 	{
+		Project project = (Project) object;
+    	Statement stmt = null;
+    	ResultSet rs = null;
+    	HashMap<String, Object> map = new HashMap<String, Object>();
+    	map.put(Project.DESCRIPTION, project.getDescription());
+    	
+
+    	try {
+    		if (sqlStatementHackEnabled) {
+    			stmt = conn.createStatement();
+    			String rawQuery = "SELECT * FROM projects WHERE project_id=%1$s";
+    			String query = String.format(rawQuery, project_id);
+    			rs = stmt.executeQuery(query);
+    		} else {
+    			PreparedStatement pstmt = null;
+    			String query = "SELECT * FROM projects WHERE project_id = ?";
+    			stmt = conn.prepareStatement(query);
+    			pstmt = (PreparedStatement)stmt;
+    			pstmt.setInt(1, project_id);
+    			rs = pstmt.executeQuery();
+    		}   		
+    		rs.next();
+    		project = createInstance(rs);
+    	} catch (SQLException sqe) {
+    		SqlUtil.dumpSQLException(sqe);
+    		// Probably an inexistent task was requested.
+    	} finally {
+    		// Release resources.
+    		if (stmt != null) {
+    			try {
+    				stmt.close();
+    			} catch (SQLException sqlEx) {
+    			}
+    		}
+    	}
+    	return project;
+
 		// TODO Auto-generated method stub
 		return null;
 	}

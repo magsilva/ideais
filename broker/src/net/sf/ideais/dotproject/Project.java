@@ -1,28 +1,19 @@
 /*
- * Project.java
- *
- * Created on 24 de Agosto de 2006, 19:47
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
-/*
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-
+ 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
+ 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-Copyright (C) magsilva <EMAIL>
+ 
+Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 package net.sf.ideais.dotproject;
@@ -35,6 +26,17 @@ import java.util.Date;
  */
 public class Project
 {
+	public static final String ID = "project_id";
+	public static final String NAME = "project_name";
+	public static final String SHORT_NAME = "project_shortname";
+	public static final String OWNER_ID = "project_owner";
+	public static final String COMPANY_ID = "project_company";
+	public static final String START_DATE = "project_start_date";
+	public static final String PRIORITY = "project_priority";
+	public static final String COLOR = "project_color_identifier";
+	public static final String TYPE = "project_type";
+	public static final String STATUS = "project_status";
+	
 	private int id;
 	
 	  private String name;
@@ -47,9 +49,9 @@ public class Project
 	  
 	  private int priority;
 	  
-	  private int colour;
+	  private int color;
 	  
-	  private int projectType;
+	  private int type;
 	  
 	  private int status;
 	  
@@ -116,22 +118,22 @@ public class Project
 
 	public int getColour()
 	{
-		return colour;
+		return color;
 	}
 
 	public void setColour(int colour)
 	{
-		this.colour = colour;
+		this.color = colour;
 	}
 
 	public int getProjectType()
 	{
-		return projectType;
+		return type;
 	}
 
 	public void setProjectType(int projectType)
 	{
-		this.projectType = projectType;
+		this.type = projectType;
 	}
 
 	public int getStatus()
