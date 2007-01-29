@@ -18,12 +18,85 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 
 /**
  * Some basic array utils.
  */
 public final class ArrayUtil
 {
+	/**
+	 * Check if an array has the given object. If the object is 'null', it will
+	 * always return False
+	 * 
+	 * @param array The array we will search into.
+	 * @param o The object to be found.
+	 * 
+	 * @return True if the object was found in the array, False otherwise.
+	 */
+	public static boolean has(Object[] array, Object o)
+	{
+		if (o == null) {
+			return false;
+		}
+		
+		for (Object temp : array) {
+			if (o.equals(temp)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Create a copy of an array. It will not do a deep copy (the primitive values
+	 * and object references are copied to the targed array, but the objects refereed
+	 * by both arrays will be the same).
+	 * 
+	 * @param array Array to be copied.
+	 * 
+	 * @return Duplicated array.
+	 */
+	public static Object[] dup(Object[] array)
+	{
+		Object[] dupArray = new Object[array.length];
+		System.arraycopy(array, 0, dupArray, 0, array.length);
+		return dupArray;
+	}
+	
+	public static boolean equalIgnoreOrder(Object[] array1, Object[] array2)
+	{
+		final class HashComparator<T> implements Comparator<T>
+		{
+			/**
+			 * Compares its two arguments for order. Returns a negative integer, zero, or a positive
+			 * integer as the first argument is less than, equal to, or greater than the second.
+			 * 
+			 * Note: this comparator imposes orderings that are inconsistent with equals."
+			 */
+			public int compare(T o1, T o2)
+			{
+				int hash1 = o1.hashCode();
+				int hash2 = o2.hashCode();
+				return (hash1 - hash2);
+			}
+		}
+		
+		if (array1.length != array2.length) {
+			return false;
+		}
+		
+		Object[] sortedArray1 = dup(array1);
+		Object[] sortedArray2 = dup(array2);
+		Arrays.sort(sortedArray1, new HashComparator<Object>());
+		Arrays.sort(sortedArray2, new HashComparator<Object>());
+		
+		return Arrays.equals(sortedArray1, sortedArray2);
+	}
+	
 	public static int find(String[] arg, String s)
 	{
 		int i = 0;

@@ -18,6 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.util;
 
+import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 
 import java.util.HashMap;
@@ -30,16 +31,17 @@ import org.junit.Test;
 public class JavaBeanUtilTest
 {
 	private DummyBean bean;
+	
 	private Map<String, Object> goodBeanMapping;
 	private Map<String, Object> badBeanMapping;
-	
-	private class DummyBean
+
+	public class DummyBean
 	{
 		private static final String DEFAULT_NAME = "John Due";
 		private static final int DEFAULT_AGE = 60;
 			
-		private static final String NAME_FIELD = "name";
-		private static final String AGE_FIELD = "age";
+		public static final String NAME_FIELD = "name";
+		public static final String AGE_FIELD = "age";
 
 		private String name;
 		private int age;
@@ -71,11 +73,12 @@ public class JavaBeanUtilTest
 		}
 	}
 
+
 	@Before
 	public void setUp() throws Exception
 	{
 		bean = new DummyBean();
-		
+
 		goodBeanMapping = new HashMap<String, Object>();
 		goodBeanMapping.put(DummyBean.NAME_FIELD, DummyBean.DEFAULT_NAME);
 		goodBeanMapping.put(DummyBean.AGE_FIELD, DummyBean.DEFAULT_AGE);
@@ -85,6 +88,14 @@ public class JavaBeanUtilTest
 		badBeanMapping.put("j2309j9", DummyBean.DEFAULT_AGE);
 	}
 
+	@Test
+	public void testIgnoredProperties()
+	{
+		Object[] expectedIgnoredProperties = JavaBeanUtil.getDefaultPropertiesName();
+		Object[] ignoredProperties = JavaBeanUtil.IGNORED_PROPERTIES;
+		assertTrue(ArrayUtil.equalIgnoreOrder(expectedIgnoredProperties, ignoredProperties));
+	}
+	
 	@Test
 	public void testMapBean1()
 	{
@@ -102,19 +113,7 @@ public class JavaBeanUtilTest
 	@Test
 	public void testMapBeanUsingFieldsObject()
 	{
-		fail("Not yet implemented");
+		Map mapping = JavaBeanUtil.mapBeanUsingFields(bean);
+		assertEquals(goodBeanMapping, mapping);
 	}
-
-	@Test
-	public void testMapBeanUsingPrefixedFields()
-	{
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testMapBeanUsingFieldsObjectMapOfIntegerString()
-	{
-		fail("Not yet implemented");
-	}
-
 }
