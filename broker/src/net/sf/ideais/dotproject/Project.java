@@ -18,6 +18,8 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.dotproject;
 
+import net.sf.ideais.Field;
+
 import java.util.Date;
 
 /**
@@ -26,45 +28,44 @@ import java.util.Date;
  */
 public class Project
 {
-	public static final String ID = "project_id";
-	public static final String NAME = "project_name";
-	public static final String SHORT_NAME = "project_shortname";
-	public static final String OWNER_ID = "project_owner";
-	public static final String COMPANY_ID = "project_company";
-	public static final String START_DATE = "project_start_date";
-	public static final String PRIORITY = "project_priority";
-	public static final String COLOR = "project_color_identifier";
-	public static final String TYPE = "project_type";
-	public static final String STATUS = "project_status";
-	
+	@Field(name="project_id")
 	private int id;
-	
-	  private String name;
-	  
-	  private String shortName;
-	  
-	  private int companyId;
-	  
-	  private Date startDate;
-	  
-	  private int priority;
-	  
-	  private int color;
-	  
-	  private int type;
-	  
-	  private int status;
-	  
-	  private int ownerId;
-	  
-	  private String description;
 
-    /**
-    * Creates a new instance of Project
-    */
-    public Project()
-    {
-    }
+	@Field(name="project_name")
+	private String name;
+
+	@Field(name="project_shortname")
+	private String shortName;
+
+	@Field(name="project_company")
+	private int companyId;
+
+	@Field(name="project_start_date")
+	private Date startDate;
+
+	@Field(name="project_priority")
+	private int priority;
+
+	@Field(name="project_color_identifier")
+	private int color;
+
+	@Field(name="project_type")
+	private int type;
+
+	@Field(name="project_status")
+	private int status;
+
+	@Field(name="project_owner")
+	private int ownerId;
+
+	private String description;
+
+	/**
+	 * Creates a new instance of Project
+	 */
+	public Project()
+	{
+	}
 
 	public String getName()
 	{
