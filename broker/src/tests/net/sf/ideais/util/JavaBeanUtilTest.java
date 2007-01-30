@@ -18,6 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.util;
 
+import net.sf.ideais.Field;
 import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 
@@ -31,10 +32,50 @@ import org.junit.Test;
 public class JavaBeanUtilTest
 {
 	private DummyBean bean;
+	private AnnotatedDummyBean annotatedBean;
 	
 	private Map<String, Object> goodBeanMapping;
 	private Map<String, Object> badBeanMapping;
 
+	public class AnnotatedDummyBean
+	{
+		private static final String DEFAULT_NAME = "John Due";
+		private static final int DEFAULT_AGE = 60;
+		
+		@Field(name="name")
+		public String name;
+
+		@Field(name="age")
+		public int age;
+		
+		public AnnotatedDummyBean()
+		{
+			name = DEFAULT_NAME;
+			age = DEFAULT_AGE;
+		}
+		
+		public int getAge()
+		{
+			return age;
+		}
+
+		public void setAge(int age)
+		{
+			this.age = age;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public void setName(String name)
+		{
+			this.name = name;
+		}
+	}
+
+	
 	public class DummyBean
 	{
 		private static final String DEFAULT_NAME = "John Due";
@@ -78,6 +119,7 @@ public class JavaBeanUtilTest
 	public void setUp() throws Exception
 	{
 		bean = new DummyBean();
+		annotatedBean = new AnnotatedDummyBean();
 
 		goodBeanMapping = new HashMap<String, Object>();
 		goodBeanMapping.put(DummyBean.NAME_FIELD, DummyBean.DEFAULT_NAME);
@@ -116,4 +158,12 @@ public class JavaBeanUtilTest
 		Map mapping = JavaBeanUtil.mapBeanUsingFields(bean);
 		assertEquals(goodBeanMapping, mapping);
 	}
+	
+	@Test
+	public void testMapAnnotatedBeanUsingFieldsObject()
+	{
+		Map mapping = JavaBeanUtil.mapBeanUsingFields(annotatedBean);
+		assertEquals(goodBeanMapping, mapping);
+	}
+
 }
