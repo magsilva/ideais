@@ -96,7 +96,30 @@ public final class ArrayUtil
 		
 		return Arrays.equals(sortedArray1, sortedArray2);
 	}
+
 	
+	/**
+	 * Find an object in the array that is an instance of the given targetClass.
+	 * 
+	 * @param array Array we must look into.
+	 * @param targetClass Class that we must match.
+	 * 
+	 * @return The object (if found) or null otherwise.
+	 */
+	public static Object find(Object[] array, Class targetClass)
+	{
+		for (Object o : array) {
+			try {
+				if (targetClass.equals(o.getClass())) {
+					return o;
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		
+		return null;
+	}
+
 	public static int find(String[] arg, String s)
 	{
 		int i = 0;

@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,24 +120,38 @@ public class JavaBeanUtil
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		HashMap<String, String> fieldsMap = new HashMap<String, String>();
-		Field[] fields = bean.getClass().getFields();
+		Field[] fields = bean.getClass().getDeclaredFields();
 		Method[] methods = bean.getClass().getMethods();
 		
 		for (Field f : fields) {
-			String fieldName = f.getName();
-			if (fieldName.endsWith(FIELD_IDENTIFIER)) {
-				Class type = f.getType();
-				if (type == String.class) {
-					int mode = f.getModifiers();
-					if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
-						try {
-							String value = (String) f.get(bean);
-							fieldsMap.put(fieldName.substring(0, fieldName.length() - FIELD_IDENTIFIER.length()), value);
-						} catch (IllegalAccessException iae) {
+			String key = null;
+			String value = null;
+			// If we have annotated the class, that's the way to go.
+			if (f.isAnnotationPresent(net.sf.ideais.Field.class)) {
+				net.sf.ideais.Field ann = (net.sf.ideais.Field)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Field.class);
+				key = ann.name();
+				try {
+					value = (String) f.get(bean);					
+				} catch (IllegalAccessException iae) {
+				}
+			// Otherwise, stick with that old-fashioned method that relays on Java reflection features.
+			} else {
+				String fieldName = f.getName();
+				if (fieldName.endsWith(FIELD_IDENTIFIER)) {
+					Class type = f.getType();
+					if (type == String.class) {
+						int mode = f.getModifiers();
+						if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
+							try {
+								key = fieldName.substring(0, fieldName.length() - FIELD_IDENTIFIER.length());
+								value = (String) f.get(bean);
+							} catch (IllegalAccessException iae) {
+							}
 						}
 					}
 				}
 			}
+			fieldsMap.put(key, value);
 		}
 		
 		for (Method m : methods) {

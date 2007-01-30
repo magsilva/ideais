@@ -77,16 +77,21 @@ public class StringUtil
 	/**
 	 * Check if the strings are similar.
 	 * 
-	 * @param str1 String to be compared.
+	 * @param str1 String to be compared. Must not be null.
 	 * @param options1 Transformation options that will be applied to str1
-	 * @param str2 String to be compared.
+	 * @param str2 String to be compared. Must not be null.
 	 * @param options2 Transformation options that will be applied to str2
 	 * 
-	 * @return True if similar, False otherwise.
+	 * @return True if similar, False otherwise. If any of the parameters 'str1' and
+	 * 'str2' are 'null', returns False too.
 	 */	
 	public static final boolean isSimilar(String str1, Map<Integer, String> options1,
 			String str2, Map<Integer, String> options2)
 	{
+		if (str1 == null || str2 == null) {
+			return false;
+		}
+		
 		str1 = transform(str1, options1);
 		str2 = transform(str2, options2);
 		
