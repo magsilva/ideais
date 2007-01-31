@@ -23,11 +23,17 @@ import net.sf.ideais.Field;
 import java.util.Date;
 
 /**
- *
- * 
+ * POJO for a Dotproject's project.
  */
 public class Project
 {
+	/*
+	SelectList 	ProjectPriority 	-1|low 0|normal 1|high 	
+	SelectList 	ProjectPriorityColor 	-1|#E5F7FF 0| 1|#FFDCB3 	
+	SelectList 	ProjectStatus 	0|Not Defined 1|Proposed 2|In Planning 3|In Progress 4|On Hold 5|Complete 6|Template 	
+	SelectList 	ProjectType 	0|Unknown 1|Administrative 2|Operative
+	*/
+	
 	@Field(name="project_id")
 	private Long id;
 
@@ -59,13 +65,6 @@ public class Project
 	private int ownerId;
 
 	private String description;
-
-	/**
-	 * Creates a new instance of Project
-	 */
-	public Project()
-	{
-	}
 
 	public String getName()
 	{
@@ -176,5 +175,4 @@ public class Project
 	{
 		this.id = id;
 	}
-
 }

@@ -138,5 +138,24 @@ public class StringUtil
 		return null;
 	}
 
+	/**
+	 * Check if a string is empty. A String is empty if it's null, has a length of
+	 * zero or is filled with white spaces.
+	 * 
+	 * @param str The string to be checked.
+	 * @return True if empty, False otherwise
+	 */
+	public static final boolean isEmpty(String str)
+	{
+		if (str == null) {
+			return true;
+		}
+		
+		if (str.trim().length() == 0) {
+			return true;
+		}
+		
+		return false;
+	}
 	
 }

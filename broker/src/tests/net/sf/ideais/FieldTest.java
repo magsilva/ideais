@@ -16,20 +16,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais.dotproject;
+package tests.net.sf.ideais;
 
-public class DotprojectTest
+import org.junit.Before;
+
+public class FieldTest
 {
-	static final public String dbms = "mysql";
-	
-	static final public String remoteHostname = "192.168.1.13";
-	static final public String remoteDatabase = "dotproject-dev";
-	static final public String remoteUsername = "test";
-	static final public String remotePassword = "test";
 
-	static final public String localHostname = "localhost";
-	static final public String localDatabase = "dotproject";
-	static final public String localUsername = "test";
-	static final public String localPassword = "test";
+	@Before
+	public void setUp() throws Exception
+	{
+	}
 
 }
