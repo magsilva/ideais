@@ -24,11 +24,11 @@ import net.sf.ideais.DbDataSource;
 import net.sf.ideais.HardCodedConfiguration;
 import net.sf.ideais.util.SqlUtil;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +37,13 @@ import java.util.Map;
  * Data Transfer Object for a Project available at a DotProject instance.
  * 
  */
-public class ProjectDAO extends DbDAO
+public class ProjectDAO extends DbDAO<Project, Long>
 {
+	/**
+	 * Serializable interface requirement.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private	boolean sqlStatementHackEnabled = true;
 
 	public ProjectDAO()
@@ -97,11 +102,11 @@ public class ProjectDAO extends DbDAO
 		this.sqlStatementHackEnabled = sqlStatementHackEnabled;
 	}
 
-	public Object create()
+	public Project create()
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		int id = 0;
+		Long id = null;
 
 		try {
 			String query = "INSERT INTO projects (project_name, project_description, project_owner, project_company) values (?,?,?,?)";
@@ -110,7 +115,7 @@ public class ProjectDAO extends DbDAO
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();
-			id = rs.getInt(1);
+			id = rs.getLong(1);
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
 			// Probably an inexistent task was request. We may ignore the
@@ -128,15 +133,13 @@ public class ProjectDAO extends DbDAO
 		return find(id);
 	}
 
-	public void delete(Object object)
+	public void delete(Project project)
 	{
-		Project project = (Project) object;
 		deleteById(project.getId());
 	}
 
-	public void deleteById(Object id)
+	public void deleteById(Long project_id)
 	{
-    	int project_id = (Integer) id;
     	Statement stmt = null;
     	try {
     		if (sqlStatementHackEnabled) {
@@ -149,7 +152,7 @@ public class ProjectDAO extends DbDAO
     			String query = "DELETE FROM projects WHERE project_id = ?";
     			stmt = conn.prepareStatement(query);
     			pstmt = (PreparedStatement)stmt;
-    			pstmt.setInt(1, project_id);
+    			pstmt.setLong(1, project_id);
     			pstmt.executeUpdate();
     		}
     	} catch (SQLException sqe) {
@@ -172,9 +175,8 @@ public class ProjectDAO extends DbDAO
      * @param id The project id.
      * @return The project (if found) or null.
      */
-    public Project find(Object id)
+    public Project find(Long project_id)
     {
-    	int project_id = (Integer) id;
     	Statement stmt = null;
     	ResultSet rs = null;
     	Project project = null;
@@ -189,7 +191,7 @@ public class ProjectDAO extends DbDAO
     			String query = "SELECT * FROM projects WHERE project_id = ?";
     			stmt = conn.prepareStatement(query);
     			pstmt = (PreparedStatement)stmt;
-    			pstmt.setInt(1, project_id);
+    			pstmt.setLong(1, project_id);
     			rs = pstmt.executeQuery();
     		}   		
     		rs.next();
@@ -209,27 +211,27 @@ public class ProjectDAO extends DbDAO
     	return project;
     }   
     
-	public List findByExample(Object object)
+    // TODO
+	public List<Project> findByExample(Project project)
 	{
-		Project project = (Project) object;
     	Statement stmt = null;
     	ResultSet rs = null;
     	HashMap<String, Object> map = new HashMap<String, Object>();
-    	map.put(Project.DESCRIPTION, project.getDescription());
+    	// map.put(Project.DESCRIPTION, project.getDescription());
     	
 
     	try {
     		if (sqlStatementHackEnabled) {
     			stmt = conn.createStatement();
     			String rawQuery = "SELECT * FROM projects WHERE project_id=%1$s";
-    			String query = String.format(rawQuery, project_id);
+    			String query = String.format(rawQuery, project.getId());
     			rs = stmt.executeQuery(query);
     		} else {
     			PreparedStatement pstmt = null;
     			String query = "SELECT * FROM projects WHERE project_id = ?";
     			stmt = conn.prepareStatement(query);
     			pstmt = (PreparedStatement)stmt;
-    			pstmt.setInt(1, project_id);
+    			pstmt.setLong(1, project.getId());
     			rs = pstmt.executeQuery();
     		}   		
     		rs.next();
@@ -246,21 +248,19 @@ public class ProjectDAO extends DbDAO
     			}
     		}
     	}
-    	return project;
-
-		// TODO Auto-generated method stub
-		return null;
+    	
+    	return null;
+    	// return project;
 	}
 
-	public List findByExample(Map fields)
+	public List<Project> findByExample(Map<String, Serializable> fields)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void update(Object object)
+	public void update(Project project)
 	{
-		Project project = (Project)object;
 		// assume that conn is an already created JDBC connection
 		PreparedStatement stmt = null;
 
@@ -271,7 +271,7 @@ public class ProjectDAO extends DbDAO
 			stmt.setString(2, project.getDescription());
 			stmt.setInt(3, project.getOwnerId());
 			stmt.setInt(4, project.getCompanyId());
-			stmt.setInt(5, project.getId());
+			stmt.setLong(5, project.getId());
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);

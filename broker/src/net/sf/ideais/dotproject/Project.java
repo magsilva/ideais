@@ -29,7 +29,7 @@ import java.util.Date;
 public class Project
 {
 	@Field(name="project_id")
-	private int id;
+	private Long id;
 
 	@Field(name="project_name")
 	private String name;
@@ -167,12 +167,12 @@ public class Project
 		this.ownerId = ownerId;
 	}
 
-	public int getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

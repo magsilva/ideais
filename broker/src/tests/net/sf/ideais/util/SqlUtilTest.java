@@ -23,10 +23,6 @@ import net.sf.ideais.util.SqlUtil;
 
 import static org.junit.Assert.*;
 
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.util.Enumeration;
-
 import org.junit.Test;
 
 public class SqlUtilTest
@@ -36,7 +32,7 @@ public class SqlUtilTest
 	
 	private class DummyClassLoader extends ClassLoader
 	{
-		public Class findClass(String name)
+		public Class<?> findClass(String name)
 		{
 			return findLoadedClass(name);
 		}

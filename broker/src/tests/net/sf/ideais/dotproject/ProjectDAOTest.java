@@ -36,9 +36,13 @@ public class ProjectDAOTest
 	
 	private String remoteProjectDescription = "World domination";
 	private String localProjectDescription = "Sausage";
+	
+	private Long id = 1L;
 
 	private class DummyLocalProjectDAO extends ProjectDAO
 	{
+		private static final long serialVersionUID = 1L;
+
 		public DummyLocalProjectDAO()
 		{
 			super();
@@ -58,6 +62,8 @@ public class ProjectDAOTest
 
 	private class DummyRemoteProjectDAO extends ProjectDAO
 	{
+		private static final long serialVersionUID = 1L;
+
 		public DummyRemoteProjectDAO()
 		{
 			super();
@@ -86,14 +92,14 @@ public class ProjectDAOTest
 	@Test
 	public void testLoadProject()
 	{
-		Project project = remoteDao.find(1);
+		Project project = remoteDao.find(id);
 		assertNotNull(project);
 	}
 	
 	@Test
 	public void testLoadProjectFromRemoteDatabase1()
 	{
-		Project project = remoteDao.find(1);
+		Project project = remoteDao.find(id);
 		assertEquals(project.getName(), remoteProjectDescription);
 	}
 
@@ -101,7 +107,7 @@ public class ProjectDAOTest
 	public void testLoadProjectFromRemoteDatabase2()
 	{
 		remoteDao.setSqlStatementHackEnabled(true);
-		Project project = remoteDao.find(1);
+		Project project = remoteDao.find(id);
 		assertEquals(project.getName(), remoteProjectDescription);
 	}
 
@@ -109,7 +115,7 @@ public class ProjectDAOTest
 	@Test
 	public void testLoadProjectFromLocalDatabase1()
 	{
-		Project project = localDao.find(1);
+		Project project = localDao.find(id);
 		assertEquals(project.getName(), localProjectDescription);
 	}
 
@@ -117,7 +123,7 @@ public class ProjectDAOTest
 	public void testLoadProjectFromLocalDatabase2()
 	{
 		localDao.setSqlStatementHackEnabled(true);
-		Project project = localDao.find(1);
+		Project project = localDao.find(id);
 		assertEquals(project.getName(), localProjectDescription);
 	}	
 	
