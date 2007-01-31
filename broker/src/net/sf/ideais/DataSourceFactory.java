@@ -24,6 +24,18 @@ public final class DataSourceFactory
 {
 	private static TreeSet<String> productLines = new TreeSet<String>();
 	
+	// Initialize factory
+	static
+	{
+		reset();
+	}
+	
+	public static void reset()
+	{
+		productLines.clear();
+		productLines.add("net.sf.ideais.DbDataSource");
+	}
+
 	/**
 	 * We really don't want an instance of this class, so we create this
 	 * private constructor.
@@ -47,7 +59,6 @@ public final class DataSourceFactory
 	 */
 	public static DataSource manufacture(String productName, Configuration conf)
 	{
-		DataSourceFactory.setDefaultProductLines();
 		Object product = null;
 		
 		if (! DataSourceFactory.canManufacture(productName)) {
@@ -139,11 +150,6 @@ public final class DataSourceFactory
 		}
 		
 		return ready;
-	}
-	
-	private static void setDefaultProductLines()
-	{
-		productLines.add("net.sf.ideais.DbDataSource");
 	}
 	
 	public static void addProductLine(String productLine)

@@ -27,6 +27,7 @@ import net.sf.ideais.DbDataSource;
 import net.sf.ideais.HardCodedConfiguration;
 import net.sf.ideais.util.ArrayUtil;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,8 +75,16 @@ public class DataSourceFactoryTest
 	@Before
 	public void setUp() throws Exception
 	{
+		DataSourceFactory.reset();
 	}
 
+	@After
+	public void tearDown() throws Exception
+	{
+		DataSourceFactory.reset();
+	}
+
+	
 	@Test
 	public void testManufacture()
 	{
