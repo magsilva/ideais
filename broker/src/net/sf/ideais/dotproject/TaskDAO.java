@@ -28,68 +28,69 @@ import java.sql.SQLException;
  * Data Transfer Object for a task available at a DotProject instance.
  * 
  */
-public class TaskDAO extends DbDAO
+public class TaskDAO 
+//extends DbDAO
 {        
-    /**
-    * Creates a new instance of TaskDAO
-    */
-    public TaskDAO(String dbms, String hostname, String database, String username, String password)
-    {
-    	super(dbms, hostname, database, username, password);
-    }
-       
-    /**
-     * Create a task instance.
-     *
-     * @param rs The ResultSet with the data loaded from the database.
-     * @return The Task object if there is enough data to create a task instance,
-     * null otherwise.
-     */
-    private Task createTaskInstance(ResultSet rs)
-    {
-        Task task = new Task();
-        
-        try {
-            task.setName(rs.getString("task_name"));
-        } catch (SQLException sqe) {
-            // Probably an inexistent task was requested.
-            task = null;
-        }
-        return task;
-    }
-    
-    /**
-     * Load the data for a task and create a task instance.
-     *
-     * @param task_id The task_id.
-     * @return The task (if found) or null.
-     */
-    public Task loadData(int task_id)
-    {
-       // assume that conn is an already created JDBC connection
-       PreparedStatement stmt = null;
-       ResultSet rs = null;
-       Task task = null;
-       
-       try {
-           String query = "SELECT * FROM tasks WHERE task_id = ?";
-           stmt = this.conn.prepareStatement(query);
-           stmt.setInt(1, task_id);
-           rs = stmt.executeQuery();
-           task = createTaskInstance(rs);
-       } catch (SQLException sqe) {
-           // Probably an inexistent task was request. We may ignore the 
-           // Now do something with the ResultSet ....
-       } finally {
-           // Release resources.
-           if (stmt != null) {
-               try {
-                   stmt.close();
-               } catch (SQLException sqlEx) {
-               }
-           }
-       }
- 
-       return task;
-    }    
+//    /**
+//    * Creates a new instance of TaskDAO
+//    */
+//    public TaskDAO(String dbms, String hostname, String database, String username, String password)
+//    {
+//    	super(dbms, hostname, database, username, password);
+//    }
+//       
+//    /**
+//     * Create a task instance.
+//     *
+//     * @param rs The ResultSet with the data loaded from the database.
+//     * @return The Task object if there is enough data to create a task instance,
+//     * null otherwise.
+//     */
+//    private Task createTaskInstance(ResultSet rs)
+//    {
+//        Task task = new Task();
+//        
+//        try {
+//            task.setName(rs.getString("task_name"));
+//        } catch (SQLException sqe) {
+//            // Probably an inexistent task was requested.
+//            task = null;
+//        }
+//        return task;
+//    }
+//    
+//    /**
+//     * Load the data for a task and create a task instance.
+//     *
+//     * @param task_id The task_id.
+//     * @return The task (if found) or null.
+//     */
+//    public Task loadData(int task_id)
+//    {
+//       // assume that conn is an already created JDBC connection
+//       PreparedStatement stmt = null;
+//       ResultSet rs = null;
+//       Task task = null;
+//       
+//       try {
+//           String query = "SELECT * FROM tasks WHERE task_id = ?";
+//           stmt = this.conn.prepareStatement(query);
+//           stmt.setInt(1, task_id);
+//           rs = stmt.executeQuery();
+//           task = createTaskInstance(rs);
+//       } catch (SQLException sqe) {
+//           // Probably an inexistent task was request. We may ignore the 
+//           // Now do something with the ResultSet ....
+//       } finally {
+//           // Release resources.
+//           if (stmt != null) {
+//               try {
+//                   stmt.close();
+//               } catch (SQLException sqlEx) {
+//               }
+//           }
+//       }
+// 
+//       return task;
+//    }    
 }
