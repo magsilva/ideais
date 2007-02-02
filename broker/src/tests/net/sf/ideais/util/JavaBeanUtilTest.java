@@ -42,10 +42,10 @@ public class JavaBeanUtilTest
 		private static final String DEFAULT_NAME = "John Due";
 		private static final int DEFAULT_AGE = 60;
 		
-		@Field(name="name")
+		@Field(value="name")
 		public String name;
 
-		@Field(name="age")
+		@Field(value="age")
 		public int age;
 		
 		public AnnotatedDummyBean()
@@ -133,7 +133,7 @@ public class JavaBeanUtilTest
 	@Test
 	public void testIgnoredProperties()
 	{
-		Object[] expectedIgnoredProperties = JavaBeanUtil.getDefaultPropertiesName();
+		Object[] expectedIgnoredProperties = JavaBeanUtil.getPropertiesNameFromMethod();
 		Object[] ignoredProperties = JavaBeanUtil.IGNORED_PROPERTIES;
 		assertTrue(ArrayUtil.equalIgnoreOrder(expectedIgnoredProperties, ignoredProperties));
 	}

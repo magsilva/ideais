@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Utility class for JavaBeans.
@@ -54,19 +55,31 @@ public class JavaBeanUtil
 	public static final String[] IGNORED_PROPERTIES = {
 		"class"
 	};
+
+	public static final String getPropertyNameFromMethod(Method m)
+	{
+		if (! m.getName().startsWith(GETTER)) {
+			throw new IllegalArgumentException("Method is not a property getter");
+		}
+		
+		String property = m.getName();
+		property = property.substring(GETTER.length());
+		property = property.substring(0, 1).toLowerCase() + property.substring(1);
 	
-	public static final String[] getDefaultPropertiesName()
+		return property;
+	}
+
+	
+	public static final String[] getPropertiesNameFromMethod()
 	{
 		ArrayList<String> props = new ArrayList<String>();
 		Object bean = new Object();
 		Method[] methods = bean.getClass().getMethods();
 		
 		for (Method m : methods) {
-			if (m.getName().startsWith(GETTER)) {
-				String key = m.getName();
-				String temp = key.substring(GETTER.length());
-				key = temp.substring(0, 1).toLowerCase() + temp.substring(1);
-				props.add(key);
+			try {
+				props.add(getPropertyNameFromMethod(m));
+			} catch (IllegalArgumentException iae) {
 			}
 		}
 		return props.toArray(new String[0]);
@@ -116,7 +129,7 @@ public class JavaBeanUtil
 	 * 
 	 * @return The mapping.
 	 */
-	public static final Map mapBeanUsingFields(Object bean)
+	public static final Map<String, Object> mapBeanUsingFields(Object bean)
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		HashMap<String, String> fieldsMap = new HashMap<String, String>();
@@ -129,7 +142,7 @@ public class JavaBeanUtil
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(net.sf.ideais.Field.class)) {
 				net.sf.ideais.Field ann = (net.sf.ideais.Field)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Field.class);
-				key = ann.name();
+				key = ann.value();
 				try {
 					value = (String) f.get(bean);					
 				} catch (IllegalAccessException iae) {
@@ -174,4 +187,80 @@ public class JavaBeanUtil
 		}
 		return map;
 	}
+	
+	
+	public static final Map<String, Method> mapBeanPropertiesToMethods(Class clazz)
+	{
+		HashMap<String, Method> map = new HashMap<String, Method>();
+		Field[] fields = clazz.getDeclaredFields();
+		TreeSet<String> propertyFields = new TreeSet<String>();
+		Method[] methods = clazz.getMethods();
+		
+		for (Field f : fields) {
+			String key = null;
+			// If we have annotated the class, that's the way to go.
+			if (f.isAnnotationPresent(net.sf.ideais.Field.class)) {
+				net.sf.ideais.Field ann = (net.sf.ideais.Field)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Field.class);
+				key = ann.value();
+			// Otherwise, we try to guess.
+			} else {
+				String fieldName = f.getName();
+				if (fieldName.endsWith(FIELD_IDENTIFIER)) {
+					Class type = f.getType();
+					if (type == String.class) {
+						int mode = f.getModifiers();
+						if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
+							key = fieldName.substring(0, fieldName.length() - FIELD_IDENTIFIER.length());
+						}
+					}
+				}
+			}
+			propertyFields.add(key);
+		}
+		
+		for (Method m : methods) {
+			if (m.getName().startsWith(GETTER)) {
+				String key = m.getName();
+				String field = null;
+				
+				key = key.substring(GETTER.length());
+				field = StringUtil.findSimilar(propertyFields, key);
+				if (field != null) {
+					map.put(field, m);
+				}
+			}
+		}
+		return map;
+	}
+
+	public static final String[] getBeanProperties(Class clazz)
+	{
+		Field[] fields = clazz.getDeclaredFields();
+		ArrayList<String> propertyFields = new ArrayList<String>();
+		
+		for (Field f : fields) {
+			String key = null;
+			// If we have annotated the class, that's the way to go.
+			if (f.isAnnotationPresent(net.sf.ideais.Field.class)) {
+				net.sf.ideais.Field ann = (net.sf.ideais.Field)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Field.class);
+				key = ann.value();
+			// Otherwise, we try to guess.
+			} else {
+				String fieldName = f.getName();
+				if (fieldName.endsWith(FIELD_IDENTIFIER)) {
+					Class type = f.getType();
+					if (type == String.class) {
+						int mode = f.getModifiers();
+						if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
+							key = fieldName.substring(0, fieldName.length() - FIELD_IDENTIFIER.length());
+						}
+					}
+				}
+			}
+			propertyFields.add(key);
+		}
+		
+		return propertyFields.toArray(new String[0]);
+	}
+
 }

@@ -16,16 +16,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.dotproject;
+package net.sf.ideais.apps.dotproject;
 
 import net.sf.ideais.Field;
+import net.sf.ideais.Table;
+import net.sf.ideais.Identificator;
 
 import java.util.Date;
 
 /**
  * POJO for a Dotproject's project.
  */
-public class Project
+@Table(value="projects")
+public class Project implements DotProjectObject
 {
 	/*
 	SelectList 	ProjectPriority 	-1|low 0|normal 1|high 	
@@ -34,34 +37,35 @@ public class Project
 	SelectList 	ProjectType 	0|Unknown 1|Administrative 2|Operative
 	*/
 	
-	@Field(name="project_id")
+	@Field(value="project_id")
+	@Identificator
 	private Long id;
 
-	@Field(name="project_name")
+	@Field(value="project_name")
 	private String name;
 
-	@Field(name="project_shortname")
+	@Field(value="project_shortname")
 	private String shortName;
 
-	@Field(name="project_company")
+	@Field(value="project_company")
 	private int companyId;
 
-	@Field(name="project_start_date")
+	@Field(value="project_start_date")
 	private Date startDate;
 
-	@Field(name="project_priority")
+	@Field(value="project_priority")
 	private int priority;
 
-	@Field(name="project_color_identifier")
+	@Field(value="project_color_identifier")
 	private int color;
 
-	@Field(name="project_type")
+	@Field(value="project_type")
 	private int type;
 
-	@Field(name="project_status")
+	@Field(value="project_status")
 	private int status;
 
-	@Field(name="project_owner")
+	@Field(value="project_owner")
 	private int ownerId;
 
 	private String description;
@@ -174,5 +178,11 @@ public class Project
 	public void setId(Long id)
 	{
 		this.id = id;
+	}
+
+	public String getObjectType()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

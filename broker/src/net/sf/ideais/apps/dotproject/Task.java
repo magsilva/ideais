@@ -16,7 +16,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.dotproject;
+package net.sf.ideais.apps.dotproject;
 
 import java.util.Date;
 
@@ -172,54 +172,54 @@ public class Task
 	}
 	
 	
-	@Field(name="task_id")
+	@Field(value="task_id")
 	private Long id;
 	
 	// Usefull fields (but not really required by DotProject).
-	@Field(name="task_name")
+	@Field(value="task_name")
 	private String name;
 
-	@Field(name="task_description")
+	@Field(value="task_description")
 	private String description;
 	
-	@Field(name="task_start_date")
+	@Field(value="task_start_date")
 	private Date startDate;
 	
-	@Field(name="task_end_date")
+	@Field(value="task_end_date")
 	private Date endDate;
 	 
 	// Required fields
-	@Field(name="task_owner")
+	@Field(value="task_owner")
 	private Long ownerId = 0L;
 	
-	@Field(name="task_project")
+	@Field(value="task_project")
 	private Long projectId = 0L;
 	
-	@Field(name="task_duration_type")
+	@Field(value="task_duration_type")
 	private Long durationTypeId = 1L;
 	
-	@Field(name="task_creator")
+	@Field(value="task_creator")
 	private Long creatorId = 0L;
 	
-	@Field(name="task_order")
+	@Field(value="task_order")
 	private Long orderId = 0L;
 	
-	@Field(name="task_client_publish")
+	@Field(value="task_client_publish")
 	private boolean publishAtClient = false;
 	
-	@Field(name="task_dynamic")
+	@Field(value="task_dynamic")
 	private boolean isDynamic = false;
 	
 	// ID
-	@Field(name="task_access")
+	@Field(value="task_access")
 	private Long access = 0L;
 	
 	// ID
-	@Field(name="task_notify")
+	@Field(value="task_notify")
 	private Long notify = 0L;
 	
 	// ID ?
-	@Field(name="task_type")
+	@Field(value="task_type")
 	private Long type = 0L; 
 	
 

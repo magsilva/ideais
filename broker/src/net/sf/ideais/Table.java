@@ -25,8 +25,7 @@ import java.lang.annotation.RetentionPolicy;
  * Annotation to describe a JavaBean property.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Field
+public @interface Table
 {
 	String value();
 }
-

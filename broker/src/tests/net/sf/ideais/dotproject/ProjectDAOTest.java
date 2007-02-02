@@ -25,8 +25,8 @@ import org.junit.Test;
 import net.sf.ideais.Configuration;
 import net.sf.ideais.DbDataSource;
 import net.sf.ideais.HardCodedConfiguration;
-import net.sf.ideais.dotproject.Project;
-import net.sf.ideais.dotproject.ProjectDAO;
+import net.sf.ideais.apps.dotproject.Project;
+import net.sf.ideais.apps.dotproject.ProjectDAO;
 import tests.net.sf.ideais.dotproject.DotprojectTest;
 
 public class ProjectDAOTest
@@ -104,27 +104,9 @@ public class ProjectDAOTest
 	}
 
 	@Test
-	public void testLoadProjectFromRemoteDatabase2()
-	{
-		remoteDao.setSqlStatementHackEnabled(true);
-		Project project = remoteDao.find(id);
-		assertEquals(project.getName(), remoteProjectDescription);
-	}
-
-	
-	@Test
 	public void testLoadProjectFromLocalDatabase1()
 	{
 		Project project = localDao.find(id);
 		assertEquals(project.getName(), localProjectDescription);
 	}
-
-	@Test
-	public void testLoadProjectFromLocalDatabase2()
-	{
-		localDao.setSqlStatementHackEnabled(true);
-		Project project = localDao.find(id);
-		assertEquals(project.getName(), localProjectDescription);
-	}	
-	
 }
