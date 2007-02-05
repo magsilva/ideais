@@ -34,6 +34,7 @@ public class AnnotationUtil
 	 */
 	public static final String DEFAULT_PROPERTY = "value";
 	
+
 	/**
 	 * Get the value set for an annotation with a single element.
 	 * 
@@ -75,6 +76,50 @@ public class AnnotationUtil
 		return value;
 	}
 
+	/**
+	 * Get the value set for an annotation with a single element.
+	 * 
+	 * @param field The annotated object.
+	 * @param ann The annotation we need to read.
+	 * @param name The annotation's value we need to read.
+	 *  
+	 * @return The annotation's value for the given object.
+	 */	
+	public static final String getAnnotationValue(Field field, Class ann)
+	{
+		return getAnnotationValue(field, ann, DEFAULT_PROPERTY);
+	}
+	
+	/**
+	 * Get the value set for an annotation with a single element.
+	 * 
+	 * @param field The annotated object.
+	 * @param ann The annotation we need to read.
+	 * @param name The annotation's value we need to read.
+	 *  
+	 * @return The annotation's value for the given object.
+	 */	
+	public static final String getAnnotationValue(Field field, Class ann, String name)
+	{
+		Annotation a = field.getAnnotation(ann);
+		String value = null;
+
+		if (a == null) {
+			throw new IllegalArgumentException();
+		}
+
+		try {
+			Method m  = ann.getDeclaredMethod(name, (Class[])null);
+			value = (String) m.invoke(a, (Object [])null);
+		} catch (NoSuchMethodException nsme) {
+		} catch (IllegalAccessException iae) {
+		} catch (InvocationTargetException ite) {
+		}
+		
+		return value;
+	}
+
+	
 
 	/**
 	 * Check if the class has annotations.
