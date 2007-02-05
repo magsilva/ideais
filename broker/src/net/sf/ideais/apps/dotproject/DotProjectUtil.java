@@ -20,14 +20,18 @@ package net.sf.ideais.apps.dotproject;
 
 import java.lang.reflect.Field;
 
-import net.sf.ideais.Identificator;
-import net.sf.ideais.Property;
-import net.sf.ideais.Table;
-import net.sf.ideais.apps.dotproject.Project;
+import net.sf.ideais.annotations.db.DbAnnotations;
 import net.sf.ideais.util.AnnotationUtil;
 
 public class DotProjectUtil
 {
+	/**
+	 * Compile the prepared statement for inserting a project into the database.
+	 *  
+	 * @param table
+	 * @param parameterCount
+	 * @return
+	 */
 	final public static String createPreparedStatementInsertString(String table, int parameterCount)
 	{
 		StringBuffer sb = new StringBuffer();
@@ -76,35 +80,23 @@ public class DotProjectUtil
 		return sb.toString();
 	}
 
-	final public static String createStatementSelectId()
+	/**
+	 * Compile the prepared statement for loading a object from the database.
+	 * 
+	 * @param clazz The class of the DotProject's object the statement will be created to. 
+	 * @return The SQL prepared statement to read a object of the given class.
+	 */
+	final public static String createStatementSelectId(Class<? extends DotProjectObject> clazz)
 	{
 		StringBuffer sb = new StringBuffer();
 		String table = null;
 		String idField = null;
 		Field[] fields = null;
 
-		table = AnnotationUtil.getAnnotationValue(Project.class, Table.class);
-		fields = AnnotationUtil.getAnnotatedProperties(Project.class, Identificator.class);
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		for (Field f : fields) {
-			idField = AnnotationUtil.getAnnotationValue(f, Property.class);
-			/*
-			Annotation a = f.getAnnotation(Identificator.class);
-			String value = null;
-			
-			if (a == null) {
-				throw new IllegalArgumentException();
-			}
-
-			try {
-				Method m  = Identificator.class.getDeclaredMethod(AnnotationUtil.DEFAULT_PROPERTY, (Class[])null);
-				value = (String) m.invoke(a, (Object [])null);
-			} catch (NoSuchMethodException nsme) {
-			} catch (IllegalAccessException iae) {
-			} catch (InvocationTargetException ite) {
-			}
-				
-			idField = value;
-			*/
+			idField = AnnotationUtil.getAnnotationValue(f, DbAnnotations.PROPERTY_ANNOTATION);
 		}
 
 		sb.append("SELECT * FROM ");
@@ -124,10 +116,10 @@ public class DotProjectUtil
 		String idField = null;
 		Field[] fields = null;
 
-		table = AnnotationUtil.getAnnotationValue(dpobject, Table.class);
-		fields = AnnotationUtil.getAnnotatedProperties(dpobject, Identificator.class);
+		table = AnnotationUtil.getAnnotationValue(dpobject, DbAnnotations.TABLE_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedProperties(dpobject, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		for (Field f : fields) {
-			idField = AnnotationUtil.getAnnotationValue(f.getClass(), Identificator.class);
+			idField = AnnotationUtil.getAnnotationValue(f.getClass(), DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		}
 
 		sb.append("SELECT * FROM ");

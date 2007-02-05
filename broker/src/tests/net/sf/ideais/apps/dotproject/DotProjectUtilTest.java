@@ -20,16 +20,37 @@ package tests.net.sf.ideais.apps.dotproject;
 
 import static org.junit.Assert.*;
 
+import net.sf.ideais.Identificator;
+import net.sf.ideais.Property;
+import net.sf.ideais.Table;
+import net.sf.ideais.apps.dotproject.DotProjectObject;
 import net.sf.ideais.apps.dotproject.DotProjectUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class DotProjectUtilTest
 {
-	private static final String pstmtInsert = "INSERT INTO projects (project_name, project_description, project_owner, project_company) values (?,?,?,?)";
-	private static final String pstmtUpdate = "UPDATE projects SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
-	private static final String pstmtDelete = "DELETE FROM projects WHERE project_id = ?";
-	private static final String pstmtSelectId = "SELECT * FROM projects WHERE project_id=?";
+	private DummyDPObject bean;
+	
+	@Table(value="dummies")
+	private class DummyDPObject implements DotProjectObject
+	{
+		private static final String pstmtInsert = "INSERT INTO dummies (project_name, project_description, project_owner, project_company) values (?,?,?,?)";
+		private static final String pstmtUpdate = "UPDATE dummies SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
+		private static final String pstmtDelete = "DELETE FROM dummies WHERE project_id = ?";
+		private static final String pstmtSelectId = "SELECT * FROM dummies WHERE dummy_id=?";
+		
+		@Property(value="dummy_id")
+		@Identificator
+		private Long id;
+
+		public String getObjectType()
+		{
+			return this.getClass().getName();
+		}
+		
+	}
 	
 	/*
 	@Test
@@ -46,10 +67,15 @@ public class DotProjectUtilTest
 	}
 */
 	
+	@Before
+	public void setUp()
+	{
+		bean = new DummyDPObject();
+	}
+	
 	@Test
 	public void testCreateStatementSelectId()
 	{
-		assertEquals(pstmtSelectId, DotProjectUtil.createStatementSelectId());
+		assertEquals(DummyDPObject.pstmtSelectId, DotProjectUtil.createStatementSelectId(bean.getClass()));
 	}
-
 }

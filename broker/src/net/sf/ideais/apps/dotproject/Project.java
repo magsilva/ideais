@@ -21,6 +21,7 @@ package net.sf.ideais.apps.dotproject;
 import net.sf.ideais.Property;
 import net.sf.ideais.Table;
 import net.sf.ideais.Identificator;
+import net.sf.ideais.apps.dotproject.DotProjectObject;
 
 import java.util.Date;
 
