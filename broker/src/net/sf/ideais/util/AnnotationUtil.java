@@ -41,9 +41,9 @@ public class AnnotationUtil
 	 * @param ann The annotation we need to read. 
 	 * @return The annotation's value for the given object.
 	 */
-	public static final String getAnnotationValue(Object obj, Class ann)
+	public static final String getAnnotationValue(Class clazz, Class ann)
 	{
-		return getAnnotationValue(obj, ann, DEFAULT_PROPERTY);
+		return getAnnotationValue(clazz, ann, DEFAULT_PROPERTY);
 	}
 	
 	/**
@@ -55,9 +55,8 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Object obj, Class ann, String field)
+	public static final String getAnnotationValue(Class clazz, Class ann, String field)
 	{
-		Class clazz = obj.getClass();
 		Annotation a = clazz.getAnnotation(ann);
 		String value = null;
 
@@ -75,19 +74,8 @@ public class AnnotationUtil
 		
 		return value;
 	}
-	
-	/**
-	 * Check if the object has annotations.
-	 * 
-	 * @param obj Object to be checked.
-	 * @return True if the object is annotated, False otherwise.
-	 */
-	public static final boolean hasAnnotations(Object obj)
-	{
-		Class clazz = obj.getClass();
-		return hasAnnotations(clazz);
-	}
-	
+
+
 	/**
 	 * Check if the class has annotations.
 	 * 
@@ -105,31 +93,9 @@ public class AnnotationUtil
 	/**
 	 * Get the bean properties (fields) that are annotated.
 	 * 
-	 * @param obj Object to be inspected.
-	 * @return The fields that are annotated.
-	 */
-	public static final Field[] getAnnotatedProperties(Object obj)
-	{
-		return getAnnotatedProperties(obj, null);
-	}
-
-	/**
-	 * Get the bean properties (fields) that are annotated with an specific metadata.
-	 * 
-	 * @param obj Object to be inspected.
-	 * @param annClass The annotation.
-	 * @return The fields that are annotated.
-	 */
-	public static final Field[] getAnnotatedProperties(Object obj, Class annClass)
-	{
-		return getAnnotatedProperties(obj.getClass(), null);
-	}
-
-	/**
-	 * Get the bean properties (fields) that are annotated.
-	 * 
 	 * @param clazz Class to be inspected.
-	 * @return The fields that are annotated.
+	 * @return The fields that are annotated. If no annotated fields were found, it
+	 * returns an empty array.
 	 */
 	public static final Field[] getAnnotatedProperties(Class clazz)
 	{
@@ -141,7 +107,8 @@ public class AnnotationUtil
 	 * 
 	 * @param clazz Class to be inspected.
 	 * @param annClass The annotation.
-	 * @return The fields that are annotated.
+	 * @return The fields that are annotated. If no annotated fields were found, it
+	 * returns an empty array.
 	 */
 	public static final Field[] getAnnotatedProperties(Class clazz, Class annClass)
 	{

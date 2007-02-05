@@ -32,6 +32,12 @@ import org.junit.Test;
 
 public class AnnotationUtilTest
 {
+	private static Class annotatedClass;
+	private static Class ordinaryClass;
+
+	private static Class validAnnotation;
+	private static Class invalidAnnotation;
+	
 	private final static String DEFAULT_VALUE = "test123";
 	private final static String DEFAULT_FIELD_NAME = AnnotationUtil.DEFAULT_PROPERTY;
 	private final static String VALID_FIELD_NAME = "test";
@@ -42,9 +48,6 @@ public class AnnotationUtilTest
 	private DummyClass bean;
 	
 	
-	/**
-	 * Annotation to describe a JavaBean property.
-	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface DummyAnnotation
 	{
@@ -73,164 +76,98 @@ public class AnnotationUtilTest
 	{
 		bean = new DummyClass();
 		validFields[0] = bean.getClass().getField("test"); 	
-		invalidFields[0] = bean.getClass().getField("asdfg"); 	
+		invalidFields[0] = bean.getClass().getField("asdfg");
+		
+		annotatedClass = bean.getClass();
+		ordinaryClass = String.class;
+		
+		validAnnotation = DummyAnnotation.class;
+		invalidAnnotation = DummyDummyAnnotation.class;
 	}
 
 	@Test
-	public void testGetAnnotationDefaultValue()
+	public void testGetAnnotationDefaultValue1()
 	{
-		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(bean, DummyAnnotation.class));
+		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(annotatedClass, validAnnotation));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetAnnotationDefaultValue2()
+	{
+		AnnotationUtil.getAnnotationValue(annotatedClass, invalidAnnotation);
+		fail();
 	}
 
 	@Test
 	public void testGetAnnotationValue1()
 	{
-		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(bean, DummyAnnotation.class, DEFAULT_FIELD_NAME));
+		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(annotatedClass, validAnnotation, DEFAULT_FIELD_NAME));
 	}
 
 	@Test
 	public void testGetAnnotationValue2()
 	{
-		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(bean, DummyAnnotation.class, VALID_FIELD_NAME));
+		assertEquals(DEFAULT_VALUE, AnnotationUtil.getAnnotationValue(annotatedClass, validAnnotation, VALID_FIELD_NAME));
 	}
 
 	@Test
 	public void testGetAnnotationValue3()
 	{
-		assertFalse(DEFAULT_VALUE.equals(AnnotationUtil.getAnnotationValue(bean, DummyAnnotation.class, INVALID_FIELD_NAME)));
+		assertFalse(DEFAULT_VALUE.equals(AnnotationUtil.getAnnotationValue(annotatedClass, validAnnotation, INVALID_FIELD_NAME)));
 	}
 
-	
-	@Test
-	public void testHasAnnotatiosObject1()
-	{
-		assertTrue(AnnotationUtil.hasAnnotations(bean));
-	}
-	
-	@Test
-	public void testHasAnnotatiosObject2()
-	{
-		assertFalse(AnnotationUtil.hasAnnotations(DEFAULT_VALUE));
-	}
-	
 	@Test
 	public void testHasAnnotatiosClass1()
 	{
-		assertTrue(AnnotationUtil.hasAnnotations(bean.getClass()));
+		assertTrue(AnnotationUtil.hasAnnotations(annotatedClass));
 	}
 
 	@Test
 	public void testHasAnnotatiosClass2()
 	{
-		assertFalse(AnnotationUtil.hasAnnotations(DEFAULT_VALUE.getClass()));
+		assertFalse(AnnotationUtil.hasAnnotations(ordinaryClass));
 	}
 
-	@Test
-	public void testGetAnnotatedPropertiesObject1()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean);
-		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesObject2()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesObject3()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(DEFAULT_VALUE);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-	
 	@Test
 	public void testGetAnnotatedPropertiesClass1()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass());
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass);
 		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClass2()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass());
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass);
 		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClass3()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(DEFAULT_VALUE);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesObjectAnnotation1()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean, DummyAnnotation.class);
-		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesObjectAnnotation2()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean, DummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesObjectAnnotation3()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(DEFAULT_VALUE, DummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(ordinaryClass);
+		assertTrue(fields.length == 0);
 	}
 
 	
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation1()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass(), DummyAnnotation.class);
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, validAnnotation);
 		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation2()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass(), DummyAnnotation.class);
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, validAnnotation);
 		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation3()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(DEFAULT_VALUE, DummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
+		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, invalidAnnotation);
+		assertTrue(fields.length == 0);
 	}
-
-	@Test
-	public void testGetAnnotatedPropertiesClassAnnotation4()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass(), DummyDummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(validFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesClassAnnotation5()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(bean.getClass(), DummyDummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-	@Test
-	public void testGetAnnotatedPropertiesClassAnnotation6()
-	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(DEFAULT_VALUE, DummyDummyAnnotation.class);
-		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
-	}
-
-
 }
