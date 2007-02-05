@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps.dotproject;
 
-import net.sf.ideais.Field;
+import net.sf.ideais.Property;
 import net.sf.ideais.Table;
 import net.sf.ideais.Identificator;
 
@@ -37,35 +37,35 @@ public class Project implements DotProjectObject
 	SelectList 	ProjectType 	0|Unknown 1|Administrative 2|Operative
 	*/
 	
-	@Field(value="project_id")
+	@Property(value="project_id")
 	@Identificator
 	private Long id;
 
-	@Field(value="project_name")
+	@Property(value="project_name")
 	private String name;
 
-	@Field(value="project_shortname")
+	@Property(value="project_shortname")
 	private String shortName;
 
-	@Field(value="project_company")
+	@Property(value="project_company")
 	private int companyId;
 
-	@Field(value="project_start_date")
+	@Property(value="project_start_date")
 	private Date startDate;
 
-	@Field(value="project_priority")
+	@Property(value="project_priority")
 	private int priority;
 
-	@Field(value="project_color_identifier")
+	@Property(value="project_color_identifier")
 	private int color;
 
-	@Field(value="project_type")
+	@Property(value="project_type")
 	private int type;
 
-	@Field(value="project_status")
+	@Property(value="project_status")
 	private int status;
 
-	@Field(value="project_owner")
+	@Property(value="project_owner")
 	private int ownerId;
 
 	private String description;

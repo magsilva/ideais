@@ -20,7 +20,7 @@ package net.sf.ideais.apps.dotproject;
 
 import java.util.Date;
 
-import net.sf.ideais.Field;
+import net.sf.ideais.Property;
 import net.sf.ideais.util.StringUtil;
 
 /**
@@ -172,54 +172,54 @@ public class Task
 	}
 	
 	
-	@Field(value="task_id")
+	@Property(value="task_id")
 	private Long id;
 	
 	// Usefull fields (but not really required by DotProject).
-	@Field(value="task_name")
+	@Property(value="task_name")
 	private String name;
 
-	@Field(value="task_description")
+	@Property(value="task_description")
 	private String description;
 	
-	@Field(value="task_start_date")
+	@Property(value="task_start_date")
 	private Date startDate;
 	
-	@Field(value="task_end_date")
+	@Property(value="task_end_date")
 	private Date endDate;
 	 
 	// Required fields
-	@Field(value="task_owner")
+	@Property(value="task_owner")
 	private Long ownerId = 0L;
 	
-	@Field(value="task_project")
+	@Property(value="task_project")
 	private Long projectId = 0L;
 	
-	@Field(value="task_duration_type")
+	@Property(value="task_duration_type")
 	private Long durationTypeId = 1L;
 	
-	@Field(value="task_creator")
+	@Property(value="task_creator")
 	private Long creatorId = 0L;
 	
-	@Field(value="task_order")
+	@Property(value="task_order")
 	private Long orderId = 0L;
 	
-	@Field(value="task_client_publish")
+	@Property(value="task_client_publish")
 	private boolean publishAtClient = false;
 	
-	@Field(value="task_dynamic")
+	@Property(value="task_dynamic")
 	private boolean isDynamic = false;
 	
 	// ID
-	@Field(value="task_access")
+	@Property(value="task_access")
 	private Long access = 0L;
 	
 	// ID
-	@Field(value="task_notify")
+	@Property(value="task_notify")
 	private Long notify = 0L;
 	
 	// ID ?
-	@Field(value="task_type")
+	@Property(value="task_type")
 	private Long type = 0L; 
 	
 

@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.util;
 
-import net.sf.ideais.Field;
+import net.sf.ideais.Property;
 import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 
@@ -42,10 +42,10 @@ public class JavaBeanUtilTest
 		private static final String DEFAULT_NAME = "John Due";
 		private static final int DEFAULT_AGE = 60;
 		
-		@Field(value="name")
+		@Property(value="name")
 		public String name;
 
-		@Field(value="age")
+		@Property(value="age")
 		public int age;
 		
 		public AnnotatedDummyBean()

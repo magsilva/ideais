@@ -21,7 +21,9 @@ package net.sf.ideais.apps.dotproject;
 import java.lang.reflect.Field;
 
 import net.sf.ideais.Identificator;
+import net.sf.ideais.Property;
 import net.sf.ideais.Table;
+import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.util.AnnotationUtil;
 
 public class DotProjectUtil
@@ -74,7 +76,48 @@ public class DotProjectUtil
 		return sb.toString();
 	}
 
-	final public static String createStatementSelectId(Class dpobject)
+	final public static String createStatementSelectId()
+	{
+		StringBuffer sb = new StringBuffer();
+		String table = null;
+		String idField = null;
+		Field[] fields = null;
+
+		table = AnnotationUtil.getAnnotationValue(Project.class, Table.class);
+		fields = AnnotationUtil.getAnnotatedProperties(Project.class, Identificator.class);
+		for (Field f : fields) {
+			idField = AnnotationUtil.getAnnotationValue(f, Property.class);
+			/*
+			Annotation a = f.getAnnotation(Identificator.class);
+			String value = null;
+			
+			if (a == null) {
+				throw new IllegalArgumentException();
+			}
+
+			try {
+				Method m  = Identificator.class.getDeclaredMethod(AnnotationUtil.DEFAULT_PROPERTY, (Class[])null);
+				value = (String) m.invoke(a, (Object [])null);
+			} catch (NoSuchMethodException nsme) {
+			} catch (IllegalAccessException iae) {
+			} catch (InvocationTargetException ite) {
+			}
+				
+			idField = value;
+			*/
+		}
+
+		sb.append("SELECT * FROM ");
+		sb.append(table);
+		sb.append(" WHERE ");
+		sb.append(idField);
+		sb.append("=?");
+
+		return sb.toString();
+	}
+
+	
+	final public static String createStatementSelectExample(Class dpobject)
 	{
 		StringBuffer sb = new StringBuffer();
 		String table = null;
@@ -82,8 +125,10 @@ public class DotProjectUtil
 		Field[] fields = null;
 
 		table = AnnotationUtil.getAnnotationValue(dpobject, Table.class);
-		fields = AnnotationUtil.getPropertiesAnnotated(dpobject, Identificator.class);
-		idField = AnnotationUtil.getAnnotationValue(fields[0], Identificator.class);
+		fields = AnnotationUtil.getAnnotatedProperties(dpobject, Identificator.class);
+		for (Field f : fields) {
+			idField = AnnotationUtil.getAnnotationValue(f.getClass(), Identificator.class);
+		}
 
 		sb.append("SELECT * FROM ");
 		sb.append(table);
