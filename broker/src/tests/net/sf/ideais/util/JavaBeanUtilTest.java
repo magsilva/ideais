@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.util;
 
-import net.sf.ideais.Property;
+import net.sf.ideais.annotations.db.Property;
 import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 

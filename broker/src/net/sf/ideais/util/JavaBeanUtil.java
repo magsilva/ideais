@@ -140,8 +140,8 @@ public class JavaBeanUtil
 			String key = null;
 			String value = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.Property.class)) {
-				net.sf.ideais.Property ann = (net.sf.ideais.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Property.class);
+			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
+				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
 				key = ann.value();
 				try {
 					value = (String) f.get(bean);					
@@ -199,8 +199,8 @@ public class JavaBeanUtil
 		for (Field f : fields) {
 			String key = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.Property.class)) {
-				net.sf.ideais.Property ann = (net.sf.ideais.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Property.class);
+			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
+				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
 				key = ann.value();
 			// Otherwise, we try to guess.
 			} else {
@@ -241,8 +241,8 @@ public class JavaBeanUtil
 		for (Field f : fields) {
 			String key = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.Property.class)) {
-				net.sf.ideais.Property ann = (net.sf.ideais.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.Property.class);
+			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
+				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
 				key = ann.value();
 			// Otherwise, we try to guess.
 			} else {

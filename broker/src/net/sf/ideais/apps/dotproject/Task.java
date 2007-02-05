@@ -20,7 +20,7 @@ package net.sf.ideais.apps.dotproject;
 
 import java.util.Date;
 
-import net.sf.ideais.Property;
+import net.sf.ideais.annotations.db.Property;
 import net.sf.ideais.util.StringUtil;
 
 /**

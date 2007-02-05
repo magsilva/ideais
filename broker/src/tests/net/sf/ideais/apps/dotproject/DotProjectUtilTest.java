@@ -20,9 +20,9 @@ package tests.net.sf.ideais.apps.dotproject;
 
 import static org.junit.Assert.*;
 
-import net.sf.ideais.Identificator;
-import net.sf.ideais.Property;
-import net.sf.ideais.Table;
+import net.sf.ideais.annotations.db.Identificator;
+import net.sf.ideais.annotations.db.Property;
+import net.sf.ideais.annotations.db.Table;
 import net.sf.ideais.apps.dotproject.DotProjectObject;
 import net.sf.ideais.apps.dotproject.DotProjectUtil;
 

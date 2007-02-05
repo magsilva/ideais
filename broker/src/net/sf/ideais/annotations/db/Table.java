@@ -16,7 +16,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais;
+package net.sf.ideais.annotations.db;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,8 +25,7 @@ import java.lang.annotation.RetentionPolicy;
  * Annotation to describe a JavaBean property.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Property
+public @interface Table
 {
 	String value();
 }
-

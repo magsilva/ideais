@@ -18,9 +18,6 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.annotations.db;
 
-import net.sf.ideais.Identificator;
-import net.sf.ideais.Property;
-import net.sf.ideais.Table;
 
 
 public final class DbAnnotations
