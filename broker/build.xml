@@ -1,0 +1,809 @@
+<!--
+	General purpose build script for web applications and web services,
+	including enhanced support for deploying directly to a Tomcat 5
+	based server.
+-->
+
+
+<!--
+	A "project" describes a set of targets that may be requested when Ant is
+	executed. The "default" attribute defines the target which is executed if no
+	specific target is requested, and the "basedir" attribute defines the current
+	working directory from which Ant executes the requested task. This is
+	normally set to the current working directory.
+-->
+<project name="wikire" default="compile" basedir=".">
+
+
+
+<!--
+	Property Definitions
+ 	====================
+
+	Each of the following properties are used in the build script. Values for
+	these properties are set by the first place they are defined, from the
+	following list:
+
+	* Definitions on the "ant" command line (ant -Dfoo=bar compile).
+
+	* Definitions from a "build.properties" file in the top level source
+	directory of this application.
+
+	* Definitions from a "build.properties" file in the developer's home
+	directory.
+
+	* Default definitions in this build.xml file.
+
+	You will note below that property values can be composed based on the
+	contents of previously defined properties. This is a powerful technique that
+	helps you minimize the number of changes required when your development
+	environment is modified. Note that property composition is allowed within
+	"build.properties" files as well as in the "build.xml" script.
+-->
+  <property file="build.properties"/>
+  <property file="${user.home}/build.properties"/>
+
+
+
+<!--
+	File and Directory Names
+	========================
+
+	These properties generally define file and directory names (or paths) that
+	affect where the build process stores its outputs.
+
+	* app.name: Base name of this application, used to construct filenames and
+	directories. Defaults to "myapp".
+
+	* app.path: Context path to which this application should be deployed.
+	Defaults to "/" plus the value of the "app.name" property.
+
+	* build.home: The directory into which the "prepare" and "compile" targets
+	will generate their output. Defaults to "build".
+
+	* catalina.home: The directory in which you have installed a binary
+	distribution of Tomcat 5.  This will be used by the "deploy" target.
+
+	* dist.home: The name of the base directory in which distribution files are
+	created. Defaults to "dist".
+
+	* manager.password: The login password of a user that is assigned the
+	"manager" role (so that he or she can execute commands via the
+	"/manager" web application).
+
+	* manager.url: The URL of the "/manager" web application on the Tomcat
+	installation to which we will deploy web applications and web services.
+
+	* manager.username: The login username of a user that is assigned the
+	"manager" role (so that he or she can execute commands via the "/manager"
+	web application).
+-->
+
+	<property name="build.home"    value="${basedir}/build" />
+	<property name="dist.home"     value="${basedir}/dist" />
+	<property name="docs.home"     value="${basedir}/docs" />
+	<property name="api.home"      value="${docs.home}/API" />
+	<property name="metrics.home"  value="${docs.home}/Metrics" />
+	<property name="metrics.checkstyle.home"  value="${metrics.home}/checkstyle" />
+	<property name="metrics.hammurapi.home"   value="${metrics.home}/hammurapi" />
+	<property name="metrics.javancss.home"    value="${metrics.home}/javancss" />
+	<property name="metrics.jdepend.home"     value="${metrics.home}/jdepend" />
+	<property name="metrics.pmd.home"         value="${metrics.home}/pmd" />
+	<property name="models.home"   value="${docs.home}/Model" />
+	<property name="src.home"      value="${basedir}/src" />
+	<property name="tests.home"    value="${docs.home}/Tests" />
+	<property name="tests.jmeter.home"        value="${tests.home}/jmeter" />
+	<property name="tests.junit.home"         value="${tests.home}/junit" />
+	<property name="web.home"      value="${basedir}/web" />
+	<property name="xsl.home"      value="${basedir}/xsl" />
+
+
+<!--
+	Custom Ant Task Definitions
+	===========================
+
+	These properties define custom tasks for the Ant build tool that interact
+	with the "/manager" web application installed with Tomcat 5.  Before they
+	can be successfully utilized, you must perform the following steps:
+
+	- Copy the file "server/lib/catalina-ant.jar" from your Tomcat 5 installation
+		into the "lib" directory of your Ant installation.
+
+	- Create a "build.properties" file in your application's top-level source
+		directory (or your user login home directory) that defines appropriate
+		values for the "manager.password", "manager.url", and "manager.username"
+		properties described above.
+
+	For more information about the Manager web application, and the functionality
+	of these tasks, see <http://localhost:8080/tomcat-docs/manager-howto.html>.
+-->
+	<path id="antlr.classpath">
+		<pathelement location="${antlr.home}/antlr-2.7.5.jar" />
+	</path>
+
+	<path id="c3p0.classpath">
+		<pathelement location="${c3p0.home}/lib/c3p0-0.9.0-pre6.jar" />
+	</path>
+
+	<path id="catalina.classpath">
+		<pathelement location="${catalina.home}/common/lib/servlet-api.jar" />
+		<pathelement location="${catalina.home}/common/lib/jsp-api.jar" />
+		<pathelement location="${catalina.home}/server/lib/catalina.jar" />
+		<pathelement location="${catalina.home}/server/lib/catalina-ant.jar" />
+	</path>
+
+	<path id="cglib.classpath">
+		<pathelement location="${cglib.home}/cglib-2.1.jar" />
+		<pathelement location="${cglib.home}/asm.jar" />
+		<pathelement location="${cglib.home}/asm-attrs.jar" />
+	</path>
+
+	<path id="checkstyle.classpath">
+		<pathelement location="${checkstyle.home}/checkstyle-4.1.jar" />
+		<pathelement location="${checkstyle.home}/checkstyle-optional-4.1.jar" />
+		<path refid="antlr.classpath" />
+		<path refid="jakarta-regexp.classpath" />
+		<path refid="jakarta-commons-beanutils.classpath" />
+		<path refid="jakarta-commons-cli.classpath" />
+		<path refid="jakarta-commons-collections.classpath" />
+		<path refid="jakarta-commons-logging.classpath" />
+	</path>
+
+	<path id="dom4j.classpath">
+		<pathelement location="${dom4j.home}/dom4j-1.6.jar" />
+	</path>
+
+	<path id="hammurapi.classpath">
+		<fileset dir="${hammurapi.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="hibernate.classpath">
+		<pathelement location="${hibernate.home}/hibernate3.jar" />
+<!--
+		<fileset dir="${hibernate.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+-->
+		<!--
+		Hibernate requires a patched antlr (for proper context classloading).
+		<path refid="antlr.classpath" />
+		-->
+		<pathelement location="${hibernate.home}/lib/antlr-2.7.5H3.jar" />
+		<path refid="dom4j.classpath" />
+		<path refid="cglib.classpath" />
+		<path refid="jaxen.classpath" />
+		<path refid="xerces.classpath" />
+		<!-- Optional packages -->
+		<path refid="log4j.classpath" />
+		<pathelement location="${hibernate.home}/lib/jdbc2_0-stdext.jar" />
+		<pathelement location="${hibernate.home}/lib/jta.jar" />
+		<pathelement location="${hibernate.home}/lib/connector.jar" />
+		<pathelement location="${hibernate.home}/lib/jaas.jar" />
+		<!-- End of optional packages -->
+		<pathelement location="${hibernate.home}/lib/ehcache-1.1.jar" />
+		<path refid="jakarta-regexp.classpath" />
+		<path refid="jakarta-commons-beanutils.classpath" />
+		<path refid="jakarta-commons-collections.classpath" />
+		<path refid="jakarta-commons-logging.classpath" />
+
+		<path refid="mysql-connector.classpath" />
+	</path>
+	
+	<path id="jakarta-commons-beanutils.classpath">
+		<pathelement location="${jakarta-commons-beanutils.home}/commons-beanutils-core.jar" />
+		<path refid="jakarta-commons-collections.classpath" />
+	</path>
+
+	<path id="jakarta-commons-cli.classpath">
+		<pathelement location="${jakarta-commons-cli.home}/commons-cli-1.0.jar" />
+	</path>
+
+
+	<path id="jakarta-commons-collections.classpath">
+		<pathelement location="${jakarta-commons-collections.home}/commons-collections-3.1.jar" />
+	</path>
+
+	<path id="jakarta-commons-lang.classpath">
+		<pathelement location="${jakarta-commons-lang.home}/commons-lang-2.0.jar" />
+	</path>
+
+	<path id="jakarta-commons-logging.classpath">
+		<pathelement location="${jakarta-commons-logging.home}/commons-logging.jar" />
+	</path>
+
+	<path id="jakarta-regexp.classpath">
+		<pathelement location="${jakarta-regexp.home}/jakarta-regexp-1.3.jar" />
+	</path>
+
+	<path id="jakarta-oro.classpath">
+		<pathelement location="${jakarta-oro.home/jakarta-oro-2.0.8.jar" />
+	</path>
+
+	<path id="javancss.classpath">
+		<pathelement location="${javancss.home}"/>
+		<fileset dir="${javancss.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="jaxen.classpath">
+		<pathelement location="${jaxen.home}/jaxen-1.1-beta-6.jar" />
+	</path>
+
+	<path id="jdepend.classpath">
+		<pathelement location="${jdepend.home}"/>
+		<fileset dir="${jdepend.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="jmeter.classpath">
+		<pathelement location="${jmeter.home}" />
+		<fileset dir="${jmeter.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${jmeter.home}/extras/ant-jmeter.jar" />
+	</path>
+
+	<path id="jstl.classpath">
+		<fileset dir="${jstl.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="junit.classpath">
+		<pathelement location="${junit.home}/junit.jar" />
+	</path>
+
+	<path id="log4j.classpath">
+		<pathelement location="${log4j.home}/dist/lib/log4j-1.2.9.jar" />
+	</path>
+
+	<path id="mysql-connector.classpath">
+		<pathelement location="${mysql-connector.home}/mysql-connector-java-3.0.17-bin.jar" />
+	</path>
+
+	<path id="pmd.classpath">
+		<pathelement location="${pmd.home}/lib/pmd-3.5.jar"/>
+		<path refid="xerces.classpath" />
+		<path refid="jaxen.classpath" />
+		<path refid="jakarta.oro" />
+	</path>
+
+	<path id="radeox.classpath">
+		<fileset dir="${radeox.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="subversion.classpath">
+		<pathelement location="${subversion.home}/svn-javahl.jar" />
+	</path>
+
+	<path id="svnant.classpath">
+		<path refid="subversion.classpath" />
+		<path refid="jakarta-commons-lang.classpath" />
+		<path refid="jakarta-commons-logging.classpath" />
+		<path refid="jakarta-regexp.classpath" />
+		<pathelement location="${svnant.home}/build/lib/svnant.jar" />
+		<pathelement location="${svnant.home}/lib/svnClientAdapter.jar" />
+	</path>
+
+	<path id="struts.classpath">
+		<fileset dir="${struts.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="urlrewritefilter.classpath">
+		<pathelement location="${urlrewritefilter.home}/urlrewrite-2.4.jar" />
+		<path refid="catalina.classpath" />
+	</path>
+
+	<path id="xalan.classpath">
+		<pathelement location="${xalan.home}/serializer.jar" />
+		<pathelement location="${xalan.home}/xalan.jar" />
+		<pathelement location="${xalan.home}/xsltc.jar" />
+		<path refid="xerces.classpath" />
+	</path>
+
+	<path id="xdoclet.classpath">
+		<fileset dir="${xdoclet.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="xerces.classpath">
+		<pathelement location="${xerces.home}/xercesImpl.jar" />
+		<pathelement location="${xerces.home}/xml-apis.jar" />
+	</path>
+
+	<path id="xsddoc.classpath">
+		<pathelement location="${xsddoc.home}/lib/xsddoc.jar" />
+		<pathelement location="${xsddoc.home}/lib/xalan.jar" />
+		<path refid="xerces.classpath" />
+	</path>
+
+	<path id="xstream.classpath">
+		<pathelement location="${xstream.home}/xstream-1.1.2.jar" />
+	</path>
+
+	<taskdef resource="checkstyletask.properties" classpathref="checkstyle.classpath" />
+	<taskdef name="hammurapi" classname="org.hammurapi.HammurapiTask"           classpathref="hammurapi.classpath" />
+	<taskdef name="quickhammurapi" classname="org.hammurapi.QuickHammurapiTask" classpathref="hammurapi.classpath" />
+	<taskdef name="javancss"  classname="javancss.JavancssAntTask"              classpathref="javancss.classpath" />
+	<taskdef name="jmeter"    classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" classpathref="jmeter.classpath" />
+	<taskdef name="pmd"       classname="net.sourceforge.pmd.ant.PMDTask"       classpathref="pmd.classpath" />
+
+
+
+	
+
+	<taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"    classpathref="catalina.classpath" />
+	<taskdef name="start"     classname="org.apache.catalina.ant.StartTask"     classpathref="catalina.classpath" />
+	<taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"      classpathref="catalina.classpath" />
+	<taskdef name="svn"       classname="org.tigris.subversion.svnant.SvnTask"  classpathref="svnant.classpath" />
+	<taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"  classpathref="catalina.classpath" />
+	<taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"    classpathref="catalina.classpath" />
+
+
+<!--
+	Compilation Control Options
+	===========================
+
+	These properties control option settings on the Javac compiler when it is
+	invoked using the <javac> task:
+
+	* compile.debug: Should compilation include the debug option?
+
+	* compile.deprecation: Should compilation include the deprecation option?
+
+	* compile.optimize: Should compilation include the optimize option?
+-->
+	<property name="compile.debug"       value="true" />
+	<property name="compile.deprecation" value="true" />
+	<property name="compile.optimize"    value="false" />
+	<property name="compile.target"      value="1.5" />
+
+
+<!--
+	Compilation Classpath
+	=====================
+
+	Rather than relying on the CLASSPATH environment variable, Ant includes
+	features that makes it easy to dynamically construct the classpath you need
+	for each compilation. The example below constructs the compile classpath to
+	include the servlet.jar file, as well as the other components that Tomcat
+	makes available to web applications automatically, plus anything that you
+	explicitly added.
+-->
+  <path id="compile.classpath">
+		<!-- Include all elements that Tomcat exposes to applications -->
+		<pathelement location="${catalina.home}/common/classes"/>
+		<fileset dir="${catalina.home}/common/endorsed">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${catalina.home}/common/lib">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement location="${catalina.home}/shared/classes"/>
+		<fileset dir="${catalina.home}/shared/lib">
+			<include name="*.jar"/>
+		</fileset>
+	
+  	
+		<!--
+			Addicional classpaths required by the application.
+		-->
+
+		<path refid="hibernate.classpath" />
+		<path refid="jstl.classpath" />
+		<path refid="junit.classpath" />
+		<path refid="radeox.classpath" />
+		<path refid="struts.classpath" />
+		<path refid="subversion.classpath" />
+		<path refid="xstream.classpath" />
+	</path>
+
+
+
+
+<!-- Targets -->
+
+	<target name="all"
+		depends="clean,compile"
+		description="Clean build and dist directories, then compile"
+	/>
+
+
+	<target name="clean"
+		description="Delete old build and dist directories">
+		<delete dir="${build.home}" />
+		<delete dir="${dist.home}" />
+	</target>
+
+
+	<target name="compile"
+		description="Compile Java sources">
+
+		<!-- Create target directory -->
+		<mkdir dir="${build.home}/WEB-INF/classes"/>
+
+		<!-- Compile Java classes as necessary -->
+		<javac
+			srcdir="${src.home}"
+			destdir="${build.home}/WEB-INF/classes"
+			debug="${compile.debug}"
+			deprecation="${compile.deprecation}"
+			optimize="${compile.optimize}"
+			target="${compile.target}"
+		>
+			<include name="**/*.java"/>
+			<classpath refid="compile.classpath"/>
+		</javac>
+
+	</target>
+
+
+	<target name="prepare"
+		depends="clean,compile"
+		description="Prepare the application to packaging and deployment">
+
+		<!-- Copy "static" content -->
+		<copy todir="${build.home}">
+			<fileset dir="${web.home}"/>
+		</copy>
+
+		<!-- Copy anything but compiled class and java source files -->
+		<copy todir="${build.home}/WEB-INF/classes">
+			<fileset dir="${src.home}" excludes="**/*.java,**/*.class" />
+		</copy>
+
+
+		<!-- External dependencies: -->
+		<mkdir  dir="${build.home}/WEB-INF/lib"/>
+
+		<!-- Java Standard Tag Libs -->
+		<copy todir="${build.home}/WEB-INF/lib" file="${jstl.home}/lib/jstl.jar"/>
+		<copy todir="${build.home}/WEB-INF/lib" file="${jstl.home}/lib/standard.jar" />
+
+		<!-- HSQLDB -->
+		<copy todir="${build.home}/WEB-INF/lib" file="${hsqldb.home}/lib/hsqldb.jar" />
+
+		<!-- Hibernate -->
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/hibernate3.jar" />
+
+		<!-- Hibernate dependencies -->
+		<!--
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/">
+		-->
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${c3p0.home}/lib/c3p0-0.9.0-pre6.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/ehcache-1.1.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${cglib.home}/cglib-2.1.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${cglib.home}/asm.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${cglib.home}/asm-attrs.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/jta.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${dom4j.home}/dom4j-1.6.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/antlr-2.7.5H3.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jaxen.home}/jaxen-1.1-beta-6.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${xerces.home}/xercesImpl.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${xerces.home}/xml-apis.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${log4j.home}/dist/lib/log4j-1.2.9.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/jdbc2_0-stdext.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/jta.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/connector.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/jaas.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${hibernate.home}/lib/ehcache-1.1.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-regexp.home}/jakarta-regexp-1.3.jar" />	
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-beanutils.home}/commons-beanutils-core.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-collections.home}/commons-collections-3.1.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-logging.home}/commons-logging.jar" />
+
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${mysql-connector.home}/mysql-connector-java-3.0.17-bin.jar" />
+
+		<!-- Struts -->
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${struts.home}/lib/struts.jar" />
+
+		<!-- Struts dependecies -->
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-beanutils.home}/commons-beanutils.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-collections.home}/commons-collections-3.1.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-digester.home}/commons-digester.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-fileupload.home}/commons-fileupload-1.0.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-logging.home}/commons-logging.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-commons-validator.home}/commons-validator-1.1.4.jar" />
+		<copy todir="${build.home}/WEB-INF/lib"
+			file="${jakarta-oro.home}/jakarta-oro-2.0.8.jar" />
+	</target>
+
+
+	<target name="dist"
+		depends="prepare"
+		description="Create binary distribution (JAR)">
+
+		<mkdir dir="${dist.home}" />
+
+		<jar destfile="${dist.home}/${app.name}.jar"
+			basedir="${build.home}"
+			compress="true"
+			keepcompression="true"
+		/>
+	</target>
+
+	<target name="javadoc"
+		description="Create Javadoc API documentation">
+
+		<mkdir dir="${docs.home}/API/Javadoc"/>
+		<javadoc
+			sourcepath="${src.home}"
+			destdir="${docs.home}/API/Javadoc"
+			packagenames="*"
+			source="1.5"
+			breakiterator="yes"
+		>
+			<classpath refid="compile.classpath" />
+		</javadoc>
+	</target>
+
+
+	<target name="javancss"
+		description="Collect metrics from the source code using the JavaNCSS">
+		<mkdir dir="${metrics.javancss.home}" />
+		<javancss srcdir="${src.home}"
+			includes="**/*.java"
+			generateReport="yes"
+			format="xml"
+			outputFile="${metrics.javancss.home}/code.xml"
+		/>
+
+		<style
+			basedir="${metrics.javancss.home}"
+			destdir="${metrics.javancss.home}"
+			extension=".html"
+			style="${xsl.home}/javancss2html.xsl"
+		/>
+	</target>
+
+
+	<target name="jdepend"
+		description="Collect metrics from the Java classes using the JDepend"
+		depends="compile">
+		<mkdir dir="${metrics.jdepend.home}" />
+
+		<jdepend
+			classpathref="jdepend.classpath"
+			fork="on"
+			includeruntime="on"
+			outputfile="${metrics.jdepend.home}/oo.xml"
+			format="xml"
+		>
+			<classespath>
+				<pathelement location="${build.home}" />
+			</classespath>
+		</jdepend>
+
+		<style
+			basedir="${metrics.jdepend.home}"
+			destdir="${metrics.jdepend.home}"
+			extension=".html"
+			style="${xsl.home}/jdepend.xsl"
+		/>
+	</target>
+
+
+	<target name="pmd"
+		description="Collect metrics from the source code using PMD">
+		<mkdir  dir="${metrics.pmd.home}" />
+		<pmd>
+			<ruleset>rulesets/basic.xml</ruleset>
+			<ruleset>rulesets/braces.xml</ruleset>
+			<ruleset>rulesets/clone.xml</ruleset>
+			<ruleset>rulesets/codesize.xml</ruleset>
+			<ruleset>rulesets/controversial.xml</ruleset>
+			<ruleset>rulesets/coupling.xml</ruleset>
+			<ruleset>rulesets/design.xml</ruleset>
+			<ruleset>rulesets/finalizers.xml</ruleset>
+			<ruleset>rulesets/imports.xml</ruleset>
+			<ruleset>rulesets/javabeans.xml</ruleset>
+			<ruleset>rulesets/junit.xml</ruleset>
+			<ruleset>rulesets/logging-jakarta-commons.xml</ruleset>
+			<ruleset>rulesets/logging-java.xml</ruleset>
+			<ruleset>rulesets/migration.xml</ruleset>
+			<ruleset>rulesets/migrating_to_13.xml</ruleset>
+			<ruleset>rulesets/migrating_to_14.xml</ruleset>
+			<ruleset>rulesets/migrating_to_15.xml</ruleset>
+			<ruleset>rulesets/naming.xml</ruleset>
+			<ruleset>rulesets/optimizations.xml</ruleset>
+			<ruleset>rulesets/scratchpad.xml</ruleset>
+			<ruleset>rulesets/strictexception.xml</ruleset>
+			<ruleset>rulesets/strings.xml</ruleset>
+			<ruleset>rulesets/sunsecure.xml</ruleset>
+			<ruleset>rulesets/unusedcode.xml</ruleset>
+			<formatter type="html" toFile="${metrics.pmd.home}/pmd_report1.html"/>
+			<formatter type="xml" toFile="${metrics.pmd.home}/pmd_report2.xml"/>
+			<fileset dir="${src.home}">
+				<include name="safe/wikire/*.java"/>
+			</fileset>
+		</pmd>
+
+		<style
+			basedir="${metrics.pmd.home}"
+			destdir="${metrics.pmd.home}"
+			extension=".html"
+			style="${xsl.home}/pmd-report.xslt"
+		/>
+	</target>
+
+
+	<target name="checkstyle"
+		description="Generates a report of code convention violations">
+
+		<mkdir dir="${metrics.checkstyle.home}" />
+
+		<checkstyle config="docs/sun_checks.xml"
+			failureProperty="checkstyle.failure"
+			failOnViolation="false">
+
+			<formatter type="xml" tofile="${metrics.checkstyle.home}/checkstyle.xml" />
+			<fileset dir="${src.home}">
+				<include name="**/*.java" />
+			</fileset>
+		</checkstyle>
+
+	  <style
+			in="${metrics.checkstyle.home}/checkstyle.xml"
+			out="${metrics.checkstyle.home}/checkstyle.html"
+			extension=".html"
+			style="${xsl.home}/checkstyle.xsl"
+		/>
+	</target>
+
+
+	<target name="hammurapi"
+		description="Review the code using Hammurapi">
+
+		<mkdir dir="${metrics.hammurapi.home}" />
+		<hammurapi
+			embeddedInspectors="true"
+			failOnWarnings="false"
+			evictBadInspectors="true"
+			force="true"
+		>
+			<classpath>
+				<path refid="compile.classpath" />
+			</classpath>
+			<src dir="${src.home}" />
+			<output dir="${metrics.hammurapi.home}" />
+		</hammurapi>
+	</target>
+
+	<target name="quickhammurapi"
+		description="Review the code using Hammurapi">
+
+		<mkdir dir="${metrics.hammurapi.home}" />
+		<quickhammurapi
+			embeddedInspectors="true"
+			failOnWarnings="false"
+			evictBadInspectors="true"
+			force="true"
+		>
+			<classpath>
+				<path refid="compile.classpath" />
+			</classpath>
+			<src dir="${src.home}" />
+			<output dir="${metrics.hammurapi.home}" />
+		</quickhammurapi>
+	</target>
+
+
+
+	<target name="metrics" depends="javancss,pmd,checkstyle,jdepend" />
+
+	<target name="junit"
+		depends="compile"
+		description="Run the jUnit test cases"
+	>
+		<mkdir dir="${tests.junit.home}" />
+
+		<junit printsummary="yes" fork="yes" haltonfailure="no">
+			<formatter type="xml" />
+
+			<classpath>
+				<pathelement path="${build.home}/WEB-INF/classes" />
+			</classpath>
+
+			<batchtest fork="no" todir="${tests.junit.home}">
+				<fileset dir="${build.home}/WEB-INF/classes">
+					<include name="*tests/**/*.class" />
+				</fileset>
+			</batchtest>
+
+		</junit>
+
+		<junitreport todir="${tests.junit.home}">
+			<fileset dir="${tests.junit.home}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${tests.junit.home}" />
+		</junitreport>
+	</target>
+
+			
+	<target name="jmeter"
+		description="Test the Web Application">
+		<mkdir dir="${tests.jmeter.home}" />
+		<jmeter
+			jmeterhome="${jmeter.home}"
+			testplan="${docs.home}/Tests/JMeterLoadTest.jmx"
+			resultlog="${tests.jmeter.home}/JMeterResults.jtl"
+		/>
+
+		<xslt
+			basedir="${tests.jmeter.home}"
+			destdir="${tests.jmeter.home}"
+			in="${tests.jmeter.home}/JMeterResults.jtl"
+			out="${tests.jmeter.home}/JMeterResults.html"
+			extension=".html"
+			style="${xsl.home}/jmeter-results-report.xsl"
+		/>
+	</target>
+
+	<target name="tests"
+		depends="jmeter,junit"
+	/>
+
+
+	<target name="svn-status">
+		<svn>
+			<status
+				path="."
+			/>
+		</svn>
+	</target>
+
+	<target name="changelog"
+		description="Generate the changelog for the current revision"
+	>
+		<exec executable="svn" dir="${basedir}" output="${docs.home}/changelog.xml">
+			<arg line="log --xml -v" />
+		</exec>
+		<style
+			in="${docs.home}/changelog.xml"
+			out="${docs.home}/changelog.html"
+			style="${xsl.home}/svn.xsl"
+		/>
+
+	</target>
+</project>
