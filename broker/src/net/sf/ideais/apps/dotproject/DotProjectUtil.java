@@ -37,6 +37,8 @@ public class DotProjectUtil
 	 */
 	final public static String createPstmtInsert(DotProjectObject obj)
 	{
+		return createPstmtInsert(obj.getClass());
+		/*
 		StringBuffer sb = new StringBuffer();
 		String table = null;
 		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(obj);
@@ -72,6 +74,7 @@ public class DotProjectUtil
 		sb.append(")");
 		
 		return sb.toString();
+		*/
 	}
 
 	/**
@@ -117,6 +120,72 @@ public class DotProjectUtil
 
 		return sb.toString();
 	}
+
+
+	/**
+	 * Compile the prepared statement for updating a project into the database.
+	 *  
+	 * @param table
+	 * @param parameterCount
+	 * @return
+	 */
+	final public static String createPstmtUpdate(Class<? extends DotProjectObject> clazz)
+	{
+		StringBuffer sb = new StringBuffer();
+		String table = null;
+		Field[] beanFields = null;
+		Field[] idFields = null;
+		String[] dbFields = null;
+		
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		sb.append("UPDATE ");
+		sb.append(table);
+		
+		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
+		dbFields = new String[beanFields.length];
+		for (int i = 0; i < beanFields.length; i++) {
+			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+		}
+			
+		sb.append(" SET (");
+		for (int i = 0; i < dbFields.length; i++) {
+			if (i != 0) {
+				sb.append(", ");
+			}
+			sb.append(dbFields[i]);
+			sb.append("=?");
+		}
+		sb.append(")");
+		
+		sb.append(" WHERE ");
+		
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		idFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		Arrays.sort(idFields);
+		for (int i = 0; i < idFields.length; i++) {
+			if (i != 0) {
+				sb.append(" AND ");
+			}
+			sb.append(AnnotationUtil.getAnnotationValue(idFields[i], DbAnnotations.PROPERTY_ANNOTATION));
+			sb.append("=?");
+		}
+
+		return sb.toString();
+	}
+	
+	/**
+	 * Compile the prepared statement for updating a project into the database.
+	 *  
+	 * @param table
+	 * @param parameterCount
+	 * @return
+	 */
+	final public static String createPstmtUpdate(DotProjectObject obj)
+	{
+		return createPstmtUpdate(obj.getClass());
+	}
+
+	
 	
 	/**
 	 * Compile the prepared statement for deleting an object from the database.

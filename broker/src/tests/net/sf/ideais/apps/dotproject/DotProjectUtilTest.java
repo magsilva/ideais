@@ -37,7 +37,7 @@ public class DotProjectUtilTest
 	private class DummyDPObject implements DotProjectObject
 	{
 		private static final String pstmtInsert = "INSERT INTO dummies (dummy_id, dummy_name, dummy_age) values (?, ?, ?)";
-		private static final String pstmtUpdate = "UPDATE dummies SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
+		private static final String pstmtUpdate = "UPDATE dummies SET (dummy_id=?, dummy_name=?, dummy_age=?) WHERE dummy_id=?";
 		private static final String pstmtDelete = "DELETE FROM dummies WHERE project_id = ?";
 		private static final String pstmtDeleteId = "DELETE FROM dummies WHERE dummy_id=?";
 		private static final String pstmtSelectId = "SELECT * FROM dummies WHERE dummy_id=?";
@@ -91,6 +91,19 @@ public class DotProjectUtilTest
 	{
 		assertEquals(DummyDPObject.pstmtInsert, DotProjectUtil.createPstmtInsert(bean));
 	}
+
+	@Test
+	public void testCreateStatementUpdate1()
+	{
+		assertEquals(DummyDPObject.pstmtUpdate, DotProjectUtil.createPstmtUpdate(bean.getClass()));
+	}
+
+	@Test
+	public void testCreateStatementUpdate2()
+	{
+		assertEquals(DummyDPObject.pstmtUpdate, DotProjectUtil.createPstmtUpdate(bean));
+	}
+
 	
 	@Test
 	public void testCreateStatementDeleteId()

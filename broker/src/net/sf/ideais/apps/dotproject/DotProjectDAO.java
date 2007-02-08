@@ -132,9 +132,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		int count = map.size() / 2;
 	
 		try {
-			String query = DotProjectUtil.createPreparedStatementInsertString(
-					AnnotationUtil.getAnnotationValue(object, Table.class),
-					count);
+			String query = DotProjectUtil.createPstmtInsert(object);
 			stmt = conn.prepareStatement(query);
 			
 			// Set statements
