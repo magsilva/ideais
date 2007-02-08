@@ -265,7 +265,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		T obj = null;
 		
 		try {
-			String query = DotProjectUtil.createStatementSelectId(getObjectType());
+			String query = DotProjectUtil.createPstmtSelectId(getObjectType());
 			stmt = conn.prepareStatement(query);
 			stmt.setObject(1, id);
 			rs = stmt.executeQuery();

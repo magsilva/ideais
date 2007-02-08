@@ -18,6 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+
+import net.sf.ideais.annotations.db.DbAnnotations;
+import net.sf.ideais.annotations.db.Property;
 
 /**
  * Utility class for JavaBeans.
@@ -140,8 +144,13 @@ public class JavaBeanUtil
 			String key = null;
 			String value = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
-				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
+			if (f.isAnnotationPresent(DbAnnotations.PROPERTY_ANNOTATION)) {
+				Object[] annotations = f.getDeclaredAnnotations();
+//				Property ann = (Property)ArrayUtil.find(annotations, DbAnnotations.PROPERTY_ANNOTATION);
+				Property ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
+				
+				
+				// TODO: Why ann is null? 
 				key = ann.value();
 				try {
 					value = (String) f.get(bean);					
@@ -164,26 +173,28 @@ public class JavaBeanUtil
 					}
 				}
 			}
-			fieldsMap.put(key, value);
+			if (key != null) {
+				fieldsMap.put(key, value);
+			}
 		}
 		
 		for (Method m : methods) {
+			String key = null;
+			Object value = null;
 			if (m.getName().startsWith(GETTER)) {
-				String key = m.getName();
-				String field = null;
-				
+				key = m.getName();
 				key = key.substring(GETTER.length());
-				field = StringUtil.findSimilar(fieldsMap.keySet(), key);
-				if (field != null) {
-					key = fieldsMap.get(field);
+				value = StringUtil.findSimilar(fieldsMap.keySet(), key);
+				if (value != null) {
+					key = fieldsMap.get(value);
 					try {
-						Object value = m.invoke(bean, (Object [])null); 
-						map.put(key, value);
+						value = m.invoke(bean, (Object [])null); 
 					} catch (IllegalAccessException iae) {
 					} catch (InvocationTargetException ite) {
 					}
 				}
 			}
+			map.put(key, value);
 		}
 		return map;
 	}

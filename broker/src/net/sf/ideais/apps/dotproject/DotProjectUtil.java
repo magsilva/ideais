@@ -19,9 +19,12 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 package net.sf.ideais.apps.dotproject;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Map;
 
 import net.sf.ideais.annotations.db.DbAnnotations;
 import net.sf.ideais.util.AnnotationUtil;
+import net.sf.ideais.util.JavaBeanUtil;
 
 public class DotProjectUtil
 {
@@ -32,21 +35,34 @@ public class DotProjectUtil
 	 * @param parameterCount
 	 * @return
 	 */
-	final public static String createPreparedStatementInsertString(String table, int parameterCount)
+	final public static String createPstmtInsert(DotProjectObject obj)
 	{
 		StringBuffer sb = new StringBuffer();
+		String table = null;
+		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(obj);
+		String[] fields;
+		
+		table = AnnotationUtil.getAnnotationValue(obj.getClass(), DbAnnotations.TABLE_ANNOTATION);
 		sb.append("INSERT INTO ");
 		sb.append(table);
+		
 		sb.append(" (");
-		for (int i = 0; i < parameterCount; i++) {
-			if (i == 0) {
-				sb.append("?");
-			} else {
-				sb.append(", ?");
-			}
+		fields = map.keySet().toArray(new String[0]);
+		
+		if (fields.length == 0) {
+			throw new IllegalArgumentException();
 		}
+		Arrays.sort(fields);
+		// public static final Map<String, Object> mapBeanUsingFields(Object bean)
+		for (int i = 0; i < fields.length; i++) {
+			if (i != 0) {
+				sb.append(", ");
+			}
+			sb.append(fields[i]);
+		}
+		
 		sb.append(") values (");
-		for (int i = 0; i < parameterCount; i++) {
+		for (int i = 0; i < fields.length; i++) {
 			if (i == 0) {
 				sb.append("?");
 			} else {
@@ -54,17 +70,95 @@ public class DotProjectUtil
 			}
 		}
 		sb.append(")");
-
+		
 		return sb.toString();
 	}
 
-	final public static String createPreparedStatementDeleteString(String table, int parameterCount)
+	/**
+	 * Compile the prepared statement for inserting a project into the database.
+	 *  
+	 * @param table
+	 * @param parameterCount
+	 * @return
+	 */
+	final public static String createPstmtInsert(Class<? extends DotProjectObject> clazz)
 	{
 		StringBuffer sb = new StringBuffer();
+		String table = null;
+		Field[] beanFields = null;
+		String[] dbFields = null;
+		
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		sb.append("INSERT INTO ");
+		sb.append(table);
+		
+		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
+		dbFields = new String[beanFields.length];
+		for (int i = 0; i < beanFields.length; i++) {
+			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+		}
+			
+		sb.append(" (");
+		for (int i = 0; i < dbFields.length; i++) {
+			if (i != 0) {
+				sb.append(", ");
+			}
+			sb.append(dbFields[i]);
+		}
+		
+		sb.append(") values (");
+		for (int i = 0; i < dbFields.length; i++) {
+			if (i != 0) {
+				sb.append(", ");
+			}
+			sb.append("?");
+		}
+		sb.append(")");
+
+		return sb.toString();
+	}
+	
+	/**
+	 * Compile the prepared statement for deleting an object from the database.
+	 * 
+	 * @param clazz The class of the DotProject's object the statement will be created to.
+	 * @param fields Fields used to find the objects to be deleted.
+	 *  
+	 * @return The SQL prepared statement to read an object of the given class.
+	 */
+	final public static String createPstmtDeleteId(Class<? extends DotProjectObject> clazz)
+	{
+		StringBuffer sb = new StringBuffer();
+		String table = null;
+		String idField = null;
+		Field[] fields = null;
+		
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		for (Field f : fields) {
+			idField = AnnotationUtil.getAnnotationValue(f, DbAnnotations.PROPERTY_ANNOTATION);
+		}
+
 		sb.append("DELETE FROM ");
 		sb.append(table);
 		sb.append(" WHERE ");
-
+		sb.append(idField);
+		sb.append("=?");
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Compile the prepared statement for deleting an object from the database.
+	 * 
+	 * @param clazz The class of the DotProject's object the statement will be created to.
+	 * @param fields Fields used to find the objects to be deleted.
+	 *  
+	 * @return The SQL prepared statement to read an object of the given class.
+	 */
+	/*
+	final public static String createPreparedStatementDeleteId(DotProjectObject object)
+	{
 		if ((parameterCount % 2) == 0) {
 			parameterCount = parameterCount / 2;
 		}
@@ -79,14 +173,15 @@ public class DotProjectUtil
 
 		return sb.toString();
 	}
+	*/
 
 	/**
-	 * Compile the prepared statement for loading a object from the database.
+	 * Compile the prepared statement for loading an object from the database.
 	 * 
 	 * @param clazz The class of the DotProject's object the statement will be created to. 
-	 * @return The SQL prepared statement to read a object of the given class.
+	 * @return The SQL prepared statement to read an object of the given class.
 	 */
-	final public static String createStatementSelectId(Class<? extends DotProjectObject> clazz)
+	final public static String createPstmtSelectId(Class<? extends DotProjectObject> clazz)
 	{
 		StringBuffer sb = new StringBuffer();
 		String table = null;
