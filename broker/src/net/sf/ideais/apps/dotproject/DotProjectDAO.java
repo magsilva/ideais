@@ -32,12 +32,10 @@ import net.sf.ideais.Configuration;
 import net.sf.ideais.DbDAO;
 import net.sf.ideais.DbDataSource;
 import net.sf.ideais.HardCodedConfiguration;
-import net.sf.ideais.annotations.db.Table;
-import net.sf.ideais.util.AnnotationUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
 
-public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
+public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 {
 	/**
 	 * Serializable interface requirement.
@@ -73,12 +71,18 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 	protected T[] createInstances(Class<T> clazz, ResultSet rs)
 	{
 		ArrayList<T> objs = new ArrayList<T>();
-	    Map<String, Method> map = JavaBeanUtil.mapBeanPropertiesToMethods(clazz);
+	    Map<String, Method> map = JavaBeanUtil.mapBeanPropertiesToSetMethods(clazz);
+	    T[] instances = null;
 
 		try {
 			// For each row, create a new object.
 	    	while (rs.next()) {
 	    		T obj = null;
+	    		try {
+	    			obj = clazz.newInstance();
+	    		} catch (IllegalAccessException iae) {
+	    		} catch (InstantiationException ie) {
+	    		}
 	    		
 	    		// Feed the object the data from the ResultSet.
 	    		for (String key : map.keySet()) {
@@ -86,6 +90,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 						Object valueBO = rs.getObject(key);
 						Method m = map.get(key);
 						try {
+							// Why are you invoking get? You should invoke set!
 							m.invoke(obj, valueBO);
 						} catch (IllegalAccessException iae) {
 						} catch (InvocationTargetException ite) {
@@ -100,7 +105,9 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 			// Probably an inexistent object was requested.
 			SqlUtil.dumpSQLException(e);
 		}
-	    return (T[])objs.toArray();
+		
+		instances = (T[])objs.toArray();
+	    return instances;
 	}
 
 	/**
@@ -127,7 +134,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		Long id = null;
+		Integer id = null;
 		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(object);
 		int count = map.size() / 2;
 	
@@ -146,7 +153,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
 			rs.next();
-			id = rs.getLong(1);
+			id = rs.getInt(1);
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
 			// Probably an inexistent task was request. We may ignore the
@@ -174,7 +181,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 					AnnotationUtil.getAnnotationValue(object, Table.class),
 					1);
 			stmt = conn.prepareStatement(query);
-			stmt.setLong(1, project_id);
+			stmt.setInt(1, project_id);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
@@ -193,7 +200,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 
 	// TODO
 	/*
-	public void deleteById(Long id)
+	public void deleteById(Int id)
 	{
 		PreparedStatement stmt = null;
 		
@@ -203,7 +210,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 					1);
 			stmt = conn.prepareStatement(query);
 			stmt.setObject(1, )
-			stmt.setLong(1, project_id);
+			stmt.setInt(1, project_id);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
@@ -221,7 +228,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		*/
 
 
-	public void deleteById(Long id)
+	public void deleteById(Integer id)
 	{
 /*
 		PreparedStatement stmt = null;
@@ -231,7 +238,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 					table, parameterCount)"DELETE FROM projects WHERE project_id = ?";
 			stmt = conn.prepareStatement(query);
 			stmt = (PreparedStatement)stmt;
-			stmt.setLong(1, project_id);
+			stmt.setInt(1, project_id);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
@@ -248,7 +255,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		*/
 	}
 
-	abstract protected Class getObjectType();
+	abstract protected Class<? extends DotProjectObject> getObjectType();
 	
 	/**
 	 * Load the data for a task and create a task instance.
@@ -256,7 +263,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 	 * @param id The project id.
 	 * @return The project (if found) or null.
 	 */
-	public T find(Long id)
+	public T find(Integer id)
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -267,7 +274,6 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 			stmt = conn.prepareStatement(query);
 			stmt.setObject(1, id);
 			rs = stmt.executeQuery();
-			rs.next();
 			obj = createInstance(rs);
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
@@ -297,7 +303,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		try {
 			String query = "SELECT * FROM projects WHERE project_id = ?";
 			stmt = conn.prepareStatement(query);
-			stmt.setLong(1, project.getId());
+			stmt.setInt(1, project.getId());
 			rs = stmt.executeQuery();
 			rs.next();
 			project = createInstance(rs);
@@ -325,7 +331,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		return null;
 	}
 
-	public void update(Project project)
+	public void update(T object)
 	{
 		// assume that conn is an already created JDBC connection
 		PreparedStatement stmt = null;
@@ -333,11 +339,13 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Long>
 		try {
 			String query = "UPDATE projects SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
 			stmt = conn.prepareStatement(query);
-			stmt.setString(1, project.getName());
-			stmt.setString(2, project.getDescription());
-			stmt.setInt(3, project.getOwnerId());
-			stmt.setInt(4, project.getCompanyId());
-			stmt.setLong(5, project.getId());
+			/*
+			stmt.setString(1, object.getName());
+			stmt.setString(2, object.getDescription());
+			stmt.setInt(3, object.getOwnerId());
+			stmt.setInt(4, object.getCompanyId());
+			stmt.setInt(5, object.getId());
+			*/
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);

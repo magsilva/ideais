@@ -38,17 +38,19 @@ public class DotProjectUtilTest
 	{
 		private static final String pstmtInsert = "INSERT INTO dummies (dummy_id, dummy_name, dummy_age) values (?, ?, ?)";
 		private static final String pstmtUpdate = "UPDATE dummies SET (dummy_id=?, dummy_name=?, dummy_age=?) WHERE dummy_id=?";
-		private static final String pstmtDelete = "DELETE FROM dummies WHERE project_id = ?";
 		private static final String pstmtDeleteId = "DELETE FROM dummies WHERE dummy_id=?";
 		private static final String pstmtSelectId = "SELECT * FROM dummies WHERE dummy_id=?";
 		
+		@SuppressWarnings("unused")
 		@Identificator
 		@Property(value="dummy_id")
 		private Long id;
 		
+		@SuppressWarnings("unused")
 		@Property("dummy_name")
 		private String name;
 		
+		@SuppressWarnings("unused")
 		@Property("dummy_age")
 		private Integer age;
 
@@ -58,21 +60,6 @@ public class DotProjectUtilTest
 		}
 		
 	}
-	
-	/*
-	@Test
-	public void testCreatePreparedStatementInsertString()
-	{
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCreatePreparedStatementDeleteString()
-	{
-		assertEquals(pstmtDelete, DotProjectUtil.createPreparedStatementDeleteString();
-		fail("Not yet implemented");
-	}
-*/
 	
 	@Before
 	public void setUp()

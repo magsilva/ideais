@@ -18,13 +18,15 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.annotations.db;
 
+import java.lang.annotation.Annotation;
+
 
 
 public final class DbAnnotations
 {
-	public static final Class IDENTIFICATOR_ANNOTATION = Identificator.class;
+	public static final Class<? extends Annotation> IDENTIFICATOR_ANNOTATION = Identificator.class;
 	
-	public static final Class PROPERTY_ANNOTATION = Property.class;
+	public static final Class<? extends Annotation> PROPERTY_ANNOTATION = Property.class;
 	
-	public static final Class TABLE_ANNOTATION = Table.class;
+	public static final Class<? extends Annotation> TABLE_ANNOTATION = Table.class;
 }

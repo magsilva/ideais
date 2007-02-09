@@ -53,7 +53,7 @@ public class ProjectDAO extends DotProjectDAO<Project>
 	}
 	
 	
-	protected Class getObjectType()
+	protected Class<? extends DotProjectObject> getObjectType()
 	{
 		return Project.class;
 	}

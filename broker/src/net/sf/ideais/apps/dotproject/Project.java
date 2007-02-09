@@ -40,7 +40,7 @@ public class Project implements DotProjectObject
 	
 	@Property(value="project_id")
 	@Identificator
-	private Long id;
+	private Integer id;
 
 	@Property(value="project_name")
 	private String name;
@@ -69,6 +69,7 @@ public class Project implements DotProjectObject
 	@Property(value="project_owner")
 	private int ownerId;
 
+	@Property(value="project_description")
 	private String description;
 
 	public String getName()
@@ -171,12 +172,12 @@ public class Project implements DotProjectObject
 		this.ownerId = ownerId;
 	}
 
-	public Long getId()
+	public Integer getId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setId(Integer id)
 	{
 		this.id = id;
 	}

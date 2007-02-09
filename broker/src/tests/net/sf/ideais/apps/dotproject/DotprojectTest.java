@@ -16,7 +16,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais.dotproject;
+package tests.net.sf.ideais.apps.dotproject;
+
+import net.sf.ideais.Configuration;
+import net.sf.ideais.DbDataSource;
+import net.sf.ideais.HardCodedConfiguration;
 
 public class DotprojectTest
 {
@@ -28,8 +32,29 @@ public class DotprojectTest
 	static final public String remotePassword = "test";
 
 	static final public String localHostname = "localhost";
-	static final public String localDatabase = "dotproject";
+	static final public String localDatabase = "dotproject-dev";
 	static final public String localUsername = "test";
 	static final public String localPassword = "test";
 
+    static public Configuration getRemoteConfiguration()
+    {
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);
+		conf.setProperty(DbDataSource.HOSTNAME, DotprojectTest.remoteHostname);
+		conf.setProperty(DbDataSource.DATABASE, DotprojectTest.remoteDatabase);
+		conf.setProperty(DbDataSource.USERNAME, DotprojectTest.remoteUsername);
+		conf.setProperty(DbDataSource.PASSWORD, DotprojectTest.remotePassword);
+		return conf;
+    }
+    
+    static public Configuration getLocalConfiguration()
+    {
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);
+		conf.setProperty(DbDataSource.HOSTNAME, DotprojectTest.localHostname);
+		conf.setProperty(DbDataSource.DATABASE, DotprojectTest.localDatabase);
+		conf.setProperty(DbDataSource.USERNAME, DotprojectTest.localUsername);
+		conf.setProperty(DbDataSource.PASSWORD, DotprojectTest.localPassword);
+		return conf;
+    }
 }

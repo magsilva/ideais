@@ -18,7 +18,6 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +27,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeSet;
 
 import net.sf.ideais.annotations.db.DbAnnotations;
 import net.sf.ideais.annotations.db.Property;
@@ -46,7 +44,7 @@ public class JavaBeanUtil
 	/**
 	 * Prefix for methods that write a JavaBean property.
 	 */
-	public static final String SETTER = "get";
+	public static final String SETTER = "set";
 
 	/**
 	 * Suffix for class attributes that contains the name of a class property.
@@ -145,11 +143,10 @@ public class JavaBeanUtil
 			String value = null;
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(DbAnnotations.PROPERTY_ANNOTATION)) {
-				Object[] annotations = f.getDeclaredAnnotations();
+//				Object[] annotations = f.getDeclaredAnnotations();
 //				Property ann = (Property)ArrayUtil.find(annotations, DbAnnotations.PROPERTY_ANNOTATION);
 				Property ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
-				
-				
+							
 				// TODO: Why ann is null? 
 				key = ann.value();
 				try {
@@ -200,18 +197,120 @@ public class JavaBeanUtil
 	}
 	
 	
+	public static final Map<String, Method> mapBeanPropertiesToSetMethods(Class clazz)
+	{
+		HashMap<String, Method> map = new HashMap<String, Method>();
+		Field[] fields = clazz.getDeclaredFields();
+		HashMap<String, String> propertyFields = new HashMap<String, String>();
+		Method[] methods = clazz.getDeclaredMethods();
+		
+		for (Field f : fields) {
+			String key = f.getName();
+			String value = null;
+			Property ann = null;
+
+			// If we have annotated the class, that's the way to go.
+			if (f.isAnnotationPresent(Property.class)) {
+				// Property ann = (Property)ArrayUtil.find(f.getDeclaredAnnotations(), Property.class);
+				ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
+				value = ann.value();
+			// Otherwise, we try to guess.
+			} else {
+				if (key.endsWith(FIELD_IDENTIFIER)) {
+					Class type = f.getType();
+					if (type == String.class) {
+						int mode = f.getModifiers();
+						if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
+							value = key.substring(0, key.length() - FIELD_IDENTIFIER.length());
+						}
+					}
+				}
+			}
+			if (value != null) {
+				propertyFields.put(key, value);
+			}
+		}
+		
+		for (Method m : methods) {
+			if (m.getName().startsWith(SETTER)) {
+				String key = m.getName();
+				String field = null;
+				
+				key = key.substring(SETTER.length());
+				field = StringUtil.findSimilar(propertyFields.keySet(), key);
+				if (field != null) {
+					map.put(propertyFields.get(field), m);
+				}
+			}
+		}
+		return map;
+	}
+
+	public static final Map<String, Method> mapBeanPropertiesToGetMethods(Class clazz)
+	{
+		HashMap<String, Method> map = new HashMap<String, Method>();
+		Field[] fields = clazz.getDeclaredFields();
+		HashMap<String, String> propertyFields = new HashMap<String, String>();
+		Method[] methods = clazz.getDeclaredMethods();
+		
+		for (Field f : fields) {
+			String key = f.getName();
+			String value = null;
+			Property ann = null;
+
+			// If we have annotated the class, that's the way to go.
+			if (f.isAnnotationPresent(Property.class)) {
+				// Property ann = (Property)ArrayUtil.find(f.getDeclaredAnnotations(), Property.class);
+				ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
+				value = ann.value();
+			// Otherwise, we try to guess.
+			} else {
+				if (key.endsWith(FIELD_IDENTIFIER)) {
+					Class type = f.getType();
+					if (type == String.class) {
+						int mode = f.getModifiers();
+						if (Modifier.isFinal(mode) && Modifier.isStatic(mode) && Modifier.isPublic(mode)) {
+							value = key.substring(0, key.length() - FIELD_IDENTIFIER.length());
+						}
+					}
+				}
+			}
+			if (value != null) {
+				propertyFields.put(key, value);
+			}
+		}
+		
+		for (Method m : methods) {
+			if (m.getName().startsWith(GETTER)) {
+				String key = m.getName();
+				String field = null;
+				
+				key = key.substring(GETTER.length());
+				field = StringUtil.findSimilar(propertyFields.keySet(), key);
+				if (field != null) {
+					map.put(propertyFields.get(field), m);
+				}
+			}
+		}
+		return map;
+	}
+
+	
+	/*
 	public static final Map<String, Method> mapBeanPropertiesToMethods(Class clazz)
 	{
 		HashMap<String, Method> map = new HashMap<String, Method>();
 		Field[] fields = clazz.getDeclaredFields();
 		TreeSet<String> propertyFields = new TreeSet<String>();
-		Method[] methods = clazz.getMethods();
+		Method[] methods = clazz.getDeclaredMethods();
 		
 		for (Field f : fields) {
 			String key = null;
+			Property ann = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
-				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
+			if (f.isAnnotationPresent(Property.class)) {
+				// Property ann = (Property)ArrayUtil.find(f.getDeclaredAnnotations(), Property.class);
+				ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
 				key = ann.value();
 			// Otherwise, we try to guess.
 			} else {
@@ -226,7 +325,9 @@ public class JavaBeanUtil
 					}
 				}
 			}
-			propertyFields.add(key);
+			if (key != null) {
+				propertyFields.add(key);
+			}
 		}
 		
 		for (Method m : methods) {
@@ -243,7 +344,8 @@ public class JavaBeanUtil
 		}
 		return map;
 	}
-
+	*/
+	
 	public static final String[] getBeanProperties(Class clazz)
 	{
 		Field[] fields = clazz.getDeclaredFields();
@@ -252,8 +354,9 @@ public class JavaBeanUtil
 		for (Field f : fields) {
 			String key = null;
 			// If we have annotated the class, that's the way to go.
-			if (f.isAnnotationPresent(net.sf.ideais.annotations.db.Property.class)) {
-				net.sf.ideais.annotations.db.Property ann = (net.sf.ideais.annotations.db.Property)ArrayUtil.find(f.getAnnotations(), net.sf.ideais.annotations.db.Property.class);
+			if (f.isAnnotationPresent(Property.class)) {
+				// Property ann = (Property)ArrayUtil.find(f.getAnnotations(), Property.class);
+				Property ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
 				key = ann.value();
 			// Otherwise, we try to guess.
 			} else {
