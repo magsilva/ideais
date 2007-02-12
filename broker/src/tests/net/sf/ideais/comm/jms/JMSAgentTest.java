@@ -1,3 +1,4 @@
+package tests.net.sf.ideais.comm.jms;
 import static org.junit.Assert.*;
 
 
