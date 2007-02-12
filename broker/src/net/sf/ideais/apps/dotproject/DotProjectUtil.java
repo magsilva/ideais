@@ -24,6 +24,7 @@ import java.util.Map;
 
 import net.sf.ideais.annotations.db.DbAnnotations;
 import net.sf.ideais.util.AnnotationUtil;
+import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
 
 public class DotProjectUtil
@@ -98,8 +99,12 @@ public class DotProjectUtil
 		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
 		dbFields = new String[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
-			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+			if (! beanFields[i].isAnnotationPresent(DbAnnotations.IDENTIFICATOR_ANNOTATION)) {
+				dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+			}
 		}
+		dbFields = (String[])ArrayUtil.clean(dbFields);
+		Arrays.sort(dbFields);
 			
 		sb.append(" (");
 		for (int i = 0; i < dbFields.length; i++) {
@@ -144,9 +149,14 @@ public class DotProjectUtil
 		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
 		dbFields = new String[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
+			if (! beanFields[i].isAnnotationPresent(DbAnnotations.IDENTIFICATOR_ANNOTATION)) {
+				dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+			}
 			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
 		}
-			
+		dbFields = (String[])ArrayUtil.clean(dbFields);
+		Arrays.sort(dbFields);
+
 		sb.append(" SET (");
 		for (int i = 0; i < dbFields.length; i++) {
 			if (i != 0) {

@@ -36,8 +36,8 @@ public class DotProjectUtilTest
 	@Table(value="dummies")
 	private class DummyDPObject implements DotProjectObject
 	{
-		private static final String pstmtInsert = "INSERT INTO dummies (dummy_id, dummy_name, dummy_age) values (?, ?, ?)";
-		private static final String pstmtUpdate = "UPDATE dummies SET (dummy_id=?, dummy_name=?, dummy_age=?) WHERE dummy_id=?";
+		private static final String pstmtInsert = "INSERT INTO dummies (dummy_age, dummy_name) values (?, ?)";
+		private static final String pstmtUpdate = "UPDATE dummies SET (dummy_age=?, dummy_id=?, dummy_name=?) WHERE dummy_id=?";
 		private static final String pstmtDeleteId = "DELETE FROM dummies WHERE dummy_id=?";
 		private static final String pstmtSelectId = "SELECT * FROM dummies WHERE dummy_id=?";
 		

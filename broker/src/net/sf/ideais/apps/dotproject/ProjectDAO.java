@@ -57,16 +57,4 @@ public class ProjectDAO extends DotProjectDAO<Project>
 	{
 		return Project.class;
 	}
-	
-	public Project create()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public void delete(Project entity)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 }

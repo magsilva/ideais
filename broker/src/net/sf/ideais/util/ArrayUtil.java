@@ -164,4 +164,25 @@ public final class ArrayUtil
 				sb.lastIndexOf( separator ) + separator.length(), "" );
 		return sb.toString();
 	}
+	
+	public static <T> T[] clean(T[] array)
+	{
+		int count = 0;
+		Object[] result = null;
+		
+		for (Object obj : array) {
+			if (obj != null) {
+				count++;
+			}
+		}
+		
+		result = (T[])java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), count);
+		for (Object obj : array) {
+			if (obj != null) {
+				result[--count] = obj;
+			}
+		}
+			
+		return (T[])result;
+	}
 }
