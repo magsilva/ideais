@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
-import net.sf.ideais.HardCodedConfiguration;
+import net.sf.ideais.conf.HardCodedConfiguration;
 
 import static org.junit.Assert.*;
 

@@ -20,12 +20,12 @@ package tests.net.sf.ideais;
 
 import static org.junit.Assert.*;
 
-import net.sf.ideais.Configuration;
-import net.sf.ideais.DataSource;
-import net.sf.ideais.DataSourceFactory;
-import net.sf.ideais.DbDataSource;
-import net.sf.ideais.HardCodedConfiguration;
+import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.ArrayUtil;
+import net.sf.ideais.util.DataSource;
+import net.sf.ideais.util.DataSourceFactory;
+import net.sf.ideais.util.DbDataSource;
 
 import org.junit.After;
 import org.junit.Before;

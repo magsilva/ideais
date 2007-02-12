@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
-import net.sf.ideais.Configuration;
+import net.sf.ideais.conf.Configuration;
 
 import static org.junit.Assert.assertNull;
 import org.junit.Test;

@@ -22,10 +22,10 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 
-import net.sf.ideais.annotations.db.DbAnnotations;
 import net.sf.ideais.util.AnnotationUtil;
 import net.sf.ideais.util.ArrayUtil;
 import net.sf.ideais.util.JavaBeanUtil;
+import net.sf.ideais.util.annotations.DbAnnotations;
 
 public class DotProjectUtil
 {

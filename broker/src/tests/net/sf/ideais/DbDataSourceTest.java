@@ -18,9 +18,9 @@ Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
-import net.sf.ideais.Configuration;
-import net.sf.ideais.DbDataSource;
-import net.sf.ideais.HardCodedConfiguration;
+import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.HardCodedConfiguration;
+import net.sf.ideais.util.DbDataSource;
 
 import static org.junit.Assert.*;
 

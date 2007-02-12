@@ -20,11 +20,11 @@ package tests.net.sf.ideais.apps.dotproject;
 
 import static org.junit.Assert.*;
 
-import net.sf.ideais.annotations.db.Identificator;
-import net.sf.ideais.annotations.db.Property;
-import net.sf.ideais.annotations.db.Table;
 import net.sf.ideais.apps.dotproject.DotProjectObject;
 import net.sf.ideais.apps.dotproject.DotProjectUtil;
+import net.sf.ideais.util.annotations.Identificator;
+import net.sf.ideais.util.annotations.Property;
+import net.sf.ideais.util.annotations.Table;
 
 import org.junit.Before;
 import org.junit.Test;

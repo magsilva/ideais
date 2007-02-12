@@ -16,9 +16,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais;
+package net.sf.ideais.conf;
 
 import java.util.HashMap;
+
 
 /**
  * Hard-coded (aka hand crafted) configuration.

@@ -20,8 +20,8 @@ package net.sf.ideais.apps.dotproject;
 
 import java.util.Date;
 
-import net.sf.ideais.annotations.db.Property;
 import net.sf.ideais.util.StringUtil;
+import net.sf.ideais.util.annotations.Property;
 
 /**
  * POJO for a Dotproject's project.

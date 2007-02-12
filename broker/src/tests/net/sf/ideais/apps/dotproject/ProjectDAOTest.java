@@ -23,14 +23,16 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sf.ideais.Configuration;
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
+import net.sf.ideais.conf.Configuration;
 
 public class ProjectDAOTest
 {
 	private ProjectDAO remoteDao;
 	private ProjectDAO localDao;
+	
+	private Project dummyProject;
 	
 	private String remoteProjectName = "World domination";
 	private String localProjectName = "Disintegrating Pistol";
@@ -73,6 +75,9 @@ public class ProjectDAOTest
 	{
 		localDao = new DummyLocalProjectDAO();
 		remoteDao = new DummyRemoteProjectDAO();
+		
+		dummyProject = new Project();
+		// dummyProject.s
 	}
 
 	@Test
@@ -88,4 +93,13 @@ public class ProjectDAOTest
 		Project project = localDao.find(id);
 		assertEquals(project.getName(), localProjectName);
 	}
+	
+	@Test
+	public void testCreateProjectAtLocalDatabase1()
+	{
+		Project project = localDao.create();
+		assertNotNull(project);
+	}
+
+
 }

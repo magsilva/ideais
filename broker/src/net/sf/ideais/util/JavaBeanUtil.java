@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.ideais.annotations.db.DbAnnotations;
-import net.sf.ideais.annotations.db.Property;
+import net.sf.ideais.util.annotations.DbAnnotations;
+import net.sf.ideais.util.annotations.Property;
 
 /**
  * Utility class for JavaBeans.

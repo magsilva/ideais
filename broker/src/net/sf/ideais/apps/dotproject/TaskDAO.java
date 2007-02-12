@@ -18,7 +18,7 @@ Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps.dotproject;
 
-import net.sf.ideais.DbDAO;
+import net.sf.ideais.util.patterns.DbDAO;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

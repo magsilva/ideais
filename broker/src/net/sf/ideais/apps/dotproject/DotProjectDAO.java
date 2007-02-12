@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.ideais.Configuration;
-import net.sf.ideais.DbDAO;
-import net.sf.ideais.DbDataSource;
-import net.sf.ideais.HardCodedConfiguration;
+import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.HardCodedConfiguration;
+import net.sf.ideais.util.DbDataSource;
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
+import net.sf.ideais.util.patterns.DbDAO;
 
 public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 {
@@ -130,16 +130,16 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	abstract protected T createInstance(ResultSet rs);
 
 	
-	public T create(DotProjectObject object)
+	public T create()
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Integer id = null;
-		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(object);
+		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(getObjectType());
 		int count = map.size() / 2;
 	
 		try {
-			String query = DotProjectUtil.createPstmtInsert(object);
+			String query = DotProjectUtil.createPstmtInsert(getObjectType());
 			stmt = conn.prepareStatement(query);
 			
 			// Set statements
@@ -198,10 +198,9 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	}
 	*/
 
-	// TODO
-	/*
-	public void deleteById(Int id)
+	public void delete(T object)
 	{
+		/*
 		PreparedStatement stmt = null;
 		
 		try {
@@ -224,8 +223,8 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 				}
 			}
 		}
-	}
 		*/
+	}
 
 
 	public void deleteById(Integer id)

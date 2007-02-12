@@ -18,10 +18,10 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps.dotproject;
 
-import net.sf.ideais.annotations.db.Identificator;
-import net.sf.ideais.annotations.db.Property;
-import net.sf.ideais.annotations.db.Table;
 import net.sf.ideais.apps.dotproject.DotProjectObject;
+import net.sf.ideais.util.annotations.Identificator;
+import net.sf.ideais.util.annotations.Property;
+import net.sf.ideais.util.annotations.Table;
 
 import java.util.Date;
 

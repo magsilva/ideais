@@ -16,14 +16,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais;
+package net.sf.ideais.conf;
 
-public interface DataSource
+/**
+ * Configuration for a product line.
+ */
+public interface Configuration
 {
-	boolean isReady(boolean force);
-	
-	void setConfiguration(Configuration conf);
-	
-	Object manufacture();
-	
+	/**
+	 * Get a configuration value.
+	 * 
+	 * @param name The key for the configuration item.
+	 * @return The configuration value for the given key or NULL if
+	 * there's nothing set or the key doesn't exist.  
+	 */
+	Object getProperty(String name);
 }
