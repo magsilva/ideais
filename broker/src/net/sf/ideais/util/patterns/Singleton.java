@@ -16,22 +16,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais;
+package net.sf.ideais.util.patterns;
 
-public class LifeCycleController
+public class Singleton<T>
 {
-	private static LifeCycleController controller;
+	private T controller = null;
 	
-	private LifeCycleController()
+	private Singleton()
 	{
 	}
 	
-	public synchronized LifeCycleController instance()
+	public synchronized T instance()
 	{
 		if (controller != null) {
-			controller = new LifeCycleController();
+			try {
+				controller = controller.getClass().newInstance();
+			} catch (InstantiationException e) {
+			} catch (IllegalAccessException e) {
+			}
 		}
 		return controller;
 	}
-	
 }

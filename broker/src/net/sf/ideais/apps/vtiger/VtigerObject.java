@@ -18,9 +18,79 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps.vtiger;
 
-import net.sf.ideais.apps.ApplicationObject;
+import java.util.Date;
 
-public interface VtigerObject extends ApplicationObject
+import net.sf.ideais.apps.ApplicationObject;
+import net.sf.ideais.util.annotations.Property;
+
+public abstract class VtigerObject implements ApplicationObject
 {
-	String getObjectType();
+	@Property("crmid")
+	private Integer crmid;
+	
+	@Property("smcreatorid")
+	private Integer creatorId;
+	
+	@Property("smownerid")
+	private Integer ownerId;
+	
+	@Property("createdtime")
+	private Date creationTime;
+	
+	@Property("modifiedtime")
+	private Date lastModificationTime;
+	
+	abstract String getObjectType();
+
+	public Date getCreationTime()
+	{
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime)
+	{
+		this.creationTime = creationTime;
+	}
+
+	public Integer getCreatorId()
+	{
+		return creatorId;
+	}
+
+	public void setCreatorId(Integer creatorId)
+	{
+		this.creatorId = creatorId;
+	}
+
+	public Integer getCrmid()
+	{
+		return crmid;
+	}
+
+	public void setCrmid(Integer crmid)
+	{
+		this.crmid = crmid;
+	}
+
+	public Date getLastModificationTime()
+	{
+		return lastModificationTime;
+	}
+
+	public void setLastModificationTime(Date lastModificationTime)
+	{
+		this.lastModificationTime = lastModificationTime;
+	}
+
+	public Integer getOwnerId()
+	{
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId)
+	{
+		this.ownerId = ownerId;
+	}
+	
+	
 }

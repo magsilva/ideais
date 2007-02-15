@@ -21,11 +21,14 @@ package net.sf.ideais.apps.vtiger;
 import java.util.Date;
 
 import net.sf.ideais.apps.ApplicationObject;
+import net.sf.ideais.util.annotations.Identificator;
 import net.sf.ideais.util.annotations.Property;
 
-public class Potential implements ApplicationObject
+@Table("vtiger_potential")
+public class Potential extends VtigerObject
 {
 	@Property("potentialid")
+	@Identificator
 	private Integer id;
 	
 	@Property("accountid")
@@ -41,7 +44,7 @@ public class Potential implements ApplicationObject
 	private String stage;
 	
 	@Property("description")
-	private Integer description;
+	private String description;
 
 	public Integer getAccountId()
 	{
@@ -63,12 +66,12 @@ public class Potential implements ApplicationObject
 		this.closingDate = closingDate;
 	}
 
-	public Integer getDescription()
+	public String getDescription()
 	{
 		return description;
 	}
 
-	public void setDescription(Integer description)
+	public void setDescription(String description)
 	{
 		this.description = description;
 	}
