@@ -35,7 +35,7 @@ public final class DataSourceFactory
 	public static void reset()
 	{
 		productLines.clear();
-		productLines.add("net.sf.ideais.DbDataSource");
+		productLines.add(DbDataSource.class.getName());
 	}
 
 	/**

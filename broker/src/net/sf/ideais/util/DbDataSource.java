@@ -213,7 +213,7 @@ public class DbDataSource implements DataSource
      */
     public static String getDriverName(String dbms)
     {
-    	InputStream in = DbDataSource.class.getClass().getResourceAsStream("/net/sf/ideais/dbDriver.properties");
+    	InputStream in = DbDataSource.class.getClass().getResourceAsStream("/net/sf/ideais/util/dbDriver.properties");
     	PropertyResourceBundle res = null;
     	try {
     		res = new PropertyResourceBundle(in);
@@ -239,7 +239,7 @@ public class DbDataSource implements DataSource
      */
     public static String getConnectionString(String dbms)
     {
-    	InputStream in = DbDAO.class.getClass().getResourceAsStream("/net/sf/ideais/dbConnString.properties");
+    	InputStream in = DbDataSource.class.getResourceAsStream("/net/sf/ideais/util/dbConnString.properties");
     	PropertyResourceBundle res = null;
     	try {
     		res = new PropertyResourceBundle(in);

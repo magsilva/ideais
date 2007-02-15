@@ -33,7 +33,7 @@ import org.junit.Test;
 
 public class DataSourceFactoryTest
 {
-	private static String validDataSource = "net.sf.ideais.DbDataSource";
+	private static String validDataSource = DbDataSource.class.getName();
 	private static String invalidDataSource = "rubsrubs";
 	
 	public class DummyDataSource implements DataSource
