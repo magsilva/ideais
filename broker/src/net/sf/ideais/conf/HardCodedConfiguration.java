@@ -27,7 +27,7 @@ import java.util.HashMap;
  * This is the simplest Configuration you may use. It works like a Map
  * whose keys are Strings and values Objects.
  */
-public class HardCodedConfiguration implements Configuration
+public class HardCodedConfiguration implements ConfigurationMap
 {
 	/**
 	 * Holds the configuration data.

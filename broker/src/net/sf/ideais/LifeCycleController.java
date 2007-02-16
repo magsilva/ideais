@@ -18,20 +18,63 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais;
 
+import net.sf.ideais.apps.ApplicationObject;
+import net.sf.ideais.objects.BusinessObject;
+import net.sf.ideais.objects.Project;
+
 public class LifeCycleController
 {
 	private static LifeCycleController controller;
 	
+	private ObjectDirectory dir;
+	
+	
 	private LifeCycleController()
 	{
+		dir = new ObjectDirectory();
 	}
 	
-	public synchronized LifeCycleController instance()
+	private void __new_project(Project bo, ApplicationObject ao)
 	{
-		if (controller != null) {
+		if (ao instanceof net.sf.ideais.apps.dotproject.Project) {
+			net.sf.ideais.apps.dotproject.Project dpProject = (net.sf.ideais.apps.dotproject.Project) ao; 
+			bo.setName(dpProject.getName());
+			bo.setShortName(dpProject.getShortName());
+			bo.setDescription(dpProject.getDescription());
+			bo.setStart(dpProject.getStartDate());
+		}
+	}
+	
+	private BusinessObject __new(ApplicationObject ao)
+	{
+		BusinessObject bo = null;
+		
+		if (ao instanceof net.sf.ideais.apps.dotproject.Project) {
+			bo = new Project();
+			__new_project((Project)bo, ao);
+			return bo;
+		}
+		
+		return null;
+	}
+	
+	public static synchronized LifeCycleController instance()
+	{
+		if (controller == null) {
 			controller = new LifeCycleController();
 		}
 		return controller;
+	}
+	
+	public void process(ApplicationObject ao)
+	{
+		if (! dir.contains(ao)) {
+			BusinessObject bo = null;
+			bo = __new(ao);
+			if (bo != null) {
+				dir.link(bo, ao);
+			}
+		}
 	}
 	
 }

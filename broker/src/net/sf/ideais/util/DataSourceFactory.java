@@ -20,7 +20,7 @@ package net.sf.ideais.util;
 
 import java.util.TreeSet;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 
 public final class DataSourceFactory
 {
@@ -59,7 +59,7 @@ public final class DataSourceFactory
 	 * the transaction (repository type not supported or fatal error when
 	 * initializing the transacton).
 	 */
-	public static DataSource manufacture(String productName, Configuration conf)
+	public static DataSource manufacture(String productName, ConfigurationMap conf)
 	{
 		Object product = null;
 		

@@ -18,7 +18,67 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.objects;
 
-public interface Project
-{
+import java.util.Date;
 
+public class Project implements BusinessObject
+{
+	private String name;
+	
+	private String shortName;
+	
+	private String description;
+	
+	private Date start;
+	
+	private Date end;
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public Date getEnd()
+	{
+		return end;
+	}
+
+	public void setEnd(Date end)
+	{
+		this.end = end;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getShortName()
+	{
+		return shortName;
+	}
+
+	public void setShortName(String shortName)
+	{
+		this.shortName = shortName;
+	}
+
+	public Date getStart()
+	{
+		return start;
+	}
+
+	public void setStart(Date start)
+	{
+		this.start = start;
+	}
 }

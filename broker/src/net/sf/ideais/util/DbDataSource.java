@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.util.patterns.DbDAO;
 
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class DbDataSource implements DataSource
     /**
 	 * Create a new instance of DbDataSource and load a configuration.
 	 */
-	public DbDataSource(Configuration conf)
+	public DbDataSource(ConfigurationMap conf)
 	{
 		setConfiguration(conf);
 	}
@@ -191,7 +191,7 @@ public class DbDataSource implements DataSource
 	 * After setting the new configuration, it will load the driver and connect
 	 * to the database.
 	 */
-	public void setConfiguration(Configuration conf)
+	public void setConfiguration(ConfigurationMap conf)
     {
    		unloadDriver();
     	

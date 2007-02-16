@@ -181,10 +181,4 @@ public class Project implements DotProjectObject
 	{
 		this.id = id;
 	}
-
-	public String getObjectType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

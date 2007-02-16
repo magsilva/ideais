@@ -30,11 +30,6 @@ import java.sql.ResultSet;
  */
 public class ProjectDAO extends DotProjectDAO<Project>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public ProjectDAO()
 	{
 		super();

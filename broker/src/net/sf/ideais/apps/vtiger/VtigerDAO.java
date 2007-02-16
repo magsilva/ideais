@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.DbDataSource;
 import net.sf.ideais.util.JavaBeanUtil;
@@ -43,7 +43,7 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 	private static final long serialVersionUID = 1L;
 	
 
-	protected Configuration getConfiguration()
+	protected ConfigurationMap getConfiguration()
 	{
 		String knownDbms = "mysql";
 		String knownHostname = "localhost";

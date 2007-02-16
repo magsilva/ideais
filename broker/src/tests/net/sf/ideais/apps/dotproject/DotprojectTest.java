@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.apps.dotproject;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.DbDataSource;
 
@@ -36,7 +36,7 @@ public class DotprojectTest
 	static final public String localUsername = "test";
 	static final public String localPassword = "test";
 
-    static public Configuration getRemoteConfiguration()
+    static public ConfigurationMap getRemoteConfiguration()
     {
 		HardCodedConfiguration conf = new HardCodedConfiguration();
 		conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);
@@ -47,7 +47,7 @@ public class DotprojectTest
 		return conf;
     }
     
-    static public Configuration getLocalConfiguration()
+    static public ConfigurationMap getLocalConfiguration()
     {
 		HardCodedConfiguration conf = new HardCodedConfiguration();
 		conf.setProperty(DbDataSource.DBMS, DotprojectTest.dbms);

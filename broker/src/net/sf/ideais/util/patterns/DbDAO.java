@@ -20,7 +20,7 @@ package net.sf.ideais.util.patterns;
 
 import java.sql.Connection;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.util.DataSourceFactory;
 import net.sf.ideais.util.DbDataSource;
 
@@ -39,5 +39,5 @@ public abstract class DbDAO<T, I> extends GenericDAO<T, I>
 		conn = ds.getConnection();
 	}
 	
-	abstract protected Configuration getConfiguration();
+	abstract protected ConfigurationMap getConfiguration();
 }

@@ -16,25 +16,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.util.patterns;
+package net.sf.ideais.apps;
 
-public class Singleton<T>
+public interface Application
 {
-	private T controller = null;
+	String getId();
 	
-	private Singleton()
-	{
-	}
+	Version getVersion();
 	
-	public synchronized T instance()
-	{
-		if (controller != null) {
-			try {
-				controller = controller.getClass().newInstance();
-			} catch (InstantiationException e) {
-			} catch (IllegalAccessException e) {
-			}
-		}
-		return controller;
-	}
+	boolean isCompatible(Application app);
 }

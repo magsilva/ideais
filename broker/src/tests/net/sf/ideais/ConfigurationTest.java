@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public abstract class ConfigurationTest
 {
-	protected Configuration conf;
+	protected ConfigurationMap conf;
 
 	// key, value
 	protected final String[] tuple1 = {"test", "123"};

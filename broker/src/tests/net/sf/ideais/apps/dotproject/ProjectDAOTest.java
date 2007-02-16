@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 
 public class ProjectDAOTest
 {
@@ -48,7 +48,7 @@ public class ProjectDAOTest
 			super();
 		}
 		
-		protected Configuration getConfiguration()
+		protected ConfigurationMap getConfiguration()
 	    {
 	    	return DotprojectTest.getLocalConfiguration();
 	    }
@@ -63,7 +63,7 @@ public class ProjectDAOTest
 			super();
 		}
 		
-	    protected Configuration getConfiguration()
+	    protected ConfigurationMap getConfiguration()
 	    {
 	    	return DotprojectTest.getRemoteConfiguration();
 	    }

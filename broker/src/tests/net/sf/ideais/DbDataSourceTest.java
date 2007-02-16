@@ -18,7 +18,7 @@ Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais;
 
-import net.sf.ideais.conf.Configuration;
+import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.DbDataSource;
 
@@ -33,8 +33,8 @@ import java.sql.Connection;
 
 public class DbDataSourceTest
 {
-	Configuration validConf = null;
-	Configuration invalidConf = null;
+	ConfigurationMap validConf = null;
+	ConfigurationMap invalidConf = null;
 	
 	final private String unknownDbms = "abc123";
 	
