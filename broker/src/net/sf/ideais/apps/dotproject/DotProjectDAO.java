@@ -25,8 +25,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
@@ -332,19 +334,21 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 
 	public void update(T object)
 	{
-		// assume that conn is an already created JDBC connection
+		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(getObjectType());
+		Set<String> mapKeySet = map.keySet();
+		String[] fields = mapKeySet.toArray(new String[mapKeySet.size()]);
+		Arrays.sort(fields);
 		PreparedStatement stmt = null;
 	
 		try {
-			String query = "UPDATE projects SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
+			String query = DotProjectUtil.createPstmtUpdate(getObjectType());
 			stmt = conn.prepareStatement(query);
-			/*
-			stmt.setString(1, object.getName());
-			stmt.setString(2, object.getDescription());
-			stmt.setInt(3, object.getOwnerId());
-			stmt.setInt(4, object.getCompanyId());
-			stmt.setInt(5, object.getId());
-			*/
+			
+			// Set statements
+			for (int i = 0; i < fields.length; i++) {
+				stmt.setObject(i, map.get(fields[i]));
+			}
+			
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);

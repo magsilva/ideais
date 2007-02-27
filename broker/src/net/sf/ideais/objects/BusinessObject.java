@@ -18,7 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.objects;
 
-public interface BusinessObject
+public interface BusinessObject extends Comparable
 {
 
 }

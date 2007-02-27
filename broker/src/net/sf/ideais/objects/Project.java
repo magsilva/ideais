@@ -81,4 +81,19 @@ public class Project implements BusinessObject
 	{
 		this.start = start;
 	}
+
+	public int compareTo(Object o)
+	{
+		if (o == null) {
+			return 1;
+		}
+		
+		if (! (o instanceof Project)) {
+			throw new ClassCastException(); 
+		}
+		
+		Project p = (Project) o;
+		
+		return getName().compareTo(p.getName());
+	}
 }

@@ -34,8 +34,6 @@ public class Ideais
 		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
-		
-		
 	}
 
 }

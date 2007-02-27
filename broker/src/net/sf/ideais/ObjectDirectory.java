@@ -24,12 +24,24 @@ import java.util.TreeSet;
 import net.sf.ideais.apps.ApplicationObject;
 import net.sf.ideais.objects.BusinessObject;
 
+/**
+ * Directory of application and business objects.
+ */
 public class ObjectDirectory
 {
+	/**
+	 * Application objects.
+	 */
 	private TreeSet<ApplicationObject> aoDir;
 	
+	/**
+	 * Business objects.
+	 */
 	private TreeSet<BusinessObject> boDir;
 	
+	/**
+	 * Mapping for business objects and application objects.
+	 */
 	private TreeMap<BusinessObject, TreeSet<ApplicationObject>> dir;
 	
 	public ObjectDirectory()
@@ -39,26 +51,56 @@ public class ObjectDirectory
 		dir = new TreeMap<BusinessObject, TreeSet<ApplicationObject>>();
 	}
 	
+	/**
+	 * Check if the directory have the given object.
+	 * 
+	 * @param ao Object to search for.
+	 * @return True if the object is registered in the directory.
+	 */
 	public boolean contains(ApplicationObject ao)
 	{
 		return aoDir.contains(ao);
 	}
 	
+	/**
+	 * Check if the directory have the given object.
+	 * 
+	 * @param bo Object to search for.
+	 * @return True if the object is registered in the directory.
+	 */
 	public boolean contains(BusinessObject bo)
 	{
 		return boDir.contains(bo);
 	}
 	
+	/**
+	 * Add an application object to the directory.
+	 * 
+	 * @param ao Application object to be added.
+	 */
 	public void add(ApplicationObject ao)
 	{
 		aoDir.add(ao);
 	}
 	
+	/**
+	 * Add a business object to the directory.
+	 * 
+	 * @param bo Business object to be added.
+	 */
 	public void add(BusinessObject bo)
 	{
 		boDir.add(bo);
 	}
 	
+	/**
+	 * Link a business object to and application object. The business object
+	 * or application object are automatically registered in the directory
+	 * if necessary.
+	 *  
+	 * @param bo Business object related to the application object.
+	 * @param ao Application object related to the business object.
+	 */
 	public void link(BusinessObject bo, ApplicationObject ao)
 	{
 		if (! aoDir.contains(ao)) {
@@ -66,6 +108,7 @@ public class ObjectDirectory
 		}
 		if (! boDir.contains(bo)) {
 			add(bo);
+			dir.put(bo, new TreeSet<ApplicationObject>());
 		}
 		
 		if (! dir.containsKey(bo) ) {

@@ -22,18 +22,31 @@ import net.sf.ideais.apps.ApplicationObject;
 import net.sf.ideais.objects.BusinessObject;
 import net.sf.ideais.objects.Project;
 
+import java.util.ArrayList;
+
+/**
+ * Control the lifecycle of every business or application object.
+ */
 public class LifeCycleController
 {
+	/**
+	 * Singleton implementation.
+	 */
 	private static LifeCycleController controller;
 	
+	/**
+	 * Directory of business and application objects.
+	 */
 	private ObjectDirectory dir;
 	
-	
+	/**
+	 * Singleton implementation.
+	 */
 	private LifeCycleController()
 	{
 		dir = new ObjectDirectory();
 	}
-	
+
 	private void __new_project(Project bo, ApplicationObject ao)
 	{
 		if (ao instanceof net.sf.ideais.apps.dotproject.Project) {
@@ -45,19 +58,25 @@ public class LifeCycleController
 		}
 	}
 	
-	private BusinessObject __new(ApplicationObject ao)
+	private BusinessObject[] __new(ApplicationObject ao)
 	{
-		BusinessObject bo = null;
+		ArrayList<BusinessObject> boBag = new ArrayList<BusinessObject>();
 		
 		if (ao instanceof net.sf.ideais.apps.dotproject.Project) {
-			bo = new Project();
+			BusinessObject bo = new Project();
+			boBag.add(bo);
 			__new_project((Project)bo, ao);
-			return bo;
+			
 		}
 		
-		return null;
+		return (BusinessObject[]) boBag.toArray(new BusinessObject[0]);
 	}
 	
+	/**
+	 * Get an instance of the LifeCycleController.
+	 * 
+	 * @return The LifeCycleController.
+	 */
 	public static synchronized LifeCycleController instance()
 	{
 		if (controller == null) {
@@ -66,15 +85,21 @@ public class LifeCycleController
 		return controller;
 	}
 	
+	/**
+	 * Register an application object and link it to an business object.
+	 * 
+	 * @param ao Application object.
+	 */
 	public void process(ApplicationObject ao)
 	{
 		if (! dir.contains(ao)) {
-			BusinessObject bo = null;
-			bo = __new(ao);
-			if (bo != null) {
-				dir.link(bo, ao);
+			BusinessObject[] boBag = null;
+			boBag = __new(ao);
+			for (BusinessObject bo : boBag) {
+				if (bo != null) {
+					dir.link(bo, ao);
+				}
 			}
 		}
 	}
-	
 }
