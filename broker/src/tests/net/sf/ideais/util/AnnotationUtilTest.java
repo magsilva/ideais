@@ -131,21 +131,21 @@ public class AnnotationUtilTest
 	@Test
 	public void testGetAnnotatedPropertiesClass1()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(annotatedClass);
 		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClass2()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(annotatedClass);
 		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClass3()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(ordinaryClass);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(ordinaryClass);
 		assertTrue(fields.length == 0);
 	}
 
@@ -153,21 +153,21 @@ public class AnnotationUtilTest
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation1()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, validAnnotation);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(annotatedClass, validAnnotation);
 		assertTrue(ArrayUtil.equalIgnoreOrder(validFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation2()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, validAnnotation);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(annotatedClass, validAnnotation);
 		assertFalse(ArrayUtil.equalIgnoreOrder(invalidFields, fields));
 	}
 
 	@Test
 	public void testGetAnnotatedPropertiesClassAnnotation3()
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedProperties(annotatedClass, invalidAnnotation);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(annotatedClass, invalidAnnotation);
 		assertTrue(fields.length == 0);
 	}
 }

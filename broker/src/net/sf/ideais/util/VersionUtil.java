@@ -32,23 +32,6 @@ public class VersionUtil
 	public static final String VERSION_DELIMITER = ".";
 
 	/**
-	 * Compare two version numbers. Returns a negative integer, zero, or a positive integer
-	 * as first version string is less than, equal to, or greater than the second version
-	 * string.
-	 * 
-	 * @param version1 First version number.
-	 * @param version2 Second version number.
-	 * 
-	 * @return A negative integer, zero, or a positive integer as the first version number
-	 * is less than, equal to, or greater than the second version number.
-	 */
-	public static int compare(String version1, Integer version2)
-	{
-		return compare(version1, version2, VERSION_DELIMITER);
-	}
-
-	
-	/**
 	 * Compare two version strings. Returns a negative integer, zero, or a positive integer
 	 * as first version string is less than, equal to, or greater than the second version
 	 * string.

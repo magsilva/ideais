@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
- * Utilities to use annotations at runtime.
+ * Utilities to process annotations at runtime.
  */
 public class AnnotationUtil
 {
@@ -36,27 +36,29 @@ public class AnnotationUtil
 	
 
 	/**
-	 * Get the value set for an annotation with a single element.
+	 * Get the value set for an annotated class with a single element.
 	 * 
-	 * @param obj The annotated object.
+	 * @param obj The annotated object's class.
 	 * @param ann The annotation we need to read. 
-	 * @return The annotation's value for the given object.
+	 * 
+	 * @return The annotation's value.
 	 */
-	public static final String getAnnotationValue(Class clazz, Class ann)
+	public static final String getAnnotationValue(Class<Object> clazz, Class<Annotation> ann)
 	{
 		return getAnnotationValue(clazz, ann, DEFAULT_PROPERTY);
 	}
 	
+	
 	/**
-	 * Get the value set for an annotation with a single element.
+	 * Get the value set for an annotated class.
 	 * 
-	 * @param obj The annotated object.
+	 * @param obj The annotated object's class.
 	 * @param ann The annotation we need to read.
-	 * @param field The annotation's value we need to read.
+	 * @param property The annotation's property we need to read.
 	 *  
-	 * @return The annotation's value for the given object.
+	 * @return The annotation's value.
 	 */	
-	public static final String getAnnotationValue(Class clazz, Class ann, String field)
+	public static final String getAnnotationValue(Class<Object> clazz, Class<Annotation> ann, String property)
 	{
 		Annotation a = clazz.getAnnotation(ann);
 		String value = null;
@@ -66,7 +68,7 @@ public class AnnotationUtil
 		}
 
 		try {
-			Method m  = ann.getDeclaredMethod(field, (Class[])null);
+			Method m  = ann.getDeclaredMethod(property, (Class[])null);
 			value = (String) m.invoke(a, (Object [])null);
 		} catch (NoSuchMethodException nsme) {
 		} catch (IllegalAccessException iae) {
@@ -75,31 +77,36 @@ public class AnnotationUtil
 		
 		return value;
 	}
+	
 
 	/**
-	 * Get the value set for an annotation with a single element.
+	 * Get the value of an annotated field with a single element. It's kidda odd,
+	 * but you cannot read the annotation of an Field using the generic Class
+	 * method.
 	 * 
 	 * @param field The annotated object.
 	 * @param ann The annotation we need to read.
-	 * @param name The annotation's value we need to read.
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class ann)
+	public static final String getAnnotationValue(Field field, Class<Annotation> ann)
 	{
 		return getAnnotationValue(field, ann, DEFAULT_PROPERTY);
 	}
+
 	
 	/**
-	 * Get the value set for an annotation with a single element.
+	 * Get the value set for an annotated field.  It's kidda odd,
+	 * but you cannot read the annotation of an Field using the generic Class
+	 * method.
 	 * 
 	 * @param field The annotated object.
 	 * @param ann The annotation we need to read.
-	 * @param name The annotation's value we need to read.
+	 * @param property The annotation's property we need to read.
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class ann, String name)
+	public static final String getAnnotationValue(Field field, Class<Annotation> ann, String property)
 	{
 		Annotation a = field.getAnnotation(ann);
 		String value = null;
@@ -109,7 +116,7 @@ public class AnnotationUtil
 		}
 
 		try {
-			Method m  = ann.getDeclaredMethod(name, (Class[])null);
+			Method m  = ann.getDeclaredMethod(property, (Class[])null);
 			value = (String) m.invoke(a, (Object [])null);
 		} catch (NoSuchMethodException nsme) {
 		} catch (IllegalAccessException iae) {
@@ -136,15 +143,62 @@ public class AnnotationUtil
 	}
 
 	/**
+	 * Check if the class has annotations.
+	 * 
+	 * @param clazz Class to be checked.
+	 * @param ann Annotation to be checked.
+	 * 
+	 * @return True if the class is annotated with the given annotation, False otherwise.
+	 */
+	public static final boolean hasAnnotations(Class<Object> clazz, Class<Annotation> ann)
+	{
+		if (clazz.getAnnotation(ann) != null) {
+			return true;
+		}
+		return false;
+	}
+
+		
+	/**
+	 * Check if the field has annotations.
+	 * 
+	 * @param field Field to be checked.
+	 * @return True if the field is annotated, False otherwise.
+	 */
+	public static final boolean hasAnnotations(Field field)
+	{
+		if (field.getAnnotations().length != 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if the field has annotations.
+	 * 
+	 * @param field Field to be checked.
+	 * @param ann Annotation to be checked.
+	 * 
+	 * @return True if the field is annotated with the given annotation, False otherwise.
+	 */
+	public static final boolean hasAnnotations(Field field, Class<Annotation> ann)
+	{
+		if (field.getAnnotation(ann) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Get the bean properties (fields) that are annotated.
 	 * 
 	 * @param clazz Class to be inspected.
 	 * @return The fields that are annotated. If no annotated fields were found, it
 	 * returns an empty array.
 	 */
-	public static final Field[] getAnnotatedProperties(Class clazz)
+	public static final Field[] getAnnotatedFields(Class clazz)
 	{
-		return getAnnotatedProperties(clazz, null);	
+		return getAnnotatedFields(clazz, null);	
 	}
 	
 	/**
@@ -155,7 +209,7 @@ public class AnnotationUtil
 	 * @return The fields that are annotated. If no annotated fields were found, it
 	 * returns an empty array.
 	 */
-	public static final Field[] getAnnotatedProperties(Class clazz, Class annClass)
+	public static final Field[] getAnnotatedFields(Class clazz, Class annClass)
 	{
 		ArrayList<Field> properties = new ArrayList<Field>();
 		Field[] fields = clazz.getDeclaredFields();

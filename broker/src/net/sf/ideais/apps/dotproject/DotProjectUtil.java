@@ -96,7 +96,7 @@ public class DotProjectUtil
 		sb.append("INSERT INTO ");
 		sb.append(table);
 		
-		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
+		beanFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.PROPERTY_ANNOTATION);
 		dbFields = new String[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
 			if (! beanFields[i].isAnnotationPresent(DbAnnotations.IDENTIFICATOR_ANNOTATION)) {
@@ -146,7 +146,7 @@ public class DotProjectUtil
 		sb.append("UPDATE ");
 		sb.append(table);
 		
-		beanFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.PROPERTY_ANNOTATION);
+		beanFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.PROPERTY_ANNOTATION);
 		dbFields = new String[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
 			if (! beanFields[i].isAnnotationPresent(DbAnnotations.IDENTIFICATOR_ANNOTATION)) {
@@ -170,7 +170,7 @@ public class DotProjectUtil
 		sb.append(" WHERE ");
 		
 		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
-		idFields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		idFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		Arrays.sort(idFields);
 		for (int i = 0; i < idFields.length; i++) {
 			if (i != 0) {
@@ -213,7 +213,7 @@ public class DotProjectUtil
 		Field[] fields = null;
 		
 		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
-		fields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		for (Field f : fields) {
 			idField = AnnotationUtil.getAnnotationValue(f, DbAnnotations.PROPERTY_ANNOTATION);
 		}
@@ -268,7 +268,7 @@ public class DotProjectUtil
 		Field[] fields = null;
 
 		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
-		fields = AnnotationUtil.getAnnotatedProperties(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		for (Field f : fields) {
 			idField = AnnotationUtil.getAnnotationValue(f, DbAnnotations.PROPERTY_ANNOTATION);
 		}
@@ -291,7 +291,7 @@ public class DotProjectUtil
 		Field[] fields = null;
 
 		table = AnnotationUtil.getAnnotationValue(dpobject, DbAnnotations.TABLE_ANNOTATION);
-		fields = AnnotationUtil.getAnnotatedProperties(dpobject, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		fields = AnnotationUtil.getAnnotatedFields(dpobject, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		for (Field f : fields) {
 			idField = AnnotationUtil.getAnnotationValue(f.getClass(), DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		}
