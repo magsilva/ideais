@@ -283,7 +283,7 @@ public class VtigerUtil
 	}
 
 	
-	final public static String createStatementSelectExample(Class dpobject)
+	final public static String createStatementSelectExample(Class<? extends VtigerObject> dpobject)
 	{
 		StringBuffer sb = new StringBuffer();
 		String table = null;

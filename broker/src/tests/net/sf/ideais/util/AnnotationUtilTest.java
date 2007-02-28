@@ -18,6 +18,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -32,11 +33,11 @@ import org.junit.Test;
 
 public class AnnotationUtilTest
 {
-	private static Class annotatedClass;
-	private static Class ordinaryClass;
+	private static Class<? extends Object> annotatedClass;
+	private static Class<? extends Object> ordinaryClass;
 
-	private static Class validAnnotation;
-	private static Class invalidAnnotation;
+	private static Class<? extends Annotation> validAnnotation;
+	private static Class<? extends Annotation> invalidAnnotation;
 	
 	private final static String DEFAULT_VALUE = "test123";
 	private final static String DEFAULT_FIELD_NAME = AnnotationUtil.DEFAULT_PROPERTY;
