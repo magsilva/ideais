@@ -28,20 +28,72 @@ import java.util.Map;
  * (http://jroller.com/page/MikeSlattery/20050811) and Christian
  * (http://blog.hibernate.org/cgi-bin/blosxom.cgi/2005/09/08#genericdao).
  * 
- * @param <T> The business object implementation class.
- * @param <I> The primary key for the business object.
+ * @param <T> The object class whose data will be accessed.
+ * @param <I> The primary key for the object.
  */
 public interface DAO<T, I> extends Serializable
 {
+	/**
+	 * Create a new object.
+	 * @return
+	 */
 	T create();
 	
-	T find(I id);
+	/**
+	 * Find an object with the given id.
+	 * 
+	 * @param id The object identificator.
+	 * @return The object found or null if not found.
+	 */
+	T findById(I id);
+	
+	/**
+	 * Find objects whose property (key) matches the one required (value). 
+	 * 
+	 * @param key The property name.
+	 * @param value The property value
+	 * 
+	 * @return Objects found (may be an empty list).
+	 */
 	List<T> findByProperty(String key, Serializable value);
+	
+	/**
+	 * Find objects that share the same properties as example. 
+	 * 
+	 * @param example Example (an object instance with the desired values).
+	 * The example properties whose values are 'null' will be ignored.
+	 * 
+	 * @return Objects found (may be an empty list).
+	 */
 	List<T> findByExample(T example);
+
+	/**
+	 * Find objects that matches the properties and values specified. 
+	 * 
+	 * @param fields Mapping of properties and values. 
+	 * 
+	 * @return Objects found (may be an empty list).
+	 */
 	List<T> findByExample(Map<String, Serializable> fields);
 
+	/**
+	 * Update an object, recording it's data back to the datasource.
+	 * 
+	 * @param entity Object to be updated.
+	 */
 	void update(T entity);
 	
+	/**
+	 * Remove an object from the datasource.
+	 * 
+	 * @param entity Object to be removed.
+	 */
 	void delete(T entity);
+
+	/**
+	 * Remove an object from the datasource.
+	 * 
+	 * @param entity Identificator of the object to be removed.
+	 */
 	void deleteById(I id);	
 }
