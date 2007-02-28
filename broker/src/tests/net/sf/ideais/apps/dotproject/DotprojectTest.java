@@ -20,7 +20,7 @@ package tests.net.sf.ideais.apps.dotproject;
 
 import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
-import net.sf.ideais.util.DbDataSource;
+import net.sf.ideais.util.patterns.DbDataSource;
 
 public class DotprojectTest
 {

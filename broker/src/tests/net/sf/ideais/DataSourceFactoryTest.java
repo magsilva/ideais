@@ -23,9 +23,9 @@ import static org.junit.Assert.*;
 import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.ArrayUtil;
-import net.sf.ideais.util.DataSource;
-import net.sf.ideais.util.DataSourceFactory;
-import net.sf.ideais.util.DbDataSource;
+import net.sf.ideais.util.patterns.DataSource;
+import net.sf.ideais.util.patterns.DataSourceFactory;
+import net.sf.ideais.util.patterns.DbDataSource;
 
 import org.junit.After;
 import org.junit.Before;

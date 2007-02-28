@@ -21,8 +21,6 @@ package net.sf.ideais.util.patterns;
 import java.sql.Connection;
 
 import net.sf.ideais.conf.ConfigurationMap;
-import net.sf.ideais.util.DataSourceFactory;
-import net.sf.ideais.util.DbDataSource;
 
 /**
  * Data Transfer Object for a task available at a DotProject instance.

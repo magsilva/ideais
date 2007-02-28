@@ -38,13 +38,19 @@ public final class ArrayUtil
 	 */
 	public static boolean has(Object[] array, Object o)
 	{
-		if (o == null) {
+		if (array == null) {
 			return false;
 		}
 		
 		for (Object temp : array) {
-			if (o.equals(temp)) {
-				return true;
+			if (temp == null) {
+				if (o == null) {
+					return true;
+				}
+			} else {
+				if (temp.equals(o)) {
+					return true;
+				}
 			}
 		}
 		
@@ -62,6 +68,10 @@ public final class ArrayUtil
 	 */
 	public static Object[] dup(Object[] array)
 	{
+		if (array == null) {
+			return null;
+		}
+		
 		Object[] dupArray = new Object[array.length];
 		System.arraycopy(array, 0, dupArray, 0, array.length);
 		return dupArray;
@@ -72,17 +82,41 @@ public final class ArrayUtil
 		final class HashComparator<T> implements Comparator<T>
 		{
 			/**
-			 * Compares its two arguments for order. Returns a negative integer, zero, or a positive
-			 * integer as the first argument is less than, equal to, or greater than the second.
+			 * Compares its two arguments for ordering. Returns a negative integer, zero,
+			 * or a positive integer as the first argument is less than, equal to, or
+			 * greater than the second.
 			 * 
-			 * Note: this comparator imposes orderings that are inconsistent with equals."
+			 * We use this comparator because it does not depends upon any specific object
+			 * property. Any Java object has an hashCode().
+			 * 
+			 * Note: this comparator imposes orderings that are inconsistent with equals.
 			 */
 			public int compare(T o1, T o2)
 			{
+				if (o1 == null && o2 == null) {
+					return 0;
+				}
+				if (o1 == null && o2 != null) {
+					return -1;
+				}
+				if (o1 != null && o2 == null) {
+					return 1;
+				}
+				
 				int hash1 = o1.hashCode();
 				int hash2 = o2.hashCode();
 				return (hash1 - hash2);
 			}
+		}
+		
+		if (array1 == null && array2 != null) {
+			return false;
+		}
+		if (array1 != null && array2 == null) {
+			return false;
+		}
+		if (array1 == null && array2 == null) {
+			return true;
 		}
 		
 		if (array1.length != array2.length) {
@@ -108,9 +142,13 @@ public final class ArrayUtil
 	 */
 	public static Object find(Object[] array, Class targetClass)
 	{
+		if (array == null) {
+			return null;
+		}
+		
 		for (Object o : array) {
 			try {
-				if (targetClass.equals(o.getClass())) {
+				if (o.getClass().equals(targetClass)) {
 					return o;
 				}
 			} catch (NullPointerException e) {
@@ -120,12 +158,25 @@ public final class ArrayUtil
 		return null;
 	}
 
-	public static int find(String[] arg, String s)
+	/**
+	 * Find the string index within a given array.
+	 * 
+	 * @param array Array to be searched.
+	 * @param str String to be found.
+	 * 
+	 * @return The index for the string within the array or -1 if the
+	 * string couldn't be found.
+	 */
+	public static int find(String[] array, String str)
 	{
+		if (array == null) {
+			return -1;
+		}
+		
 		int i = 0;
-		for (i = 0; i < arg.length && ! arg[i].equals(s); i++);
+		for (i = 0; i < array.length && ! array[i].equals(str); i++);
 
-		if (i == arg.length) {
+		if (i == array.length) {
 			i = -1;
 		}
 		
@@ -140,9 +191,9 @@ public final class ArrayUtil
 	 * 
 	 * @return The string.
 	 */
-	public static String ArrayToString( Object[] arg )
+	public static String toString(Object[] arg)
 	{
-		return ArrayUtil.ArrayToString( arg, "\n" );
+		return ArrayUtil.toString(arg, "\n");
 	}
 	
 	/**
@@ -153,33 +204,55 @@ public final class ArrayUtil
 	 * 
 	 * @return The string.
 	 */
-	public static String ArrayToString( Object[] arg, String separator )
+	public static String toString(Object[] arg, String separator)
 	{
-		StringBuffer sb = new StringBuffer();
-		for ( Object o : arg ) {
-			sb.append( o );
-			sb.append( separator );
+		if (separator == null) {
+			throw new IllegalArgumentException("The separator string cannot be null");
 		}
-		sb.replace( sb.lastIndexOf( separator ),
-				sb.lastIndexOf( separator ) + separator.length(), "" );
+		
+		StringBuffer sb = new StringBuffer();
+		for (Object o : arg) {
+			if (o != null) {
+				sb.append(o);
+				sb.append(separator);
+			}
+		}
+		if (sb.lastIndexOf(separator) != -1) {
+			sb.replace(sb.lastIndexOf(separator), sb.lastIndexOf(separator) + separator.length(), "");
+		}
 		return sb.toString();
 	}
 	
+	/**
+	 * Remove null values from an array.
+	 * 
+	 * @param <T> Array type.
+	 * @param array Array to be cleaned.
+	 * 
+	 * @return Cleant array.
+	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] clean(T[] array)
 	{
-		int count = 0;
+		int nonNullCount = 0;
+		int i = 0;
 		Object[] result = null;
+		
+		if (array == null) {
+			return null;
+		}
 		
 		for (Object obj : array) {
 			if (obj != null) {
-				count++;
+				nonNullCount++;
 			}
 		}
 		
-		result = (T[])java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), count);
+		result = (T[])java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), nonNullCount);
 		for (Object obj : array) {
 			if (obj != null) {
-				result[--count] = obj;
+				result[i] = obj;
+				i++;
 			}
 		}
 			

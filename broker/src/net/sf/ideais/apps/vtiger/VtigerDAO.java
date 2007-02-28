@@ -30,10 +30,10 @@ import java.util.Map;
 
 import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
-import net.sf.ideais.util.DbDataSource;
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
 import net.sf.ideais.util.patterns.DbDAO;
+import net.sf.ideais.util.patterns.DbDataSource;
 
 public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 {

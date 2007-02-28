@@ -27,10 +27,10 @@ import net.sf.ideais.apps.Application;
 import net.sf.ideais.apps.Version;
 import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.conf.HardCodedConfiguration;
-import net.sf.ideais.util.DataSourceFactory;
-import net.sf.ideais.util.DbDataSource;
 import net.sf.ideais.util.SqlUtil;
 import net.sf.ideais.util.VersionUtil;
+import net.sf.ideais.util.patterns.DataSourceFactory;
+import net.sf.ideais.util.patterns.DbDataSource;
 
 public class DotProject implements Application
 {
