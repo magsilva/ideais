@@ -16,29 +16,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.conf;
-
-import java.util.HashMap;
+package net.sf.ideais.util.conf;
 
 
 /**
- * Hard-coded (aka hand crafted) configuration.
- * 
- * This is the simplest Configuration you may use. It works like a Map
- * whose keys are Strings and values Objects.
+ * Configuration for a product line.
  */
-public class HardCodedConfiguration implements ConfigurationMap
+public interface ConfigurationMap extends Configuration
 {
-	/**
-	 * Holds the configuration data.
-	 */
-	private HashMap<String, Object> properties;
-	
-	public HardCodedConfiguration()
-	{
-		properties = new HashMap<String, Object>();
-	}	
-
 	/**
 	 * Get a configuration value.
 	 * 
@@ -46,21 +31,5 @@ public class HardCodedConfiguration implements ConfigurationMap
 	 * @return The configuration value for the given key or NULL if
 	 * there's nothing set or the key doesn't exist.  
 	 */
-	public Object getProperty(String name)
-	{
-		return properties.get(name);
-	}
-
-	/**
-	 * Set a configuration value.
-	 * 
-	 * @param name The key for the configuration item.
-	 * @param value The value for the configuration item.
-	 * @return The previous value for the configuration item or NULL if
-	 * it is a new configuration item.
-	 */
-	public Object setProperty(String name, Object value)
-	{
-		return properties.put(name, value);
-	}
+	Object getProperty(String name);
 }

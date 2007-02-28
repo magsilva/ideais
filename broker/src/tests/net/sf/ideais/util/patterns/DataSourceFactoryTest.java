@@ -16,13 +16,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais;
+package tests.net.sf.ideais.util.patterns;
 
 import static org.junit.Assert.*;
 
-import net.sf.ideais.conf.ConfigurationMap;
-import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.ArrayUtil;
+import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DataSource;
 import net.sf.ideais.util.patterns.DataSourceFactory;
 import net.sf.ideais.util.patterns.DbDataSource;

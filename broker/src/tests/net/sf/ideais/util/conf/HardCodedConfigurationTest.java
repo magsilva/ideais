@@ -16,14 +16,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais;
+package tests.net.sf.ideais.util.conf;
 
-import net.sf.ideais.conf.HardCodedConfiguration;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
 
 public class HardCodedConfigurationTest extends ConfigurationTest
 {

@@ -18,8 +18,9 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util.patterns;
 
-import net.sf.ideais.conf.ConfigurationMap;
 import net.sf.ideais.util.SqlUtil;
+import net.sf.ideais.util.conf.Configuration;
+import net.sf.ideais.util.conf.ConfigurationMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -191,15 +192,20 @@ public class DbDataSource implements DataSource
 	 * After setting the new configuration, it will load the driver and connect
 	 * to the database.
 	 */
-	public void setConfiguration(ConfigurationMap conf)
+	public void setConfiguration(Configuration conf)
     {
+		if (! (conf instanceof ConfigurationMap)) {
+			throw new IllegalArgumentException("Invalid configuration");
+		}
+		ConfigurationMap confMap = (ConfigurationMap) conf;
+		
    		unloadDriver();
     	
-   		setDbms((String) conf.getProperty(DBMS));
-    	setHostname((String) conf.getProperty(HOSTNAME));
-        setDatabase((String) conf.getProperty(DATABASE));
-        setUsername((String) conf.getProperty(USERNAME));
-        setPassword((String) conf.getProperty(PASSWORD));
+   		setDbms((String) confMap.getProperty(DBMS));
+    	setHostname((String) confMap.getProperty(HOSTNAME));
+        setDatabase((String) confMap.getProperty(DATABASE));
+        setUsername((String) confMap.getProperty(USERNAME));
+        setPassword((String) confMap.getProperty(PASSWORD));
         
         loadDriver();
     }
@@ -213,7 +219,7 @@ public class DbDataSource implements DataSource
      */
     public static String getDriverName(String dbms)
     {
-    	InputStream in = DbDataSource.class.getClass().getResourceAsStream("/net/sf/ideais/util/dbDriver.properties");
+    	InputStream in = DbDataSource.class.getResourceAsStream("dbDriver.properties");
     	PropertyResourceBundle res = null;
     	try {
     		res = new PropertyResourceBundle(in);
@@ -239,7 +245,7 @@ public class DbDataSource implements DataSource
      */
     public static String getConnectionString(String dbms)
     {
-    	InputStream in = DbDataSource.class.getResourceAsStream("/net/sf/ideais/util/dbConnString.properties");
+    	InputStream in = DbDataSource.class.getResourceAsStream("dbConnString.properties");
     	PropertyResourceBundle res = null;
     	try {
     		res = new PropertyResourceBundle(in);
@@ -294,7 +300,7 @@ public class DbDataSource implements DataSource
 	/**
 	 * Build
 	 */
-	public Object manufacture()
+	public Object instance()
 	{
 		return this;
 	}

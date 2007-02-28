@@ -25,10 +25,10 @@ import java.sql.Statement;
 
 import net.sf.ideais.apps.Application;
 import net.sf.ideais.apps.Version;
-import net.sf.ideais.conf.ConfigurationMap;
-import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.SqlUtil;
 import net.sf.ideais.util.VersionUtil;
+import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DataSourceFactory;
 import net.sf.ideais.util.patterns.DbDataSource;
 

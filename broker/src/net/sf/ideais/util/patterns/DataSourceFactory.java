@@ -20,7 +20,7 @@ package net.sf.ideais.util.patterns;
 
 import java.util.TreeSet;
 
-import net.sf.ideais.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.ConfigurationMap;
 
 public final class DataSourceFactory
 {
@@ -71,7 +71,7 @@ public final class DataSourceFactory
 			Class c = Class.forName(productName);
 			DataSource ds = (DataSource) c.newInstance();
 			ds.setConfiguration(conf);
-			product = ds.manufacture();
+			product = ds.instance();
 		} catch (Exception e) {
 			product = null;
 		}

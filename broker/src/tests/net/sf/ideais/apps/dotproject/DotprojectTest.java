@@ -18,8 +18,8 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package tests.net.sf.ideais.apps.dotproject;
 
-import net.sf.ideais.conf.ConfigurationMap;
-import net.sf.ideais.conf.HardCodedConfiguration;
+import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDataSource;
 
 public class DotprojectTest

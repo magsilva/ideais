@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
-import net.sf.ideais.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.ConfigurationMap;
 
 public class ProjectDAOTest
 {

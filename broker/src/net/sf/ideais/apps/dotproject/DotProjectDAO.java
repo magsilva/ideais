@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.ideais.conf.ConfigurationMap;
-import net.sf.ideais.conf.HardCodedConfiguration;
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
+import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDAO;
 import net.sf.ideais.util.patterns.DbDataSource;
 

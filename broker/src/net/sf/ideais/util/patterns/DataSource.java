@@ -18,14 +18,34 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util.patterns;
 
-import net.sf.ideais.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.Configuration;
 
+/**
+ * A DataSource is... a data source, a place where data can be fetch from.
+ * It usually is a wrapper for a database.
+ */
 public interface DataSource
 {
+	/**
+	 * Check if the datasource is ready for commence.
+	 * 
+	 * @param force If the datasource requires loading some library, try to
+	 * load it.
+	 * @return True if the datasource is ready, False otherwise.
+	 */
 	boolean isReady(boolean force);
 	
-	void setConfiguration(ConfigurationMap conf);
+	/**
+	 * The data source usually needs to be configured somehow.
+	 * 
+	 * @param conf Configuration to access the data source.
+	 */
+	void setConfiguration(Configuration conf);
 	
-	Object manufacture();
-	
+	/**
+	 * Get an instance of the data source.
+	 * 
+	 * @return The data source.
+	 */
+	Object instance();
 }
