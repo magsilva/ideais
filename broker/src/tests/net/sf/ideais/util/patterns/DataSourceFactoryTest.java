@@ -21,7 +21,7 @@ package tests.net.sf.ideais.util.patterns;
 import static org.junit.Assert.*;
 
 import net.sf.ideais.util.ArrayUtil;
-import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DataSource;
 import net.sf.ideais.util.patterns.DataSourceFactory;
@@ -43,17 +43,17 @@ public class DataSourceFactoryTest
 			return false;
 		}
 
-		public Object manufacture()
+		public Object instance()
 		{
 			return null;
 		}
 
-		public void setConfiguration(ConfigurationMap conf)
+		public void setConfiguration(Configuration conf)
 		{		
 		}	
 	}
 
-	private ConfigurationMap getValidConfiguration()
+	private Configuration getValidConfiguration()
 	{
 		String knownDbms = "mysql";
 		String knownHostname = "localhost";
@@ -88,7 +88,7 @@ public class DataSourceFactoryTest
 	@Test
 	public void testManufacture()
 	{
-		ConfigurationMap conf = getValidConfiguration();
+		Configuration conf = getValidConfiguration();
 		DataSource ds = DataSourceFactory.manufacture(validDataSource, conf);
 		assertNotNull(ds);
 	}
