@@ -20,6 +20,11 @@ package net.sf.ideais.apps.dotproject;
 
 import net.sf.ideais.apps.ApplicationObject;
 
-public interface DotProjectObject extends ApplicationObject
+public abstract class DotProjectObject implements ApplicationObject
 {
+	public String getObjectType()
+	{
+		return this.getClass().getName();
+	}
+
 }

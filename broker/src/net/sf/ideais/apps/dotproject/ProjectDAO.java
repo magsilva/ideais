@@ -20,6 +20,7 @@ package net.sf.ideais.apps.dotproject;
 
 import net.sf.ideais.apps.dotproject.DotProjectDAO;
 import net.sf.ideais.apps.dotproject.Project;
+import net.sf.ideais.util.conf.Configuration;
 
 import java.sql.ResultSet;
 
@@ -30,11 +31,18 @@ import java.sql.ResultSet;
  */
 public class ProjectDAO extends DotProjectDAO<Project>
 {
-	public ProjectDAO()
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+	public ProjectDAO(Configuration conf)
 	{
-		super();
+		super(conf);
 	}
-	
+
+
 	/**
 	 * Create a Project instance.
 	 *

@@ -20,5 +20,5 @@ package net.sf.ideais.apps;
 
 public interface Version extends Comparable<Version>
 {
-
+	String toString();
 }

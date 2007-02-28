@@ -34,7 +34,7 @@ public class DotProjectUtilTest
 	private DummyDPObject bean;
 	
 	@Table(value="dummies")
-	private class DummyDPObject implements DotProjectObject
+	private class DummyDPObject extends DotProjectObject
 	{
 		private static final String pstmtInsert = "INSERT INTO dummies (dummy_age, dummy_name) values (?, ?)";
 		private static final String pstmtUpdate = "UPDATE dummies SET (dummy_age=?, dummy_id=?, dummy_name=?) WHERE dummy_id=?";
@@ -74,34 +74,21 @@ public class DotProjectUtilTest
 	}
 
 	@Test
-	public void testCreateStatementInsert2()
-	{
-		assertEquals(DummyDPObject.pstmtInsert, DotProjectUtil.createPstmtInsert(bean));
-	}
-
-	@Test
 	public void testCreateStatementUpdate1()
 	{
 		assertEquals(DummyDPObject.pstmtUpdate, DotProjectUtil.createPstmtUpdate(bean.getClass()));
 	}
 
 	@Test
-	public void testCreateStatementUpdate2()
-	{
-		assertEquals(DummyDPObject.pstmtUpdate, DotProjectUtil.createPstmtUpdate(bean));
-	}
-
-	
-	@Test
 	public void testCreateStatementDeleteId()
 	{
-		assertEquals(DummyDPObject.pstmtDeleteId, DotProjectUtil.createPstmtDeleteId(bean.getClass()));
+		assertEquals(DummyDPObject.pstmtDeleteId, DotProjectUtil.createPstmtDeleteById(bean.getClass()));
 	}
 
 	
 	@Test
 	public void testCreateStatementSelectId()
 	{
-		assertEquals(DummyDPObject.pstmtSelectId, DotProjectUtil.createPstmtSelectId(bean.getClass()));
+		assertEquals(DummyDPObject.pstmtSelectId, DotProjectUtil.createPstmtSelectById(bean.getClass()));
 	}
 }

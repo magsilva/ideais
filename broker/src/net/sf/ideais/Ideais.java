@@ -18,22 +18,97 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.sf.ideais.apps.Application;
+import net.sf.ideais.apps.WebApplication;
+import net.sf.ideais.apps.dotproject.DotProject;
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
+import net.sf.ideais.util.conf.Configuration;
+import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.HardCodedConfiguration;
+import net.sf.ideais.util.patterns.DbDataSource;
 
 public class Ideais
 {
+	public static final String VERSION = "200702XX";
+	
+	private static Configuration getDotProjectDefaultConfiguration()
+	{
+		String knownDbms = "mysql";
+		String knownHostname = "localhost";
+		String knownDatabase = "dotproject-dev";
+		String knownUsername = "test";
+		String knownPassword = "test";
+		String knownWebAddress = "http://localhost/~magsilva/Tools/DotProject";
 
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		conf.setProperty(DbDataSource.DBMS, knownDbms);
+		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
+		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
+		conf.setProperty(DbDataSource.USERNAME, knownUsername);
+		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
+		conf.setProperty(WebApplication.ID_PROPERTY, knownWebAddress);
+		
+		return conf;
+	}
+	
+	protected ConfigurationMap getVtigerDefaultConfiguration()
+	{
+		String knownDbms = "mysql";
+		String knownHostname = "localhost";
+		String knownDatabase = "dotproject-dev";
+		String knownUsername = "test";
+		String knownPassword = "test";
+	
+		HardCodedConfiguration conf = new HardCodedConfiguration();
+		conf.setProperty(DbDataSource.DBMS, knownDbms);
+		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
+		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
+		conf.setProperty(DbDataSource.USERNAME, knownUsername);
+		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
+		
+		return conf;
+	}
+
+	
 	public static void main(String[] args)
 	{
+	    final Logger log = Logger.getLogger(Ideais.class.getName());
+	    ArrayList<Application> apps = new ArrayList<Application>();
+
+		System.out.println("IDEAIS Application Integrator - version " + Ideais.VERSION);
+		System.out.println("Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>");
+		System.out.println("IDEAIS Application Integrator comes with ABSOLUTELY NO WARRANTY;\n" +
+				"for details read the license.");
+		System.out.println("This is free software, and you are welcome to redistribute it\n" +
+						"under the GPLv2 license");
+
+		log.log(Level.INFO, "Starting life cycle controller");
 		LifeCycleController controller = LifeCycleController.instance();
+		log.log(Level.INFO, "Life cycle controller loaded");
 		
-		ProjectDAO dpProjectDao = new ProjectDAO();
-		Project dpProject = dpProjectDao.find(1);
+		
+	    log.log(Level.INFO, "Starting application adapters initialization");
+	    
+	    log.log(Level.INFO, "Starting DotProject adapter");
+		DotProject dp = new DotProject(getDotProjectDefaultConfiguration());
+		apps.add(dp);
+		log.log(Level.INFO, "Loaded adapter for DotProject " + dp.getVersion() + " at " + dp.getId());
+		
+		log.log(Level.INFO, "Application adapters initialized");
+		
+		
+		ProjectDAO dpProjectDao = new ProjectDAO(dp.getConfiguration());
+		Project dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
 		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
+		
 	}
 
 }

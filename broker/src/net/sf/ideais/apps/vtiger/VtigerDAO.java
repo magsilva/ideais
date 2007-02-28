@@ -30,10 +30,8 @@ import java.util.Map;
 
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
-import net.sf.ideais.util.conf.ConfigurationMap;
-import net.sf.ideais.util.conf.HardCodedConfiguration;
+import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.patterns.DbDAO;
-import net.sf.ideais.util.patterns.DbDataSource;
 
 public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 {
@@ -42,24 +40,11 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 	 */
 	private static final long serialVersionUID = 1L;
 	
-
-	protected ConfigurationMap getConfiguration()
+	public VtigerDAO(Configuration conf)
 	{
-		String knownDbms = "mysql";
-		String knownHostname = "localhost";
-		String knownDatabase = "dotproject-dev";
-		String knownUsername = "test";
-		String knownPassword = "test";
-	
-		HardCodedConfiguration conf = new HardCodedConfiguration();
-		conf.setProperty(DbDataSource.DBMS, knownDbms);
-		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
-		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
-		conf.setProperty(DbDataSource.USERNAME, knownUsername);
-		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
-		
-		return conf;
+		super(conf);
 	}
+
 	
 	/**
 	 * Create a Project instance.
@@ -68,6 +53,7 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 	 * @return The Task object if there is enough data to create a task instance,
 	 * null otherwise.
 	 */
+	@SuppressWarnings("unchecked")
 	protected T[] createInstances(Class<T> clazz, ResultSet rs)
 	{
 		ArrayList<T> objs = new ArrayList<T>();

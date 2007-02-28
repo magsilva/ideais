@@ -24,57 +24,67 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import net.sf.ideais.apps.Application;
-import net.sf.ideais.apps.Version;
+import net.sf.ideais.apps.WebApplication;
 import net.sf.ideais.util.SqlUtil;
-import net.sf.ideais.util.VersionUtil;
+import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.ConfigurationMap;
-import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DataSourceFactory;
 import net.sf.ideais.util.patterns.DbDataSource;
 
-public class DotProject implements Application
+/**
+ * Represent a DotProject application instance.
+ */
+public class DotProject implements WebApplication
 {
 	private ConfigurationMap conf;
 
 	private DotProjectVersion version; 
 
-	private static ConfigurationMap getDefaultConfiguration()
+	public DotProject(Configuration conf)
 	{
-		String knownDbms = "mysql";
-		String knownHostname = "localhost";
-		String knownDatabase = "dotproject-dev";
-		String knownUsername = "test";
-		String knownPassword = "test";
-	
-		HardCodedConfiguration conf = new HardCodedConfiguration();
-		conf.setProperty(DbDataSource.DBMS, knownDbms);
-		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
-		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
-		conf.setProperty(DbDataSource.USERNAME, knownUsername);
-		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
-		
-		return conf;
+	    setConfiguration(conf);
 	}
 
-	public DotProject()
+	private void setConfiguration(Configuration conf)
 	{
-		conf = getDefaultConfiguration();
-		version = discoverVersion();
+		ConfigurationMap tmpConfig = null;
+		
+		if (! (conf instanceof ConfigurationMap)) {
+			throw new IllegalArgumentException("Invalid configuration");
+		}
+		tmpConfig = (ConfigurationMap) conf;
+
+		if (tmpConfig.getProperty("address") == null) {
+			throw new IllegalArgumentException("Missing Web application address");
+		}
+		this.conf = tmpConfig;
 	}
 	
-	public DotProjectVersion discoverVersion()
+	public Configuration getConfiguration()
+	{
+		return conf;
+	}
+	
+	/**
+	 * Get the version of the application.
+	 * 
+	 * @return Application's version.
+	 */
+	public DotProjectVersion getVersion()
 	{
 		String tblName = "dpversion";
-		String query = "SELECT max(db_version) as latest_db_version from " + tblName;
-		DbDataSource ds = (DbDataSource) DataSourceFactory.manufacture(DbDataSource.class.getName(),
-				conf);
+		String query = "SELECT code_version,db_version FROM " + tblName + " WHERE last_code_update=(SELECT MAX(last_code_update) FROM " + tblName + ")";
+		DbDataSource ds = (DbDataSource) DataSourceFactory.manufacture(DbDataSource.class.getName(), conf);
 		Connection conn = ds.getConnection();
 		Statement stmt = null;
+		DotProjectVersion dpv = null;
 		
 		try {
 			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);	
-			Integer version = rs.getInt("latest_db_version");
+			Integer dbVersion = rs.getInt("db_version");
+			String codeVersion = rs.getString("code_version");
+			dpv = new DotProjectVersion(codeVersion, dbVersion);
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
 			// Probably an inexistent task was requested.
@@ -88,12 +98,12 @@ public class DotProject implements Application
 			}
 		}
 		
-		return null;
+		return dpv;
 	}
 	
 	public String getId()
 	{
-		return "";
+		return (String) conf.getProperty("address");
 	}
 
 	
@@ -111,10 +121,5 @@ public class DotProject implements Application
 		}
 		
 		return false;
-	}
-
-	public Version getVersion()
-	{
-		return version;
 	}
 }

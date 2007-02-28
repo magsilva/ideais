@@ -40,7 +40,10 @@ public abstract class VtigerObject implements ApplicationObject
 	@Property("modifiedtime")
 	private Date lastModificationTime;
 	
-	abstract String getObjectType();
+	public String getObjectType()
+	{
+		return this.getClass().getName();
+	}
 
 	public Date getCreationTime()
 	{

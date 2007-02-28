@@ -32,10 +32,8 @@ import java.util.Set;
 
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
-import net.sf.ideais.util.conf.ConfigurationMap;
-import net.sf.ideais.util.conf.HardCodedConfiguration;
+import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.patterns.DbDAO;
-import net.sf.ideais.util.patterns.DbDataSource;
 
 public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 {
@@ -43,26 +41,12 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	 * Serializable interface requirement.
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
-	protected ConfigurationMap getConfiguration()
+	public DotProjectDAO(Configuration conf)
 	{
-		String knownDbms = "mysql";
-		String knownHostname = "localhost";
-		String knownDatabase = "dotproject-dev";
-		String knownUsername = "test";
-		String knownPassword = "test";
-	
-		HardCodedConfiguration conf = new HardCodedConfiguration();
-		conf.setProperty(DbDataSource.DBMS, knownDbms);
-		conf.setProperty(DbDataSource.HOSTNAME, knownHostname);
-		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
-		conf.setProperty(DbDataSource.USERNAME, knownUsername);
-		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
-		
-		return conf;
+		super(conf);
 	}
-	
+
 	/**
 	 * Create a Project instance.
 	 *
@@ -70,6 +54,7 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	 * @return The Task object if there is enough data to create a task instance,
 	 * null otherwise.
 	 */
+	@SuppressWarnings("unchecked")
 	protected T[] createInstances(Class<T> clazz, ResultSet rs)
 	{
 		ArrayList<T> objs = new ArrayList<T>();
@@ -170,35 +155,8 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 			}
 		}
 	
-		return find(id);
+		return findById(id);
 	}
-
-	/*
-	public void deleteBySimilarity(DotProjectObject object)
-	{
-		PreparedStatement stmt = null;
-		
-		try {
-			String query = SqlUtil.createPreparedStatementDeleteString(
-					AnnotationUtil.getAnnotationValue(object, Table.class),
-					1);
-			stmt = conn.prepareStatement(query);
-			stmt.setInt(1, project_id);
-			stmt.executeUpdate();
-		} catch (SQLException sqe) {
-			SqlUtil.dumpSQLException(sqe);
-			// Probably an inexistent task was requested.
-		} finally {
-			// Release resources.
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-			}
-		}
-	}
-	*/
 
 	public void delete(T object)
 	{
@@ -264,14 +222,14 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	 * @param id The project id.
 	 * @return The project (if found) or null.
 	 */
-	public T find(Integer id)
+	public T findById(Integer id)
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		T obj = null;
 		
 		try {
-			String query = DotProjectUtil.createPstmtSelectId(getObjectType());
+			String query = DotProjectUtil.createPstmtSelectById(getObjectType());
 			stmt = conn.prepareStatement(query);
 			stmt.setObject(1, id);
 			rs = stmt.executeQuery();

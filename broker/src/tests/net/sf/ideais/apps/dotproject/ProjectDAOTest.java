@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
-import net.sf.ideais.util.conf.ConfigurationMap;
 
 public class ProjectDAOTest
 {
@@ -45,13 +44,8 @@ public class ProjectDAOTest
 
 		public DummyLocalProjectDAO()
 		{
-			super();
+			super(DotprojectTest.getLocalConfiguration());
 		}
-		
-		protected ConfigurationMap getConfiguration()
-	    {
-	    	return DotprojectTest.getLocalConfiguration();
-	    }
 	}
 
 	private class DummyRemoteProjectDAO extends ProjectDAO
@@ -60,13 +54,8 @@ public class ProjectDAOTest
 
 		public DummyRemoteProjectDAO()
 		{
-			super();
+			super(DotprojectTest.getRemoteConfiguration());
 		}
-		
-	    protected ConfigurationMap getConfiguration()
-	    {
-	    	return DotprojectTest.getRemoteConfiguration();
-	    }
 	}
 
 	
@@ -77,20 +66,19 @@ public class ProjectDAOTest
 		remoteDao = new DummyRemoteProjectDAO();
 		
 		dummyProject = new Project();
-		// dummyProject.s
 	}
 
 	@Test
 	public void testLoadProjectFromRemoteDatabase1()
 	{
-		Project project = remoteDao.find(id);
+		Project project = remoteDao.findById(id);
 		assertEquals(project.getName(), remoteProjectName);
 	}
 
 	@Test
 	public void testLoadProjectFromLocalDatabase1()
 	{
-		Project project = localDao.find(id);
+		Project project = localDao.findById(id);
 		assertEquals(project.getName(), localProjectName);
 	}
 	

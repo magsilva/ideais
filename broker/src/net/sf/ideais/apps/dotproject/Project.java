@@ -29,7 +29,7 @@ import java.util.Date;
  * POJO for a Dotproject's project.
  */
 @Table(value="projects")
-public class Project implements DotProjectObject
+public class Project extends DotProjectObject
 {
 	/*
 	SelectList 	ProjectPriority 	-1|low 0|normal 1|high 	

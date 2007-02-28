@@ -16,16 +16,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais;
+package net.sf.ideais.apps;
 
-import org.junit.Before;
-
-public class FieldTest
+public interface WebApplication extends Application
 {
-
-	@Before
-	public void setUp() throws Exception
-	{
-	}
-
+	static final String ID_PROPERTY = "address";
 }

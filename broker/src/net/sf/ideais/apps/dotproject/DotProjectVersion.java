@@ -27,6 +27,12 @@ public class DotProjectVersion implements Version
 	
 	private Integer databaseVersion;
 	
+	public DotProjectVersion(String codeVersion, Integer dbVersion)
+	{
+		this.codeVersion = codeVersion;
+		this.databaseVersion = dbVersion;
+	}
+	
 	public String getCodeVersion()
 	{
 		return codeVersion;
@@ -53,5 +59,10 @@ public class DotProjectVersion implements Version
 		
 		DotProjectVersion dpo = (DotProjectVersion) o;
 		return VersionUtil.compare(codeVersion, dpo.getCodeVersion());
+	}
+	
+	public String toString()
+	{
+		return codeVersion + "(" + databaseVersion + ")";
 	}
 }

@@ -20,7 +20,7 @@ package net.sf.ideais.util.patterns;
 
 import java.sql.Connection;
 
-import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.conf.Configuration;
 
 /**
  * Data Transfer Object for a task available at a DotProject instance.
@@ -30,12 +30,9 @@ public abstract class DbDAO<T, I> extends GenericDAO<T, I>
 {
 	protected Connection conn;
 	
-	public DbDAO()
+	public DbDAO(Configuration conf)
 	{
-		DbDataSource ds = (DbDataSource) DataSourceFactory.manufacture(DbDataSource.class.getName(),
-						getConfiguration());
+		DbDataSource ds = (DbDataSource) DataSourceFactory.manufacture(DbDataSource.class.getName(), conf);
 		conn = ds.getConnection();
 	}
-	
-	abstract protected ConfigurationMap getConfiguration();
 }

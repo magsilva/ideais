@@ -142,7 +142,7 @@ public final class DataSourceFactory
 		try {
 			for (String productLine : productLines) {
 				Class c = Class.forName(productLine);
-				// The following code had the great help from this forum:
+				// The following code was build with the help of this forum thread:
 				// http://forum.java.sun.com/thread.jspa?threadID=708343&messageID=4102615
 				DataSource ds = (DataSource) c.newInstance();
 				ready &= ds.isReady(force);

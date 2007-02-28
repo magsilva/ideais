@@ -43,7 +43,7 @@ public class AnnotationUtil
 	 * 
 	 * @return The annotation's value.
 	 */
-	public static final String getAnnotationValue(Class<Object> clazz, Class<Annotation> ann)
+	public static final String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann)
 	{
 		return getAnnotationValue(clazz, ann, DEFAULT_PROPERTY);
 	}
@@ -58,7 +58,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value.
 	 */	
-	public static final String getAnnotationValue(Class<Object> clazz, Class<Annotation> ann, String property)
+	public static final String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann, String property)
 	{
 		Annotation a = clazz.getAnnotation(ann);
 		String value = null;
@@ -89,7 +89,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class<Annotation> ann)
+	public static final String getAnnotationValue(Field field, Class<? extends Annotation> ann)
 	{
 		return getAnnotationValue(field, ann, DEFAULT_PROPERTY);
 	}
@@ -106,7 +106,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class<Annotation> ann, String property)
+	public static final String getAnnotationValue(Field field, Class<? extends Annotation> ann, String property)
 	{
 		Annotation a = field.getAnnotation(ann);
 		String value = null;
@@ -150,7 +150,7 @@ public class AnnotationUtil
 	 * 
 	 * @return True if the class is annotated with the given annotation, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Class<Object> clazz, Class<Annotation> ann)
+	public static final boolean hasAnnotations(Class<? extends Object> clazz, Class<? extends Annotation> ann)
 	{
 		if (clazz.getAnnotation(ann) != null) {
 			return true;
@@ -181,7 +181,7 @@ public class AnnotationUtil
 	 * 
 	 * @return True if the field is annotated with the given annotation, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Field field, Class<Annotation> ann)
+	public static final boolean hasAnnotations(Field field, Class<? extends Annotation> ann)
 	{
 		if (field.getAnnotation(ann) != null) {
 			return true;
