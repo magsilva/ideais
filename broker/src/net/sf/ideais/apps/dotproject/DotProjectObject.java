@@ -22,9 +22,4 @@ import net.sf.ideais.apps.ApplicationObject;
 
 public abstract class DotProjectObject implements ApplicationObject
 {
-	public String getObjectType()
-	{
-		return this.getClass().getName();
-	}
-
 }

@@ -25,10 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.ideais.util.JavaBeanUtil;
 import net.sf.ideais.util.SqlUtil;
@@ -292,21 +290,10 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 
 	public void update(T object)
 	{
-		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(getObjectType());
-		Set<String> mapKeySet = map.keySet();
-		String[] fields = mapKeySet.toArray(new String[mapKeySet.size()]);
-		Arrays.sort(fields);
 		PreparedStatement stmt = null;
 	
 		try {
-			String query = DotProjectUtil.createPstmtUpdate(getObjectType());
-			stmt = conn.prepareStatement(query);
-			
-			// Set statements
-			for (int i = 0; i < fields.length; i++) {
-				stmt.setObject(i, map.get(fields[i]));
-			}
-			
+			stmt = DotProjectUtil.createPstmtUpdate(conn, (DotProjectObject) object);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);

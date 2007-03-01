@@ -40,37 +40,37 @@ public class Project extends DotProjectObject
 	
 	@Property(value="project_id")
 	@Identificator
-	private Integer id;
+	public Integer id;
 
 	@Property(value="project_name")
-	private String name;
+	public String name;
 
 	@Property(value="project_shortname")
-	private String shortName;
+	public String shortName;
 
 	@Property(value="project_company")
-	private int companyId;
+	public int companyId;
 
 	@Property(value="project_start_date")
-	private Date startDate;
+	public Date startDate;
 
 	@Property(value="project_priority")
-	private int priority;
+	public int priority;
 
 	@Property(value="project_color_identifier")
-	private int color;
+	public int color;
 
 	@Property(value="project_type")
-	private int type;
+	public int type;
 
 	@Property(value="project_status")
-	private int status;
+	public int status;
 
 	@Property(value="project_owner")
-	private int ownerId;
+	public int ownerId;
 
 	@Property(value="project_description")
-	private String description;
+	public String description;
 
 	public String getName()
 	{

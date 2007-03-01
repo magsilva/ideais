@@ -217,7 +217,7 @@ public class AnnotationUtil
 		for (Field f : fields) {
 			Annotation[] annotations = f.getAnnotations();
 			for (Annotation ann : annotations) {
-				if (ann.annotationType() == annClass || annClass == null) {
+				if (ann.annotationType().equals(annClass) || annClass == null) {
 					properties.add(f);
 				}
 			}

@@ -41,7 +41,7 @@ public class Ideais
 		String knownDatabase = "dotproject-dev";
 		String knownUsername = "test";
 		String knownPassword = "test";
-		String knownWebAddress = "http://localhost/~magsilva/Tools/DotProject";
+		String knownWebAddress = "http://localhost/dotproject/";
 
 		HardCodedConfiguration conf = new HardCodedConfiguration();
 		conf.setProperty(DbDataSource.DBMS, knownDbms);
@@ -107,7 +107,6 @@ public class Ideais
 		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
-		
 	}
 
 }

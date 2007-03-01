@@ -209,7 +209,8 @@ public class DotProjectUtil
 		String table = null;
 		Field[] beanFields = null;
 		String[] dbFields = null;
-		Object[] dbValues = null;
+		Object[] dbValuesData = null;
+		Object[] dbValuesRestriction = null;
 		PreparedStatement stmt = null;
 		
 		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
@@ -218,7 +219,7 @@ public class DotProjectUtil
 		
 		beanFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.PROPERTY_ANNOTATION);
 		dbFields = new String[beanFields.length];
-		dbValues = new Object[beanFields.length];
+		dbValuesData = new Object[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
 			// Identificator fields cannot be changed when updating.
 			if (beanFields[i].isAnnotationPresent(DbAnnotations.IDENTIFICATOR_ANNOTATION)) {
@@ -227,40 +228,44 @@ public class DotProjectUtil
 
 			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
 			try {
-				dbValues[i] = beanFields[i].get(obj);
+				dbValuesData[i] = beanFields[i].get(obj);
+				if (dbValuesData[i] == null) {
+					dbFields[i] = null;
+				}
 			} catch (IllegalAccessException iae) {
 				dbFields[i] = null;
-				dbValues[i] = null;
+				dbValuesData[i] = null;
 			}
 		}
 		dbFields = ArrayUtil.clean(dbFields);
-		dbValues = ArrayUtil.clean(dbValues);
+		dbValuesData = ArrayUtil.clean(dbValuesData);
 			
-		sb.append(" SET (");
+		sb.append(" SET ");
 		for (int i = 0; i < dbFields.length; i++) {
 			if (i > 0) {
 				sb.append(", ");
 			}
 			sb.append(dbFields[i]);
+			sb.append("=?");
 		}
-		sb.append(")");
+		
 
 		// Update restriction on identificator
 		sb.append(" WHERE ");
 		beanFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
 		dbFields = new String[beanFields.length];
-		dbValues = new Object[beanFields.length];
+		dbValuesRestriction = new Object[beanFields.length];
 		for (int i = 0; i < beanFields.length; i++) {
 			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
 			try {
-				dbValues[i] = beanFields[i].get(obj);
+				dbValuesRestriction[i] = beanFields[i].get(obj);
 			} catch (Exception iae) {
 				dbFields[i] = null;
-				dbValues[i] = null;
+				dbValuesRestriction[i] = null;
 			}
 		}
 		dbFields = ArrayUtil.clean(dbFields);
-		dbValues = ArrayUtil.clean(dbValues);
+		dbValuesRestriction = ArrayUtil.clean(dbValuesRestriction);
 
 		for (int i = 0; i < dbFields.length; i++) {
 			if (i != 0) {
@@ -270,10 +275,16 @@ public class DotProjectUtil
 			sb.append("=?");
 		}			
 						
+		int stmtCount = 1;
 		try {
 			stmt = conn.prepareStatement(sb.toString());
-			for (int i = 1; i <= dbValues.length; i++) {
-				stmt.setObject(i, dbValues[i - 1]);
+			for (Object o : dbValuesData) {
+				stmt.setObject(stmtCount, o);
+				stmtCount++;
+			}
+			for (Object o : dbValuesRestriction) {
+				stmt.setObject(stmtCount, o);
+				stmtCount++;
 			}
 		} catch (SQLException se) {
 			stmt = null;

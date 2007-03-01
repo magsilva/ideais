@@ -63,6 +63,6 @@ public class DotProjectVersion implements Version
 	
 	public String toString()
 	{
-		return codeVersion + "(" + databaseVersion + ")";
+		return codeVersion + " (" + databaseVersion + ")";
 	}
 }

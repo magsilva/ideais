@@ -84,7 +84,8 @@ public class DotProject implements WebApplication
 		
 		try {
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);	
+			ResultSet rs = stmt.executeQuery(query);
+			rs.next();
 			Integer dbVersion = rs.getInt("db_version");
 			String codeVersion = rs.getString("code_version");
 			dpv = new DotProjectVersion(codeVersion, dbVersion);
