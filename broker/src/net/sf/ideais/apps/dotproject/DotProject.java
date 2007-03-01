@@ -18,6 +18,8 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps.dotproject;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +30,7 @@ import net.sf.ideais.apps.WebApplication;
 import net.sf.ideais.util.SqlUtil;
 import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.ConfigurationMap;
+import net.sf.ideais.util.patterns.DAO;
 import net.sf.ideais.util.patterns.DataSourceFactory;
 import net.sf.ideais.util.patterns.DbDataSource;
 
@@ -105,8 +108,6 @@ public class DotProject implements WebApplication
 	{
 		return (String) conf.getProperty("address");
 	}
-
-	
 	
 	public boolean isCompatible(Application app)
 	{
@@ -121,5 +122,30 @@ public class DotProject implements WebApplication
 		}
 		
 		return false;
+	}
+	
+	public DAO getDAO(Class<? extends DotProjectObject> clazz)
+	{
+		String daoName = clazz.getName() + "DAO";
+		Class daoClass = null;
+		DAO dao = null;
+
+		try {
+			daoClass = Class.forName(daoName);
+		} catch (ClassNotFoundException e1) {
+			throw new IllegalArgumentException();
+		}
+
+		
+		try {
+			Constructor<DAO> constructor = daoClass.getConstructor(Configuration.class);
+			dao = constructor.newInstance(conf);
+		} catch (NoSuchMethodException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+		
+		return dao;
 	}
 }

@@ -18,11 +18,9 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.ideais.apps.Application;
 import net.sf.ideais.apps.WebApplication;
 import net.sf.ideais.apps.dotproject.DotProject;
 import net.sf.ideais.apps.dotproject.Project;
@@ -78,7 +76,8 @@ public class Ideais
 	public static void main(String[] args)
 	{
 	    final Logger log = Logger.getLogger(Ideais.class.getName());
-	    ArrayList<Application> apps = new ArrayList<Application>();
+	    ApplicationManager appManager = null;
+	    DotProject dp = null;
 
 		System.out.println("IDEAIS Application Integrator - version " + Ideais.VERSION);
 		System.out.println("Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>");
@@ -92,17 +91,17 @@ public class Ideais
 		log.log(Level.INFO, "Life cycle controller loaded");
 		
 		
-	    log.log(Level.INFO, "Starting application adapters initialization");
-	    
-	    log.log(Level.INFO, "Starting DotProject adapter");
-		DotProject dp = new DotProject(getDotProjectDefaultConfiguration());
-		apps.add(dp);
-		log.log(Level.INFO, "Loaded adapter for DotProject " + dp.getVersion() + " at " + dp.getId());
+		log.log(Level.INFO, "Starting application manager");
+		appManager = ApplicationManager.instance();
+		log.log(Level.INFO, "Application manager loaded");
 		
+	    log.log(Level.INFO, "Starting application adapters initialization");
+	    log.log(Level.INFO, "Starting DotProject adapter");
+	    dp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
+		log.log(Level.INFO, "Loaded adapter for DotProject " + dp.getVersion() + " at " + dp.getId());	
 		log.log(Level.INFO, "Application adapters initialized");
 		
-		
-		ProjectDAO dpProjectDao = new ProjectDAO(dp.getConfiguration());
+		ProjectDAO dpProjectDao = (ProjectDAO) dp.getDAO(Project.class);
 		Project dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
 		
