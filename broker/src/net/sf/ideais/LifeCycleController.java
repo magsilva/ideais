@@ -21,6 +21,7 @@ package net.sf.ideais;
 import net.sf.ideais.apps.ApplicationObject;
 import net.sf.ideais.objects.BusinessObject;
 import net.sf.ideais.objects.Project;
+import net.sf.ideais.objects.PurchaseOrder;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ public class LifeCycleController
 	/**
 	 * Singleton implementation.
 	 */
-	private static LifeCycleController controller;
+	private static LifeCycleController instance;
 	
 	/**
 	 * Directory of business and application objects.
@@ -58,6 +59,18 @@ public class LifeCycleController
 		}
 	}
 	
+	private void __new_purchase_order(PurchaseOrder po, ApplicationObject ao)
+	{
+		if (ao instanceof net.sf.ideais.apps.vtiger.PurchaseOrder) {
+			net.sf.ideais.apps.vtiger.PurchaseOrder poVtiger = (net.sf.ideais.apps.vtiger.PurchaseOrder) ao;
+			po.setCreationDate(poVtiger.getCreationTime());
+			po.setDueDate(poVtiger.getDueDate());
+			po.setName(poVtiger.getName());
+			po.setStatus(poVtiger.getStatus());
+			po.setTotal(poVtiger.getTotal());
+		}
+	}
+	
 	private BusinessObject[] __new(ApplicationObject ao)
 	{
 		ArrayList<BusinessObject> boBag = new ArrayList<BusinessObject>();
@@ -67,6 +80,11 @@ public class LifeCycleController
 			boBag.add(bo);
 			__new_project((Project)bo, ao);
 			
+		}
+		if (ao instanceof net.sf.ideais.apps.vtiger.PurchaseOrder) {
+			PurchaseOrder po = new PurchaseOrder();
+			boBag.add(po);
+			__new_purchase_order((PurchaseOrder) po, ao);
 		}
 		
 		return (BusinessObject[]) boBag.toArray(new BusinessObject[0]);
@@ -79,10 +97,10 @@ public class LifeCycleController
 	 */
 	public static synchronized LifeCycleController instance()
 	{
-		if (controller == null) {
-			controller = new LifeCycleController();
+		if (instance == null) {
+			instance = new LifeCycleController();
 		}
-		return controller;
+		return instance;
 	}
 	
 	/**
