@@ -158,4 +158,14 @@ public class PurchaseOrder extends VtigerObject
 	{
 		this.trackingId = trackingId;
 	}
+
+	public int compareTo(Object o)
+	{
+		int result = super.compareTo(o);
+		if (result == 0) {
+			PurchaseOrder po = (PurchaseOrder) o;
+			result = getId().compareTo(po.getId());
+		}
+		return result;
+	}
 }

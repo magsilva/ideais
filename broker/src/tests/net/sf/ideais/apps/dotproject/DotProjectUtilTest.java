@@ -58,7 +58,15 @@ public class DotProjectUtilTest
 		{
 			return this.getClass().getName();
 		}
-		
+
+		public int compareTo(Object o)
+		{
+			if (o == null) {
+				return 1;
+			}
+			DummyDPObject tmp = (DummyDPObject) o;
+			return id.compareTo(tmp.id);
+		}
 	}
 	
 	@Before

@@ -26,7 +26,7 @@ import net.sf.ideais.util.annotations.Property;
 import net.sf.ideais.util.annotations.Table;
 
 @Table("vtiger_crmentity")
-public abstract class VtigerObject implements ApplicationObject
+public abstract class VtigerObject extends ApplicationObject
 {
 	@Property("crmid")
 	@Identificator
@@ -98,6 +98,4 @@ public abstract class VtigerObject implements ApplicationObject
 	{
 		this.ownerId = ownerId;
 	}
-	
-	
 }

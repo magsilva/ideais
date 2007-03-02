@@ -106,4 +106,10 @@ public class Potential extends VtigerObject
 	{
 		this.stage = stage;
 	}
+
+	public int compareTo(Object o)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

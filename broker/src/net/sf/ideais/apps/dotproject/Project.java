@@ -181,4 +181,14 @@ public class Project extends DotProjectObject
 	{
 		this.id = id;
 	}
+
+	public int compareTo(Object o)
+	{
+		int result = super.compareTo(o);
+		if (result == 0) {
+			Project p = (Project) o;
+			result = getId().compareTo(p.getId());
+		}
+		return result;
+	}
 }

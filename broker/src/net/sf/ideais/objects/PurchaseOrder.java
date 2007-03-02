@@ -21,7 +21,7 @@ package net.sf.ideais.objects;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PurchaseOrder implements BusinessObject
+public class PurchaseOrder extends BusinessObject
 {
 	private String name;
 
@@ -85,16 +85,11 @@ public class PurchaseOrder implements BusinessObject
 
 	public int compareTo(Object o)
 	{
-		if (o == null) {
-			return 1;
+		int result = super.compareTo(o);
+		if (result == 0) {
+			PurchaseOrder po = (PurchaseOrder) o;
+			result = getName().compareTo(po.getName());
 		}
-		
-		if (! (o instanceof PurchaseOrder)) {
-			throw new ClassCastException(); 
-		}
-		
-		PurchaseOrder po = (PurchaseOrder) o;
-		
-		return getName().compareTo(po.getName());
+		return result;
 	}
 }

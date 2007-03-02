@@ -20,7 +20,9 @@ package net.sf.ideais.objects;
 
 import java.util.Date;
 
-public class Project implements BusinessObject
+import net.sf.ideais.apps.vtiger.PurchaseOrder;
+
+public class Project extends BusinessObject
 {
 	private String name;
 	
@@ -84,16 +86,11 @@ public class Project implements BusinessObject
 
 	public int compareTo(Object o)
 	{
-		if (o == null) {
-			return 1;
+		int result = super.compareTo(o);
+		if (result == 0) {
+			Project p = (Project) o;
+			result = getName().compareTo(p.getName());
 		}
-		
-		if (! (o instanceof Project)) {
-			throw new ClassCastException(); 
-		}
-		
-		Project p = (Project) o;
-		
-		return getName().compareTo(p.getName());
+		return result;
 	}
 }

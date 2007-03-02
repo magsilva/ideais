@@ -18,7 +18,25 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.objects;
 
-public interface BusinessObject extends Comparable
+public abstract class BusinessObject implements Comparable
 {
+	public int compareTo(Object o)
+	{
+		if (o == null) {
+			return 1;
+		}
+
+		/*
+		if (! o.getClass().isInstance(ApplicationObject.class)) {
+			throw new ClassCastException();
+		}
+		*/
+		
+		if (! o.getClass().isInstance(this.getClass())) {
+			return this.getClass().getName().compareTo(o.getClass().getName());
+		} else {
+			return 0;
+		}
+	}
 
 }

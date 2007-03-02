@@ -20,6 +20,6 @@ package net.sf.ideais.apps.dotproject;
 
 import net.sf.ideais.apps.ApplicationObject;
 
-public abstract class DotProjectObject implements ApplicationObject
+public abstract class DotProjectObject extends ApplicationObject
 {
 }
