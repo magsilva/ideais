@@ -39,13 +39,12 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 	 * Serializable interface requirement.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public VtigerDAO(Configuration conf)
 	{
 		super(conf);
 	}
 
-	
 	/**
 	 * Create a Project instance.
 	 *
@@ -154,35 +153,8 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 			}
 		}
 	
-		return find(id);
+		return findById(id);
 	}
-
-	/*
-	public void deleteBySimilarity(DotProjectObject object)
-	{
-		PreparedStatement stmt = null;
-		
-		try {
-			String query = SqlUtil.createPreparedStatementDeleteString(
-					AnnotationUtil.getAnnotationValue(object, Table.class),
-					1);
-			stmt = conn.prepareStatement(query);
-			stmt.setInt(1, project_id);
-			stmt.executeUpdate();
-		} catch (SQLException sqe) {
-			SqlUtil.dumpSQLException(sqe);
-			// Probably an inexistent task was requested.
-		} finally {
-			// Release resources.
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-			}
-		}
-	}
-	*/
 
 	public void delete(T object)
 	{
@@ -248,16 +220,19 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 	 * @param id The project id.
 	 * @return The project (if found) or null.
 	 */
-	public T find(Integer id)
+	public T findById(Integer id)
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		T obj = null;
 		
 		try {
-			String query = VtigerUtil.createPstmtSelectId(getObjectType());
+			/*
+			String query = VtigerUtil.createPstmtSelectById(getObjectType());
 			stmt = conn.prepareStatement(query);
 			stmt.setObject(1, id);
+			*/
+			stmt = VtigerUtil.createPstmtSelectById(conn, getObjectType(), id);
 			rs = stmt.executeQuery();
 			obj = createInstance(rs);
 		} catch (SQLException sqe) {
@@ -318,19 +293,10 @@ public abstract class VtigerDAO<T> extends DbDAO<T, Integer>
 
 	public void update(T object)
 	{
-		// assume that conn is an already created JDBC connection
 		PreparedStatement stmt = null;
 	
 		try {
-			String query = "UPDATE projects SET (project_name=?, project_description=?, project_owner=?, project_company=?) WHERE project_id=?";
-			stmt = conn.prepareStatement(query);
-			/*
-			stmt.setString(1, object.getName());
-			stmt.setString(2, object.getDescription());
-			stmt.setInt(3, object.getOwnerId());
-			stmt.setInt(4, object.getCompanyId());
-			stmt.setInt(5, object.getId());
-			*/
+			stmt = VtigerUtil.createPstmtUpdate(conn, (VtigerObject) object);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);

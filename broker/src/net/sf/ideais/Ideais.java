@@ -25,8 +25,10 @@ import net.sf.ideais.apps.WebApplication;
 import net.sf.ideais.apps.dotproject.DotProject;
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
+import net.sf.ideais.apps.vtiger.PurchaseOrder;
+import net.sf.ideais.apps.vtiger.PurchaseOrderDAO;
+import net.sf.ideais.apps.vtiger.Vtiger;
 import net.sf.ideais.util.conf.Configuration;
-import net.sf.ideais.util.conf.ConfigurationMap;
 import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDataSource;
 
@@ -54,13 +56,14 @@ public class Ideais
 		return conf;
 	}
 	
-	protected ConfigurationMap getVtigerDefaultConfiguration()
+	private static Configuration getVtigerDefaultConfiguration()
 	{
 		String knownDbms = "mysql";
 		String knownHostname = "localhost";
-		String knownDatabase = "dotproject-dev";
+		String knownDatabase = "vtiger5-dev";
 		String knownUsername = "test";
 		String knownPassword = "test";
+		String knownWebAddress = "http://localhost/vtiger/";
 	
 		HardCodedConfiguration conf = new HardCodedConfiguration();
 		conf.setProperty(DbDataSource.DBMS, knownDbms);
@@ -68,6 +71,7 @@ public class Ideais
 		conf.setProperty(DbDataSource.DATABASE, knownDatabase);
 		conf.setProperty(DbDataSource.USERNAME, knownUsername);
 		conf.setProperty(DbDataSource.PASSWORD, knownPassword);
+		conf.setProperty(WebApplication.ID_PROPERTY, knownWebAddress);
 		
 		return conf;
 	}
@@ -77,7 +81,8 @@ public class Ideais
 	{
 	    final Logger log = Logger.getLogger(Ideais.class.getName());
 	    ApplicationManager appManager = null;
-	    DotProject dp = null;
+	    DotProject dpApp = null;
+	    Vtiger vApp;
 
 		System.out.println("IDEAIS Application Integrator - version " + Ideais.VERSION);
 		System.out.println("Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>");
@@ -97,13 +102,23 @@ public class Ideais
 		
 	    log.log(Level.INFO, "Starting application adapters initialization");
 	    log.log(Level.INFO, "Starting DotProject adapter");
-	    dp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
-		log.log(Level.INFO, "Loaded adapter for DotProject " + dp.getVersion() + " at " + dp.getId());	
+	    dpApp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
+		log.log(Level.INFO, "Loaded adapter for DotProject " + dpApp.getVersion() + " at " + dpApp.getId());	
+		
+		log.log(Level.INFO, "Starting vTiger adapter");
+	    vApp = (Vtiger) appManager.get(Vtiger.class, getVtigerDefaultConfiguration());
+		log.log(Level.INFO, "Loaded adapter for vTiger " + vApp.getVersion() + " at " + vApp.getId());	
 		log.log(Level.INFO, "Application adapters initialized");
 		
-		ProjectDAO dpProjectDao = (ProjectDAO) dp.getDAO(Project.class);
+		
+		
+		ProjectDAO dpProjectDao = (ProjectDAO) dpApp.getDAO(Project.class);
 		Project dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
+		
+		PurchaseOrderDAO vtPurchaseDao = (PurchaseOrderDAO) vApp.getDAO(PurchaseOrder.class);
+		PurchaseOrder vtPO = vtPurchaseDao.findById(80);
+		controller.process(vtPO);
 		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);

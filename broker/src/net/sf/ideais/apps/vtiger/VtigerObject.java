@@ -21,24 +21,28 @@ package net.sf.ideais.apps.vtiger;
 import java.util.Date;
 
 import net.sf.ideais.apps.ApplicationObject;
+import net.sf.ideais.util.annotations.Identificator;
 import net.sf.ideais.util.annotations.Property;
+import net.sf.ideais.util.annotations.Table;
 
+@Table("vtiger_crmentity")
 public abstract class VtigerObject implements ApplicationObject
 {
 	@Property("crmid")
-	private Integer crmid;
+	@Identificator
+	public Integer crmid;
 	
 	@Property("smcreatorid")
-	private Integer creatorId;
+	public Integer creatorId;
 	
 	@Property("smownerid")
-	private Integer ownerId;
+	public Integer ownerId;
 	
 	@Property("createdtime")
-	private Date creationTime;
+	public Date creationTime;
 	
 	@Property("modifiedtime")
-	private Date lastModificationTime;
+	public Date lastModificationTime;
 	
 	public String getObjectType()
 	{
