@@ -25,17 +25,34 @@ import java.util.ArrayList;
 import net.sf.ideais.apps.Application;
 import net.sf.ideais.util.conf.Configuration;
 
+/**
+ * The ApplicationManager controls the loading of application adapter's.
+ * Every application is unique (if you try to load an application with the
+ * sama configuration, it will return the application previously loaded).
+ */
 public class ApplicationManager
 {
+	/**
+	 * Singleton implementation for the ApplicationManager.
+	 */
 	private static ApplicationManager instance; 
 	
+	/**
+	 * Applications managed.
+	 */
 	private ArrayList<Application> apps;
 	
+	/**
+	 * Singleton implementation for the ApplicationManager.
+	 */
 	private ApplicationManager()
 	{
 		apps = new ArrayList<Application>();
 	}
-	
+
+	/**
+	 * Get the instance of the ApplicationManager.
+	 */
 	public synchronized static ApplicationManager instance()
 	{
 		if (instance == null) {
@@ -44,7 +61,15 @@ public class ApplicationManager
 		return instance;
 	}
 	
-	public <T extends Application> Application get(Class<? extends Application> clazz, Configuration conf)
+	/**
+	 * Get an instance of the given application. The ApplicationManager ensures that
+	 * there's only one application with a given configuration running.
+	 * 
+	 * @param clazz The application adapter.
+	 * @param conf The configuration to be used when loading the application adapter.
+	 * @return
+	 */
+	public synchronized Application get(Class<? extends Application> clazz, Configuration conf)
 	{
 		Application app = null;
 		try {
@@ -65,5 +90,4 @@ public class ApplicationManager
 		apps.add(app);
 		return app;
 	}
-	
 }

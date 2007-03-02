@@ -34,7 +34,7 @@ import net.sf.ideais.util.patterns.DbDataSource;
 
 public class Ideais
 {
-	public static final String VERSION = "200702XX";
+	public static final String VERSION = "200703XX";
 	
 	private static Configuration getDotProjectDefaultConfiguration()
 	{
