@@ -110,9 +110,17 @@ public class Ideais
 		log.log(Level.INFO, "Loaded adapter for vTiger " + vApp.getVersion() + " at " + vApp.getId());	
 		log.log(Level.INFO, "Application adapters initialized");
 		
-		
-		
 		ProjectDAO dpProjectDao = (ProjectDAO) dpApp.getDAO(Project.class);
+		
+		Project dpProject = dpProjectDao.create();
+		dpProject.setName("Teste abcde");
+		dpProject.setCompanyId(1);
+		dpProject.setDescription("Description for Teste abcde");
+		dpProject.setOwnerId(1);
+		dpProject.setShortName("teste");
+		
+		
+		/*
 		Project dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
 		
@@ -122,6 +130,7 @@ public class Ideais
 		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
+		*/
 	}
 
 }

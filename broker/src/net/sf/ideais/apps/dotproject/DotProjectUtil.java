@@ -104,6 +104,10 @@ public class DotProjectUtil
 			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
 			try {
 				dbValues[i] = beanFields[i].get(obj);
+				if (dbValues[i] == null) {
+					dbFields[i] = null;
+					dbValues[i] = null;				
+				}
 			} catch (Exception iae) {
 				dbFields[i] = null;
 				dbValues[i] = null;

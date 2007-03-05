@@ -115,45 +115,17 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	abstract protected T createInstance(ResultSet rs);
 
 	
+	
+	
+	@SuppressWarnings("unchecked")
 	public T create()
 	{
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		Integer id = null;
-		Map<String, Object> map = JavaBeanUtil.mapBeanUsingFields(getObjectType());
-		int count = map.size() / 2;
-	
 		try {
-			String query = DotProjectUtil.createPstmtInsert(getObjectType());
-			stmt = conn.prepareStatement(query);
-			
-			// Set statements
-			for (int i = 1; i <= count; i++) {
-				for (String key : map.keySet()) {
-					stmt.setObject(i, key);
-					stmt.setObject(i + count, map.get(key));
-				}
-			}
-			
-			stmt.executeUpdate();
-			rs = stmt.getGeneratedKeys();
-			rs.next();
-			id = rs.getInt(1);
-		} catch (SQLException sqe) {
-			SqlUtil.dumpSQLException(sqe);
-			// Probably an inexistent task was request. We may ignore the
-			// Now do something with the ResultSet ....
-		} finally {
-			// Release resources.
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-			}
+			return (T) getObjectType().newInstance();
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
 		}
-	
-		return findById(id);
+		return null; 	
 	}
 
 	public void delete(T object)
@@ -291,7 +263,11 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 	public void update(T object)
 	{
 		PreparedStatement stmt = null;
-	
+		ResultSet rs = null;
+
+		// TODO: Verificar se o projeto foi obtido a partir de dados da base ou
+		// de um business object.
+		
 		try {
 			stmt = DotProjectUtil.createPstmtUpdate(conn, (DotProjectObject) object);
 			stmt.executeUpdate();
@@ -308,6 +284,27 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 				}
 			}
 		}
+		
+		try {
+			stmt = DotProjectUtil.createPstmtInsert(conn, (DotProjectObject) object);
+			stmt.executeUpdate();
+			// TODO: Atualiza os dados do objeto
+			rs = stmt.getGeneratedKeys();
+			rs.next();
+			// rs.getInt(1);
+			// return findById(id);
+		} catch (SQLException sqe) {
+			SqlUtil.dumpSQLException(sqe);
+			// Probably an inexistent task was request. We may ignore the
+			// Now do something with the ResultSet ....
+		} finally {
+			// Release resources.
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) {
+				}
+			}
+		}
 	}
-
 }

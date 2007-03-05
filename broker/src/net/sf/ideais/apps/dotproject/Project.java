@@ -45,7 +45,7 @@ public class Project extends DotProjectObject
 	@Property(value="project_name")
 	public String name;
 
-	@Property(value="project_shortname")
+	@Property(value="project_short_name")
 	public String shortName;
 
 	@Property(value="project_company")
