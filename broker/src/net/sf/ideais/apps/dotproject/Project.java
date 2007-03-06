@@ -40,7 +40,7 @@ public class Project extends DotProjectObject
 	
 	@Property(value="project_id")
 	@Identificator
-	public Integer id;
+	protected Integer id;
 
 	@Property(value="project_name")
 	public String name;

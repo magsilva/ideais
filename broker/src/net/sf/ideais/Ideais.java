@@ -118,7 +118,12 @@ public class Ideais
 		dpProject.setDescription("Description for Teste abcde");
 		dpProject.setOwnerId(1);
 		dpProject.setShortName("teste");
-		
+		dpProjectDao.update(dpProject);
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+		}
+		dpProjectDao.deleteById(dpProject.getId());
 		
 		/*
 		Project dpProject = dpProjectDao.findById(1);

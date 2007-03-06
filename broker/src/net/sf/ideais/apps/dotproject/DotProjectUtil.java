@@ -388,6 +388,65 @@ public class DotProjectUtil
 		return stmt;
 	}
 
+
+	/**
+	 * Compile the prepared statement for deleting an object from the database.
+	 * 
+	 * @param clazz The class of the DotProject's object the statement will be created to.
+	 * @param fields Fields used to find the objects to be deleted.
+	 *  
+	 * @return The SQL prepared statement to read an object of the given class.
+	 */
+	final public static PreparedStatement createPstmtDeleteById(Connection conn, Class<? extends DotProjectObject> clazz, Integer id)
+	{
+		StringBuffer sb = new StringBuffer();
+		String table = null;
+		Field[] beanFields = null;
+		String[] dbFields = null;
+		Object[] dbValues = null;
+		PreparedStatement stmt = null;
+		
+		table = AnnotationUtil.getAnnotationValue(clazz, DbAnnotations.TABLE_ANNOTATION);
+		sb.append("DELETE FROM ");
+		sb.append(table);
+
+		beanFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		dbFields = new String[beanFields.length];
+		dbValues = new Object[beanFields.length];
+		for (int i = 0; i < beanFields.length; i++) {
+			dbFields[i] = AnnotationUtil.getAnnotationValue(beanFields[i], DbAnnotations.PROPERTY_ANNOTATION);
+			try {
+				dbValues[i] = id;
+			} catch (Exception iae) {
+				dbFields[i] = null;
+				dbValues[i] = null;
+			}
+		}
+		dbFields = ArrayUtil.clean(dbFields);
+		dbValues = ArrayUtil.clean(dbValues);
+
+		sb.append(" WHERE ");
+		for (int i = 0; i < dbFields.length; i++) {
+			if (i != 0) {
+				sb.append(" AND ");
+			}
+			sb.append(dbFields[i]);
+			sb.append("=?");
+		}			
+
+		try {
+			stmt = conn.prepareStatement(sb.toString());
+			for (int i = 1; i <= dbValues.length; i++) {
+				stmt.setObject(i, dbValues[i - 1]);
+			}
+		} catch (SQLException se) {
+			stmt = null;
+		}
+		
+
+		return stmt;
+	}
+
 	
 	/**
 	 * Compile the prepared statement for deleting an object from the database.

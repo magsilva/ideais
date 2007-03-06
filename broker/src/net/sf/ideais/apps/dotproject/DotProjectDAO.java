@@ -19,6 +19,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 package net.sf.ideais.apps.dotproject;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
@@ -28,8 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.ideais.util.AnnotationUtil;
 import net.sf.ideais.util.JavaBeanUtil;
+import net.sf.ideais.util.ObjectUtil;
 import net.sf.ideais.util.SqlUtil;
+import net.sf.ideais.util.annotations.DbAnnotations;
 import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.patterns.DbDAO;
 
@@ -159,15 +163,9 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 
 	public void deleteById(Integer id)
 	{
-/*
 		PreparedStatement stmt = null;
 		try {
-			String query = DotProjectUtil.createPreparedStatementDeleteString(
-					AnnotationUtil.getAnnotationValue(object, Table.class),
-					table, parameterCount)"DELETE FROM projects WHERE project_id = ?";
-			stmt = conn.prepareStatement(query);
-			stmt = (PreparedStatement)stmt;
-			stmt.setInt(1, project_id);
+			stmt = DotProjectUtil.createPstmtDeleteById(conn, getObjectType(), id);
 			stmt.executeUpdate();
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
@@ -181,7 +179,6 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 				}
 			}
 		}
-		*/
 	}
 
 	abstract protected Class<? extends DotProjectObject> getObjectType();
@@ -262,37 +259,40 @@ public abstract class DotProjectDAO<T> extends DbDAO<T, Integer>
 
 	public void update(T object)
 	{
+		Class clazz = object.getClass();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		boolean isIdentSet = true;
 
-		// TODO: Verificar se o projeto foi obtido a partir de dados da base ou
-		// de um business object.
-		
-		try {
-			stmt = DotProjectUtil.createPstmtUpdate(conn, (DotProjectObject) object);
-			stmt.executeUpdate();
-		} catch (SQLException sqe) {
-			SqlUtil.dumpSQLException(sqe);
-			// Probably an inexistent task was request. We may ignore the
-			// Now do something with the ResultSet ....
-		} finally {
-			// Release resources.
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
+		// Get the identifier fileds for object
+		Field[] idFields = AnnotationUtil.getAnnotatedFields(clazz, DbAnnotations.IDENTIFICATOR_ANNOTATION);
+		for (Field f : idFields) {
+			Object v;
+			try {
+				v = f.get(object);
+			} catch (IllegalAccessException e) {
+				v = null;
+			}
+			if (ObjectUtil.isEmpty(v)) {
+				isIdentSet = false;
+				break;
 			}
 		}
 		
 		try {
-			stmt = DotProjectUtil.createPstmtInsert(conn, (DotProjectObject) object);
-			stmt.executeUpdate();
-			// TODO: Atualiza os dados do objeto
-			rs = stmt.getGeneratedKeys();
-			rs.next();
-			// rs.getInt(1);
-			// return findById(id);
+			if (isIdentSet) {
+				stmt = DotProjectUtil.createPstmtUpdate(conn, (DotProjectObject) object);
+				stmt.executeUpdate();
+			} else {
+				stmt = DotProjectUtil.createPstmtInsert(conn, (DotProjectObject) object);
+				stmt.executeUpdate();
+				// TODO: Atualiza os dados do objeto
+				rs = stmt.getGeneratedKeys();
+				rs.next();
+				Integer id = rs.getInt(1);
+				T updatedObject = findById(id);
+				ObjectUtil.sync(updatedObject, object);
+			}
 		} catch (SQLException sqe) {
 			SqlUtil.dumpSQLException(sqe);
 			// Probably an inexistent task was request. We may ignore the
