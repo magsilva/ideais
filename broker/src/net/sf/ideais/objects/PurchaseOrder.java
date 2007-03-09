@@ -21,6 +21,10 @@ package net.sf.ideais.objects;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class PurchaseOrder extends BusinessObject
 {
 	private String name;
@@ -53,6 +57,7 @@ public class PurchaseOrder extends BusinessObject
 		this.dueDate = dueDate;
 	}
 
+	@Id
 	public String getName()
 	{
 		return name;

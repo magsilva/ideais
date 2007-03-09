@@ -18,15 +18,21 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
-import net.sf.ideais.util.ExceptionUtil;
-
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public final class SqlUtil
 {
+	/**
+	* Commons Logging instance.
+	*/
+	private static Log log = LogFactory.getLog(SqlUtil.class);
+			
     /**
      * Check if the database driver is loaded.
      * 
@@ -80,9 +86,7 @@ public final class SqlUtil
 	
 	final public static void dumpSQLException(SQLException e)
 	{
-		ExceptionUtil.dumpException(e);
-		System.out.println("SQLState: " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
+		log.error("SQLState: " + e.getSQLState());
+		log.error("VendorError: " + e.getErrorCode());
 	}
-
 }

@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.sf.ideais.util.annotations.DbAnnotations;
 import net.sf.ideais.util.annotations.Property;
@@ -36,6 +37,16 @@ import net.sf.ideais.util.annotations.Property;
  */
 public class JavaBeanUtil
 {
+	private static final Pattern SETTER_PATTERN = Pattern.compile("set([A-Z][A-Za-z0-9]*)$");
+	private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is|has)([A-Z][A-Za-z0-9]*)$");
+	/*
+	 matcher = GETTER_PATTERN.matcher(method.getName());
+     if (matcher.matches() && method.getParameterTypes().length == 0) {
+         String raw = matcher.group(2);
+         return raw.substring(0, 1).toLowerCase() + raw.substring(1);
+     }
+	*/
+	
 	/**
 	 * Prefix for methods that read a JavaBean property.
 	 */

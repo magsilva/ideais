@@ -258,4 +258,9 @@ public final class ArrayUtil
 			
 		return (T[])result;
 	}
+	
+    public static <T> T[] array(T... elements)
+    {
+    	return elements;
+    }
 }

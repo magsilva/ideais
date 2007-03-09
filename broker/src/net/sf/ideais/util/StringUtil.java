@@ -20,6 +20,7 @@ package net.sf.ideais.util;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Utility class for strings.
@@ -156,6 +157,24 @@ public class StringUtil
 		}
 		
 		return false;
+	}
+	
+	public static String[] split(String str, String delimiter)
+	{
+		if (str == null) {
+			return new String[0];
+		}
+		
+		StringTokenizer st = new StringTokenizer(str, delimiter);
+		String[] result = new String[st.countTokens()];
+		int i = 0;
+		
+		while (st.hasMoreTokens()) {
+			result[i] = st.nextToken();
+			i++;
+		}
+		
+		return result;
 	}
 	
 }

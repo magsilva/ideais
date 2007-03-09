@@ -23,11 +23,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.*;
-
 import net.sf.ideais.util.AnnotationUtil;
 import net.sf.ideais.util.ArrayUtil;
 
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 

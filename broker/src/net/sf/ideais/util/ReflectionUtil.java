@@ -19,11 +19,55 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 /**
  * Java Reflection utilities.
  */
 public final class ReflectionUtil
 {
+	public static final String PACKAGE_DELIMITER = ".";
+	
+	public static final String CLASS_FILE_EXTENSION = ".class";
+
+	public static final String JAR_FILE_EXTENSION = ".jar";
+
+	
+	public static final class ClassFileFilter implements FileFilter
+	{
+		public boolean accept(File filename)
+		{
+			return filename.getName().endsWith(ReflectionUtil.CLASS_FILE_EXTENSION);
+		}
+	}
+	
+	
+	private static String[] paths;
+	
+	static {
+		Properties props = System.getProperties();
+		List<String> paths = new ArrayList<String>();
+		String[] defaultPaths = {"java.home", "java.ext.dir", "java.endorsed.dirs", "java.class.path"};
+		
+		for (String path : defaultPaths) {
+			String[] splittedPaths = StringUtil.split(props.getProperty(path), (String) props.get("path.separator"));
+			for (String str : splittedPaths) {
+				paths.add(str);
+			}
+		}
+		
+		ReflectionUtil.paths = paths.toArray(new String[0]);
+	}
+	
+	
 	/**
 	 * Load a class.
 	 * 
@@ -47,5 +91,94 @@ public final class ReflectionUtil
 		}
 		
 		return c;
+	}
+	
+	public final static Class[] findClasses(String packageName)
+	{
+		ArrayList<Class> result = new ArrayList<Class>();
+		Class[] classes = null;
+		
+		for (String path : ReflectionUtil.paths) {
+			if (path.endsWith(ReflectionUtil.JAR_FILE_EXTENSION)) {
+				JarFile jar = null;
+				try {
+					jar = new JarFile(path);
+				} catch (IOException e) {
+				}
+				classes = ReflectionUtil.findClasses(jar, packageName);
+			} else {
+				File dir = new File(path);
+				classes = ReflectionUtil.findClasses(dir, packageName);
+				
+			}
+			for (Class clazz : classes) {
+				result.add(clazz);
+			}
+		}
+				
+		return result.toArray(new Class[0]);
+	}
+
+	private static Class[] findClasses(JarFile jar, String packageName)
+	{
+		Enumeration<JarEntry> entries = jar.entries();
+		ArrayList<Class> classes = new ArrayList<Class>();
+		boolean useFastMethod = true;
+
+		if (StringUtil.isEmpty(packageName)) {
+			packageName = "";
+		}
+		
+		if (useFastMethod) {
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				String filename = entry.getName();
+				String packageDirname = "";
+				if (! StringUtil.isEmpty(packageName)) {
+					packageDirname += packageName.replace(ReflectionUtil.PACKAGE_DELIMITER, File.separator);
+				}
+				if (filename.startsWith(packageDirname)) {
+					String className = packageName + ReflectionUtil.PACKAGE_DELIMITER + filename;
+					className = className.replaceAll(ReflectionUtil.CLASS_FILE_EXTENSION + "$", "");
+					try {
+						classes.add(Class.forName(className));
+					} catch (ClassNotFoundException e) {
+					}
+				}
+			}
+		}
+		return classes.toArray(new Class[0]);
+	}
+
+	private static Class[] findClasses(File file, String packageName)
+	{
+		File[] files = null;
+		ArrayList<Class> classes = new ArrayList<Class>();
+		boolean useFastMethod = true;
+		file = file.getAbsoluteFile();
+		
+		if (StringUtil.isEmpty(packageName)) {
+			packageName = "";
+		}
+		
+		if (useFastMethod) {
+			String packageDirname = file.getAbsolutePath() + File.separator;
+			if (! StringUtil.isEmpty(packageName)) {
+				packageDirname += packageName.replace(ReflectionUtil.PACKAGE_DELIMITER, File.separator);
+			}
+			File packageDir = new File(packageDirname);
+			if (packageDir.exists()) {
+				files = packageDir.listFiles(new ClassFileFilter());
+				for (File f : files) {
+					String className = packageName + ReflectionUtil.PACKAGE_DELIMITER + f.getName();
+					className = className.replaceAll(ReflectionUtil.CLASS_FILE_EXTENSION + "$", "");
+					try {
+						classes.add(Class.forName(className));
+					} catch (ClassNotFoundException e) {
+					}
+				}
+			}
+		}
+		return classes.toArray(new Class[0]);
 	}
 }

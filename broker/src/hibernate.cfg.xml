@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!--
+		<property name="connection.url">jdbc:mysql://localhost:3306/ideais-integration</property>
+		<property name="connection.username">test</property>
+		<property name="connection.password">test</property>
+		-->
+		<property name="connection.url">jdbc:mysql://192.168.1.13/portalprocess</property>
+		<property name="connection.username">portalprocess</property>
+		<property name="connection.password">portalprocess</property>
+
+		<property name="connection.autoReconnect">true</property>
+		<property name="connection.cacheCallableStmts">true</property>
+		<property name="connection.cachePrepStmt">true</property>
+		<property name="connection.cacheResultSetMetadata">true</property>
+		<property name="connection.useFastIntParsing">true</property>
+		<property name="connection.useNewIO">true</property>
+		<property name="show_sql">true</property>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+		<property name="hibernate.c3p0.min_size">1</property>
+		<property name="hibernate.c3p0.max_size">3</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">100</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+
+		<!-- Mapping files -->
+		<!--
+		<mapping package="net.sf.ideais.objects.Project" />
+		<mapping package="net.sf.ideais.objects.PurchaseOrder" />
+		-->
+
+		<!--		
+		<listener type="post-insert" class="safe.wikire.event.InsertAction" />
+		<listener type="post-load" class="safe.wikire.event.LoadAction" />
+		<listener type="post-update" class="safe.wikire.event.UpdateAction" />
+		-->
+	</session-factory>
+</hibernate-configuration>
