@@ -23,8 +23,6 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import net.sf.ideais.apps.vtiger.PurchaseOrder;
-
 @Entity
 public class Project extends BusinessObject
 {
@@ -58,7 +56,7 @@ public class Project extends BusinessObject
 		this.end = end;
 	}
 
-	@Id
+	// @Id
 	public String getName()
 	{
 		return name;

@@ -17,17 +17,9 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 
-package net.sf.ideais.apps.ideaisIntegration;
+package net.sf.ideais.util.patterns;
 
-import javax.persistence.EntityManager;
-
-import net.sf.ideais.util.patterns.HibernateDataSource;
-import net.sf.ideais.util.patterns.HibernateEntityManagerDataSource;
-
-
-public class IdeaisIntegration
+public class EntityManagerDataSource
 {
-	public IdeaisIntegration()
-	{
-	}
+
 }

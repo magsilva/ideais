@@ -18,8 +18,32 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class BusinessObject implements Comparable
 {
+	private long id;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+
+
 	public int compareTo(Object o)
 	{
 		if (o == null) {

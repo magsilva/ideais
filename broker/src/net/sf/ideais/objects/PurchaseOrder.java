@@ -57,7 +57,7 @@ public class PurchaseOrder extends BusinessObject
 		this.dueDate = dueDate;
 	}
 
-	@Id
+	// @Id
 	public String getName()
 	{
 		return name;

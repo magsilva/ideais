@@ -7,5 +7,24 @@
 	<classpathentry kind="lib" path="/opt/mysql-connector-java-5.0.4/mysql-connector-java-5.0.4-bin.jar"/>
 	<classpathentry kind="lib" path="/opt/jms-1.1/lib/jms.jar"/>
 	<classpathentry kind="lib" path="/opt/jms-1.1/lib/javax.jms.jar"/>
+	<classpathentry kind="lib" path="/opt/xmlrpc-3.0/lib/xmlrpc-client-3.0.jar"/>
+	<classpathentry kind="lib" path="/opt/xmlrpc-3.0/lib/xmlrpc-common-3.0.jar"/>
+	<classpathentry kind="lib" path="/opt/xmlrpc-3.0/lib/xmlrpc-server-3.0.jar"/>
+	<classpathentry kind="lib" path="/opt/commons-logging-1.1/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="/opt/logging-log4j-1.2.14/dist/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/hibernate3.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-annotations-3.2.1/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-annotations-3.2.1/lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/c3p0-0.9.1.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/ehcache-1.2.3.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/jta.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/commons-collections-2.1.1.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/jdbc2_0-stdext.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/asm.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-3.2.2/lib/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-entitymanager-3.2.1/hibernate-entitymanager.jar"/>
+	<classpathentry kind="lib" path="/opt/hibernate-entitymanager-3.2.1/lib/jboss-archive-browsing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -21,6 +21,8 @@ package net.sf.ideais;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,6 +37,7 @@ import net.sf.ideais.apps.vtiger.Vtiger;
 import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDataSource;
+import net.sf.ideais.util.patterns.HibernateEntityManagerDataSource;
 
 public class Ideais
 {
@@ -215,20 +218,18 @@ public class Ideais
 		dpProject.setShortName("teste");
 		dpProjectDao.update(dpProject);
 		controller.process(dpProject);
+		/*
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 		}
 		// dpProjectDao.deleteById(dpProject.getId());
-		
-		/*
-		Project dpProject = dpProjectDao.findById(1);
+		*/
+		// dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
-		
-		
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
-		*/
+		
 
 	}
 

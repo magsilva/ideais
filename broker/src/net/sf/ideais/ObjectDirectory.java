@@ -21,8 +21,11 @@ package net.sf.ideais;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.persistence.EntityManager;
+
 import net.sf.ideais.apps.ApplicationObject;
 import net.sf.ideais.objects.BusinessObject;
+import net.sf.ideais.util.patterns.HibernateEntityManagerDataSource;
 
 /**
  * Directory of application and business objects.
@@ -43,12 +46,17 @@ public class ObjectDirectory
 	 * Mapping for business objects and application objects.
 	 */
 	private TreeMap<BusinessObject, TreeSet<ApplicationObject>> dir;
-	
+
+	HibernateEntityManagerDataSource hds = null;
+		
 	public ObjectDirectory()
 	{
 		aoDir = new TreeSet<ApplicationObject>();
 		boDir = new TreeSet<BusinessObject>();
 		dir = new TreeMap<BusinessObject, TreeSet<ApplicationObject>>();
+		
+		hds = new HibernateEntityManagerDataSource();
+		hds.createDB();
 	}
 	
 	/**
@@ -90,6 +98,16 @@ public class ObjectDirectory
 	 */
 	public void add(BusinessObject bo)
 	{
+		EntityManager em = hds.getConnection();
+		em.getTransaction().begin();
+		try {
+			em.persist(bo);
+			em.getTransaction().commit();
+		} catch (RuntimeException e) {
+			em.getTransaction().rollback();
+		} finally {
+			em.close();
+		}
 		boDir.add(bo);
 	}
 	
