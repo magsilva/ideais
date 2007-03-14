@@ -25,11 +25,19 @@ import net.sf.ideais.objects.PurchaseOrder;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Control the lifecycle of every business or application object.
  */
 public class LifeCycleController
 {
+	/**
+	* Commons Logging instance.
+	*/
+	private static final Log log = LogFactory.getLog(LifeCycleController.class);
+	
 	/**
 	 * Singleton implementation.
 	 */
@@ -90,6 +98,13 @@ public class LifeCycleController
 		return (BusinessObject[]) boBag.toArray(new BusinessObject[0]);
 	}
 	
+	private static void startNewInstance()
+	{
+		log.debug("Loading the life cycle controller");
+		instance = new LifeCycleController();
+		log.debug("Loaded the life cycle controller");
+	}
+	
 	/**
 	 * Get an instance of the LifeCycleController.
 	 * 
@@ -97,9 +112,11 @@ public class LifeCycleController
 	 */
 	public static synchronized LifeCycleController instance()
 	{
+		log.info("Getting the life cycle controller");
 		if (instance == null) {
-			instance = new LifeCycleController();
+			startNewInstance();
 		}
+		log.info("Got the life cycle controller");
 		return instance;
 	}
 	

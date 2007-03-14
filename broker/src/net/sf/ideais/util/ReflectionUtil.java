@@ -22,6 +22,7 @@ package net.sf.ideais.util;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -49,13 +50,21 @@ public final class ReflectionUtil
 		}
 	}
 	
+	public static final class DirectoryFilter implements FileFilter
+	{
+		public boolean accept(File filename)
+		{
+			return filename.isDirectory();
+		}
+	}
+
 	
 	private static String[] paths;
 	
 	static {
 		Properties props = System.getProperties();
 		List<String> paths = new ArrayList<String>();
-		String[] defaultPaths = {"java.home", "java.ext.dir", "java.endorsed.dirs", "java.class.path"};
+		String[] defaultPaths = {"java.ext.dir", "java.endorsed.dirs", "java.class.path"};
 		
 		for (String path : defaultPaths) {
 			String[] splittedPaths = StringUtil.split(props.getProperty(path), (String) props.get("path.separator"));
@@ -181,4 +190,129 @@ public final class ReflectionUtil
 		}
 		return classes.toArray(new Class[0]);
 	}
+	
+	
+
+	
+	public final static Class[] findClasses(Class<?> clazz)
+	{
+		ArrayList<Class> result = new ArrayList<Class>();
+		Class[] classes = null;
+		
+		if (clazz == null) {
+			return null;
+		}
+		
+		for (String path : ReflectionUtil.paths) {
+			if (path.endsWith(ReflectionUtil.JAR_FILE_EXTENSION)) {
+				JarFile jar = null;
+				try {
+					jar = new JarFile(path);
+				} catch (IOException e) {
+				}
+	//			classes = ReflectionUtil.findClasses(jar, clazz);
+			} else {
+				File dir = new File(path);
+				classes = ReflectionUtil.findClasses(dir, null, clazz);
+			}
+			for (Class c : classes) {
+				result.add(c);
+			}
+		}
+				
+		return result.toArray(new Class[0]);
+	}
+/*
+	private static Class[] findClasses(JarFile jar, Class<?> clazz)
+	{
+		Enumeration<JarEntry> entries = jar.entries();
+		ArrayList<Class> classes = new ArrayList<Class>();
+		boolean useFastMethod = true;
+
+		if (StringUtil.isEmpty(packageName)) {
+			packageName = "";
+		}
+		
+		if (useFastMethod) {
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				String filename = entry.getName();
+				String packageDirname = "";
+				if (! StringUtil.isEmpty(packageName)) {
+					packageDirname += packageName.replace(ReflectionUtil.PACKAGE_DELIMITER, File.separator);
+				}
+				if (filename.startsWith(packageDirname)) {
+					String className = packageName + ReflectionUtil.PACKAGE_DELIMITER + filename;
+					className = className.replaceAll(ReflectionUtil.CLASS_FILE_EXTENSION + "$", "");
+					try {
+						classes.add(Class.forName(className));
+					} catch (ClassNotFoundException e) {
+					}
+				}
+			}
+		}
+		return classes.toArray(new Class[0]);
+	}
+	*/
+
+	// TODO: Check why it's loading a class several times.
+	private static Class[] findClasses(File packageRoot, File currentPackageDir, Class<?> clazz)
+	{
+		File[] files = null;
+		ArrayList<Class> classes = new ArrayList<Class>();
+	
+		assert(packageRoot != null);
+		assert(packageRoot.isDirectory());
+		
+		if (currentPackageDir == null) {
+			currentPackageDir = packageRoot;
+		}
+		
+		files = currentPackageDir.listFiles(new ClassFileFilter());
+		if (files != null) {
+			for (File f : files) {
+				String absolutePackageRoot = packageRoot.getAbsolutePath() + File.separator;
+				String absoluteCurrentPackageDir = currentPackageDir.getAbsolutePath();
+				String packageName = absoluteCurrentPackageDir.replaceFirst(absolutePackageRoot, "");
+				packageName = packageName.replaceAll(File.separator, ReflectionUtil.PACKAGE_DELIMITER);
+				String className = packageName + ReflectionUtil.PACKAGE_DELIMITER + f.getName().replaceAll(ReflectionUtil.CLASS_FILE_EXTENSION + "$", "");
+				try {
+					Class<?> c = Class.forName(className);
+					int modifiers = c.getModifiers();
+					if (c.isArray() || c.isInterface() || Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {
+						continue;
+					}
+					c.asSubclass(clazz);
+					classes.add(c);
+				} catch (ClassNotFoundException e) {
+				} catch (ClassCastException e) {
+				}
+			}
+		}
+
+		files = currentPackageDir.listFiles(new DirectoryFilter());
+		if (files != null) {
+			for (File f : files) {
+				for (Class c : ReflectionUtil.findClasses(packageRoot, f, clazz)) {
+					classes.add(c);
+				}
+			}
+		}
+
+		if (files == null) {
+			return classes.toArray(new Class[0]);
+		}
+		
+		return classes.toArray(new Class[0]);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

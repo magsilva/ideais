@@ -26,14 +26,15 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import net.sf.ideais.apps.Application;
 import net.sf.ideais.apps.WebApplication;
 import net.sf.ideais.apps.dotproject.DotProject;
 import net.sf.ideais.apps.dotproject.Project;
 import net.sf.ideais.apps.dotproject.ProjectDAO;
-import net.sf.ideais.apps.ideaisIntegration.IdeaisIntegration;
 import net.sf.ideais.apps.vtiger.PurchaseOrder;
 import net.sf.ideais.apps.vtiger.PurchaseOrderDAO;
 import net.sf.ideais.apps.vtiger.Vtiger;
+import net.sf.ideais.util.ReflectionUtil;
 import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDataSource;
@@ -52,8 +53,11 @@ public class Ideais
 
 	private LifeCycleController controller;
 	
-	private IdeaisIntegration ii;
-	
+	/**
+	 * Default configuration for DotProject. Just for testing purpose.
+	 * 
+	 * @return DotProject configuration.
+	 */
 	private static Configuration getDotProjectDefaultConfiguration()
 	{
 		String knownDbms = "mysql";
@@ -74,6 +78,11 @@ public class Ideais
 		return conf;
 	}
 	
+	/**
+	 * Default configuration for vTiger. Just for testing purpose.
+	 * 
+	 * @return vTiger configuration.
+	 */
 	private static Configuration getVtigerDefaultConfiguration()
 	{
 		String knownDbms = "mysql";
@@ -94,6 +103,9 @@ public class Ideais
 		return conf;
 	}
 
+	/**
+	 * Dump all known (and useful) environment settings.
+	 */
 	private void dumpEnvironmentSettings()
 	{
 		Properties props = System.getProperties();
@@ -171,28 +183,39 @@ public class Ideais
 		log.debug("LD_PRELOAD: " + env.get("LD_PRELOAD"));
 	}
 
+	/**
+	 * Print application (mandatory) information.
+	 */
 	private void printInfo()
 	{
 		System.out.println("IDEAIS Application Integrator - version " + Ideais.VERSION);
 		System.out.println("Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>");
-		System.out.println("IDEAIS Application Integrator comes with ABSOLUTELY NO WARRANTY;\n" +
-			"for details read the license.");
-		System.out.println("This is free software, and you are welcome to redistribute it\n" +
-					"under the GPLv2 license");
+		System.out.println("This application comes with ABSOLUTELY NO WARRANTY; for details read the license.");
+		System.out.println("This is free software. You're welcome to redistribute it under the GPLv2 license");
 	}
 
 	private void loadBinder()
 	{
 		log.info("Starting binder");
-	    ii = new IdeaisIntegration();
 		log.info("Loaded binder");
 	}
 	
-	
+	/**
+	 * Load the application adapters.
+	 */
 	private void loadApplicationAdapters()
 	{
-	    DotProject dpApp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
-	    Vtiger vApp = (Vtiger) appManager.get(Vtiger.class, getVtigerDefaultConfiguration());
+		Class[] apps = ReflectionUtil.findClasses(Application.class);
+		for (Class app : apps) {
+			// TODO: Remove this hardcoded configuration loading.
+			if (app.equals(DotProject.class)) {
+				appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
+			} else if (app.equals(Vtiger.class)) {
+				appManager.get(Vtiger.class, getVtigerDefaultConfiguration());	
+			} else {
+				log.error("Tried to load unknown application adapter: " + app.getName());
+			}
+		}
 	}
 	
 	public void doSomething()
@@ -237,9 +260,7 @@ public class Ideais
 
 		loadBinder();
 
-		log.info("Starting life cycle controller");
 		controller = LifeCycleController.instance();
-		log.info("Life cycle controller loaded");
 		
 		
 		log.info("Starting application manager");
