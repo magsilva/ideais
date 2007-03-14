@@ -22,6 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.sf.ideais.apps.Application;
 import net.sf.ideais.util.conf.Configuration;
 
@@ -32,6 +35,11 @@ import net.sf.ideais.util.conf.Configuration;
  */
 public class ApplicationManager
 {
+	/**
+	* Commons Logging instance.
+	*/
+	private static final Log log = LogFactory.getLog(ApplicationManager.class);
+
 	/**
 	 * Singleton implementation for the ApplicationManager.
 	 */
@@ -50,6 +58,62 @@ public class ApplicationManager
 		apps = new ArrayList<Application>();
 	}
 
+	/**
+	 * Load an application adapter.
+	 * 
+	 * @param clazz The class for the application adapter.
+	 * @param conf The configuration to be used to load the application adapter.
+	 * @return The application adapter or null if couldn't load any.
+	 */
+	private Application loadApplication(Class<? extends Application> clazz, Configuration conf)
+	{
+		Application app = null;
+	    log.debug("Loading " + clazz.getName() + " application adapter");
+		
+		try {
+			Constructor<? extends Application> constructor = clazz.getConstructor(Configuration.class);
+			app = constructor.newInstance(conf);
+		} catch (NoSuchMethodException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		}
+
+		if (app == null) {
+			log.error("Couldn't load " + clazz.getName() + " application adapter");
+		} else {
+			log.debug("Loaded application adapter " + clazz.getName());
+		}
+		
+		return app;
+	}
+
+	/**
+	 * Register an application. We can assure that no duplicated application adapter
+	 * (same class and configuration) will be registered.
+	 * 
+	 * @param app The application to be registered.
+	 * @return The registered application. If there was an already running application
+	 * adapter (with the same configuration as app), that application adapter is
+	 * returned instead of the one given as argument.
+	 */
+	private Application registerApplication(Application app)
+	{
+	    log.debug("Registering " + app.getClass().getName() + " application adapter");
+		
+		for (Application tmp : apps) {
+			if (tmp.getId().equals(app.getId())) {
+				log.debug("Ignored registration request: " + app.getClass().getName() + " was already registered");	
+				return tmp;
+			}
+		}
+
+		apps.add(app);
+	    log.debug("Registered application adapter " + app.getClass().getName());
+		return app;
+	}
+
+	
 	/**
 	 * Get the instance of the ApplicationManager.
 	 */
@@ -71,23 +135,16 @@ public class ApplicationManager
 	 */
 	public synchronized Application get(Class<? extends Application> clazz, Configuration conf)
 	{
-		Application app = null;
-		try {
-			Constructor<? extends Application> constructor = clazz.getConstructor(Configuration.class);
-			app = constructor.newInstance(conf);
-		} catch (NoSuchMethodException e) {
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
-		} catch (InvocationTargetException e) {
-		}
-	
-		for (Application tmp : apps) {
-			if (tmp.getId().equals(app.getId())) {
-				return tmp;
-			}
+	    log.debug("Getting adapter for " + clazz.getName());	
+
+		Application app = loadApplication(clazz, conf);
+		
+		if (app == null) {
+			throw new IllegalArgumentException("Invalid application adapter");
 		}
 		
-		apps.add(app);
+		app = registerApplication(app);
+	    log.debug("Got adapter for " + clazz.getName() + " " + app.getVersion() + " at " + app.getId());			
 		return app;
 	}
 }

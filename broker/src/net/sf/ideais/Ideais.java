@@ -191,13 +191,8 @@ public class Ideais
 	
 	private void loadApplicationAdapters()
 	{
-	    log.info("Starting DotProject adapter");
 	    DotProject dpApp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
-		log.info("Loaded adapter for DotProject " + dpApp.getVersion() + " at " + dpApp.getId());	
-		
-		log.info("Starting vTiger adapter");
 	    Vtiger vApp = (Vtiger) appManager.get(Vtiger.class, getVtigerDefaultConfiguration());
-		log.info("Loaded adapter for vTiger " + vApp.getVersion() + " at " + vApp.getId());	
 	}
 	
 	public void doSomething()
