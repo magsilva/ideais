@@ -135,16 +135,20 @@ public class ApplicationManager
 	 */
 	public synchronized Application get(Class<? extends Application> clazz, Configuration conf)
 	{
-	    log.debug("Getting adapter for " + clazz.getName());	
-
-		Application app = loadApplication(clazz, conf);
+	    log.info("Getting adapter for " + clazz.getName());
+	    Application app = null;
+	    
+		if (clazz == null) {
+			throw new IllegalArgumentException("Invalid application adapter " + clazz);
+		}
+		app = loadApplication(clazz, conf);
 		
 		if (app == null) {
-			throw new IllegalArgumentException("Invalid application adapter");
+			throw new IllegalArgumentException("Invalid application adapter " + clazz);
 		}
 		
 		app = registerApplication(app);
-	    log.debug("Got adapter for " + clazz.getName() + " " + app.getVersion() + " at " + app.getId());			
+	    log.info("Got adapter for " + clazz.getName() + " " + app.getVersion() + " at " + app.getId());			
 		return app;
 	}
 }
