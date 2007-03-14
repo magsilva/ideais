@@ -18,6 +18,9 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.apps;
 
+/**
+ * Generic application interface. 
+ */
 public interface Application
 {
 	String getId();
