@@ -21,8 +21,6 @@ package net.sf.ideais;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,8 +36,10 @@ import net.sf.ideais.util.ReflectionUtil;
 import net.sf.ideais.util.conf.Configuration;
 import net.sf.ideais.util.conf.HardCodedConfiguration;
 import net.sf.ideais.util.patterns.DbDataSource;
-import net.sf.ideais.util.patterns.HibernateEntityManagerDataSource;
 
+/**
+ * Main application.
+ */
 public class Ideais
 {
 	/**
@@ -47,6 +47,11 @@ public class Ideais
 	*/
 	private static final Log log = LogFactory.getLog(Ideais.class);
 
+	/**
+	 * The version. We don't use typical x.x.x version's numbering yet, it's too
+	 * early for that (and the software doesn't fullfill its basic duties yet).
+	 * So we use a kinda of timestamp (year and month). 
+	 */
 	private static final String VERSION = "200703XX";
 	
 	private ApplicationManager appManager;
@@ -184,7 +189,7 @@ public class Ideais
 	}
 
 	/**
-	 * Print application (mandatory) information.
+	 * Print application (mandatory) information (copyright and licensing info).
 	 */
 	private void printInfo()
 	{
@@ -194,17 +199,12 @@ public class Ideais
 		System.out.println("This is free software. You're welcome to redistribute it under the GPLv2 license");
 	}
 
-	private void loadBinder()
-	{
-		log.info("Starting binder");
-		log.info("Loaded binder");
-	}
-	
 	/**
 	 * Load the application adapters.
 	 */
 	private void loadApplicationAdapters()
 	{
+	    log.info("Starting application adapters initialization");
 		Class[] apps = ReflectionUtil.findClasses(Application.class);
 		for (Class app : apps) {
 			// TODO: Remove this hardcoded configuration loading.
@@ -216,8 +216,13 @@ public class Ideais
 				log.error("Tried to load unknown application adapter: " + app.getName());
 			}
 		}
+		log.info("Started all the application adapters found in the classpath");
 	}
 	
+	/**
+	 * Hack. Just a way to execute a scenario. We will replace this, as soon as
+	 * possible, with the notification mechanism. 
+	 */
 	public void doSomething()
 	{
 	    DotProject dpApp = (DotProject) appManager.get(DotProject.class, getDotProjectDefaultConfiguration());
@@ -251,33 +256,25 @@ public class Ideais
 
 	}
 
-	
-	
+	/**
+	 * The main application.
+	 */
 	public Ideais()
 	{
 		printInfo();
 		dumpEnvironmentSettings();
 
-		loadBinder();
-
-		controller = LifeCycleController.instance();
-		
-		
-		log.info("Starting application manager");
 		appManager = ApplicationManager.instance();
-		log.info("Application manager loaded");
-		
-	    log.info("Starting application adapters initialization");
-	    loadApplicationAdapters();
-		log.info("Application adapters initialized");
-
-		
+		controller = LifeCycleController.instance();
+		loadApplicationAdapters();
 	}
 	
 		
 	public static void main(String[] args)
 	{
 		Ideais ideais = new Ideais();
+		
+		// Just plain hack.
 		ideais.doSomething();
    	}
 

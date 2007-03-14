@@ -114,14 +114,23 @@ public class ApplicationManager
 	}
 
 	
+	private static void startNewInstance()
+	{
+		log.info("Loading the application manager");
+		instance = new ApplicationManager();
+		log.info("Loaded the application manager");
+	}
+	
 	/**
 	 * Get the instance of the ApplicationManager.
 	 */
 	public synchronized static ApplicationManager instance()
 	{
+		log.info("Getting the application manager");
 		if (instance == null) {
-			instance = new ApplicationManager();
+			startNewInstance();
 		}
+		log.info("Got the application manager");
 		return instance;
 	}
 	
