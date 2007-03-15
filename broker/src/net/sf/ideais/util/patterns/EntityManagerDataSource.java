@@ -19,7 +19,7 @@ Copyright (C) 2007 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.util.patterns;
 
-public class EntityManagerDataSource
+public interface EntityManagerDataSource extends DataSource
 {
 
 }
