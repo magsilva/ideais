@@ -35,11 +35,19 @@ import java.util.jar.JarFile;
  */
 public final class ReflectionUtil
 {
-	public static final String PACKAGE_DELIMITER = ".";
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private ReflectionUtil()
+	{
+	}
 	
-	public static final String CLASS_FILE_EXTENSION = ".class";
+	public static String PACKAGE_DELIMITER = ".";
+	
+	public static String CLASS_FILE_EXTENSION = ".class";
 
-	public static final String JAR_FILE_EXTENSION = ".jar";
+	public static String JAR_FILE_EXTENSION = ".jar";
 
 	
 	public static final class ClassFileFilter implements FileFilter
@@ -58,16 +66,14 @@ public final class ReflectionUtil
 		}
 	}
 
-	
 	private static String[] paths;
-	
 	static {
 		Properties props = System.getProperties();
 		List<String> paths = new ArrayList<String>();
 		String[] defaultPaths = {"java.ext.dir", "java.endorsed.dirs", "java.class.path"};
 		
 		for (String path : defaultPaths) {
-			String[] splittedPaths = StringUtil.split(props.getProperty(path), (String) props.get("path.separator"));
+			String[] splittedPaths = props.getProperty(path).split((String)props.get("path.separator"));
 			for (String str : splittedPaths) {
 				paths.add(str);
 			}
@@ -86,7 +92,7 @@ public final class ReflectionUtil
 	 * @return The classes loaded if the action was successfull, NULL
 	 * otherwise.
 	 */
-	public final static Class loadClass(String name)
+	public static Class loadClass(String name)
 	{
 		Class c = null;
 		try {
@@ -102,7 +108,7 @@ public final class ReflectionUtil
 		return c;
 	}
 	
-	public final static Class[] findClasses(String packageName)
+	public static Class[] findClasses(String packageName)
 	{
 		ArrayList<Class> result = new ArrayList<Class>();
 		Class[] classes = null;
@@ -190,11 +196,8 @@ public final class ReflectionUtil
 		}
 		return classes.toArray(new Class[0]);
 	}
-	
-	
-
-	
-	public final static Class[] findClasses(Class<?> clazz)
+		
+	public static Class[] findClasses(Class<?> clazz)
 	{
 		ArrayList<Class> result = new ArrayList<Class>();
 		Class[] classes = null;
@@ -305,14 +308,4 @@ public final class ReflectionUtil
 		
 		return classes.toArray(new Class[0]);
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

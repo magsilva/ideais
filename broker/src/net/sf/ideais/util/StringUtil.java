@@ -20,13 +20,20 @@ package net.sf.ideais.util;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * Utility class for strings.
  */
-public class StringUtil
+public final class StringUtil
 {
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private StringUtil()
+	{
+	}
+	
 	/**
 	 * Code for the transformation option that adds a suffix to a string.
 	 */
@@ -46,7 +53,7 @@ public class StringUtil
 	 * 
 	 * @return The string with the transformations applied.
 	 */
-	public static final String transform(String str, Map<Integer, String> options)
+	public static String transform(String str, Map<Integer, String> options)
 	{
 		if (options == null) {
 			return str;
@@ -70,7 +77,7 @@ public class StringUtil
 	 * 
 	 * @return True if similar, False otherwise.
 	 */
-	public static final boolean isSimilar(String str1, String str2)
+	public static boolean isSimilar(String str1, String str2)
 	{
 		return isSimilar(str1, null, str2, null);
 	}
@@ -86,7 +93,7 @@ public class StringUtil
 	 * @return True if similar, False otherwise. If any of the parameters 'str1' and
 	 * 'str2' are 'null', returns False too.
 	 */	
-	public static final boolean isSimilar(String str1, Map<Integer, String> options1,
+	public static boolean isSimilar(String str1, Map<Integer, String> options1,
 			String str2, Map<Integer, String> options2)
 	{
 		if (str1 == null || str2 == null) {
@@ -115,7 +122,7 @@ public class StringUtil
 	 * 
 	 * @return The similar word if found, null otherwise. 
 	 */
-	public static final String findSimilar(Set<String> set, String str)
+	public static String findSimilar(Set<String> set, String str)
 	{
 		return findSimilar(set, str, null);
 	}
@@ -129,7 +136,7 @@ public class StringUtil
 	 * 
 	 * @return The similar word if found, null otherwise. 
 	 */
-	public static final String findSimilar(Set<String> set, String str, Map<Integer, String> options)
+	public static String findSimilar(Set<String> set, String str, Map<Integer, String> options)
 	{
 		for (String s : set) {
 			if (isSimilar(s, options, str, null)) {
@@ -146,7 +153,7 @@ public class StringUtil
 	 * @param str The string to be checked.
 	 * @return True if empty, False otherwise
 	 */
-	public static final boolean isEmpty(String str)
+	public static boolean isEmpty(String str)
 	{
 		if (str == null) {
 			return true;
@@ -158,23 +165,4 @@ public class StringUtil
 		
 		return false;
 	}
-	
-	public static String[] split(String str, String delimiter)
-	{
-		if (str == null) {
-			return new String[0];
-		}
-		
-		StringTokenizer st = new StringTokenizer(str, delimiter);
-		String[] result = new String[st.countTokens()];
-		int i = 0;
-		
-		while (st.hasMoreTokens()) {
-			result[i] = st.nextToken();
-			i++;
-		}
-		
-		return result;
-	}
-	
 }

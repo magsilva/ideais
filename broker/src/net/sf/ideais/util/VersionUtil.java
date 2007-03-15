@@ -24,12 +24,20 @@ import java.util.StringTokenizer;
 /**
  * Utilities to compare version numbers or strings.
  */
-public class VersionUtil
+public final class VersionUtil
 {
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private VersionUtil()
+	{
+	}
+	
 	/**
 	 * Default version delimiter.
 	 */
-	public static final String VERSION_DELIMITER = ".";
+	public static String VERSION_DELIMITER = ".";
 
 	/**
 	 * Compare two version strings. Returns a negative integer, zero, or a positive integer

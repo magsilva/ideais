@@ -29,6 +29,14 @@ import org.apache.commons.logging.LogFactory;
 public final class SqlUtil
 {
 	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private SqlUtil()
+	{
+	}
+	
+	/**
 	* Commons Logging instance.
 	*/
 	private static Log log = LogFactory.getLog(SqlUtil.class);
@@ -38,7 +46,7 @@ public final class SqlUtil
      * 
      * @return True if the driver is loaded, False otherwise.
      */   
-    final public static boolean isDriverLoaded(String driver)
+    public static boolean isDriverLoaded(String driver)
     {
     	// Check if the driver has been already loaded
     	Enumeration<Driver> drivers = DriverManager.getDrivers();
@@ -54,7 +62,7 @@ public final class SqlUtil
     /**
      * Unload the database driver (if it's loaded).
      */
-    public static final void unloadDriver(String driver)
+    public static void unloadDriver(String driver)
     {
     	if (! SqlUtil.isDriverLoaded(driver)) {
     		return;
@@ -75,7 +83,7 @@ public final class SqlUtil
     /**
      * Load the database driver (if it hasn't been already loaded).
      */
-    public static final void loadDriver(String driver)
+    public static void loadDriver(String driver)
     {
     	if (SqlUtil.isDriverLoaded(driver)) {
     		return;
@@ -84,7 +92,7 @@ public final class SqlUtil
 		ReflectionUtil.loadClass(driver);
     }
 	
-	final public static void dumpSQLException(SQLException e)
+	public static void dumpSQLException(SQLException e)
 	{
 		log.error("SQLState: " + e.getSQLState());
 		log.error("VendorError: " + e.getErrorCode());

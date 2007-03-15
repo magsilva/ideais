@@ -22,8 +22,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class ObjectUtil
+public final class ObjectUtil
 {
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private ObjectUtil()
+	{
+	}
+	
 	/**
 	 * Check if a given object is empty. Emptiness is defined as follows:
 	 * - if null, it's empty.
@@ -37,7 +45,7 @@ public class ObjectUtil
 	 * 
 	 * @return True if empty, false otherwise.
 	 */
-	public static final boolean isEmpty(Object obj)
+	public static boolean isEmpty(Object obj)
 	{
 		if (obj == null) {
 			return true;
@@ -65,7 +73,7 @@ public class ObjectUtil
 	 * @param src The object the data will be copied from.
 	 * @param dest The object the data will be copied to.
 	 */
-	public static final void sync(Object src, Object dest)
+	public static void sync(Object src, Object dest)
 	{
 		Class srcClass = src.getClass();
 		Class destClass = dest.getClass();

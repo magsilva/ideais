@@ -23,19 +23,24 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Utilities to process annotations at runtime.
  */
-public class AnnotationUtil
+public final class AnnotationUtil
 {
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private AnnotationUtil()
+	{
+	}
+	
 	/**
 	 * Java's annotation default value.
 	 */
-	public static final String DEFAULT_PROPERTY = "value";
-	
+	public static String DEFAULT_PROPERTY = "value";
 
 	/**
 	 * Get the value set for an annotated class with a single element.
@@ -45,7 +50,7 @@ public class AnnotationUtil
 	 * 
 	 * @return The annotation's value.
 	 */
-	public static final String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann)
+	public static String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann)
 	{
 		return getAnnotationValue(clazz, ann, DEFAULT_PROPERTY);
 	}
@@ -60,7 +65,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value.
 	 */	
-	public static final String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann, String property)
+	public static String getAnnotationValue(Class<? extends Object> clazz, Class<? extends Annotation> ann, String property)
 	{
 		Annotation a = clazz.getAnnotation(ann);
 		String value = null;
@@ -91,7 +96,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class<? extends Annotation> ann)
+	public static String getAnnotationValue(Field field, Class<? extends Annotation> ann)
 	{
 		return getAnnotationValue(field, ann, DEFAULT_PROPERTY);
 	}
@@ -108,7 +113,7 @@ public class AnnotationUtil
 	 *  
 	 * @return The annotation's value for the given object.
 	 */	
-	public static final String getAnnotationValue(Field field, Class<? extends Annotation> ann, String property)
+	public static String getAnnotationValue(Field field, Class<? extends Annotation> ann, String property)
 	{
 		Annotation a = field.getAnnotation(ann);
 		String value = null;
@@ -136,7 +141,7 @@ public class AnnotationUtil
 	 * @param clazz Class to be checked.
 	 * @return True if the class is annotated, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Class clazz)
+	public static boolean hasAnnotations(Class clazz)
 	{
 		if (clazz.getAnnotations().length != 0) {
 			return true;
@@ -152,7 +157,7 @@ public class AnnotationUtil
 	 * 
 	 * @return True if the class is annotated with the given annotation, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Class<? extends Object> clazz, Class<? extends Annotation> ann)
+	public static boolean hasAnnotations(Class<? extends Object> clazz, Class<? extends Annotation> ann)
 	{
 		if (clazz.getAnnotation(ann) != null) {
 			return true;
@@ -167,7 +172,7 @@ public class AnnotationUtil
 	 * @param field Field to be checked.
 	 * @return True if the field is annotated, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Field field)
+	public static boolean hasAnnotations(Field field)
 	{
 		if (field.getAnnotations().length != 0) {
 			return true;
@@ -183,7 +188,7 @@ public class AnnotationUtil
 	 * 
 	 * @return True if the field is annotated with the given annotation, False otherwise.
 	 */
-	public static final boolean hasAnnotations(Field field, Class<? extends Annotation> ann)
+	public static boolean hasAnnotations(Field field, Class<? extends Annotation> ann)
 	{
 		if (field.getAnnotation(ann) != null) {
 			return true;
@@ -198,7 +203,7 @@ public class AnnotationUtil
 	 * @return The fields that are annotated. If no annotated fields were found, it
 	 * returns an empty array.
 	 */
-	public static final Field[] getAnnotatedFields(Class clazz)
+	public static Field[] getAnnotatedFields(Class clazz)
 	{
 		return getAnnotatedFields(clazz, null);	
 	}
@@ -211,7 +216,7 @@ public class AnnotationUtil
 	 * @return The fields that are annotated. If no annotated fields were found, it
 	 * returns an empty array.
 	 */
-	public static final Field[] getAnnotatedFields(Class clazz, Class annClass)
+	public static Field[] getAnnotatedFields(Class clazz, Class annClass)
 	{
 		ArrayList<Field> properties = new ArrayList<Field>();
 		Field[] fields = clazz.getDeclaredFields();

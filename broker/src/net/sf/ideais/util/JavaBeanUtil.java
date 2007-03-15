@@ -35,10 +35,18 @@ import net.sf.ideais.util.annotations.Property;
 /**
  * Utility class for JavaBeans.
  */
-public class JavaBeanUtil
+public final class JavaBeanUtil
 {
-	private static final Pattern SETTER_PATTERN = Pattern.compile("set([A-Z][A-Za-z0-9]*)$");
-	private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is|has)([A-Z][A-Za-z0-9]*)$");
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private JavaBeanUtil()
+	{
+	}
+	
+	private static Pattern SETTER_PATTERN = Pattern.compile("set([A-Z][A-Za-z0-9]*)$");
+	private static Pattern GETTER_PATTERN = Pattern.compile("(get|is|has)([A-Z][A-Za-z0-9]*)$");
 	/*
 	 matcher = GETTER_PATTERN.matcher(method.getName());
      if (matcher.matches() && method.getParameterTypes().length == 0) {
@@ -50,26 +58,26 @@ public class JavaBeanUtil
 	/**
 	 * Prefix for methods that read a JavaBean property.
 	 */
-	public static final String GETTER = "get";
+	public static String GETTER = "get";
 	
 	/**
 	 * Prefix for methods that write a JavaBean property.
 	 */
-	public static final String SETTER = "set";
+	public static String SETTER = "set";
 
 	/**
 	 * Suffix for class attributes that contains the name of a class property.
 	 */
-	public static final String FIELD_IDENTIFIER = "_FIELD";
+	public static String FIELD_IDENTIFIER = "_FIELD";
 	
 	/**
 	 * Properties to be ignored (actually default Java object's properties.
 	 */
-	public static final String[] IGNORED_PROPERTIES = {
+	public static String[] IGNORED_PROPERTIES = {
 		"class"
 	};
 
-	public static final String getPropertyNameFromMethod(Method m)
+	public static String getPropertyNameFromMethod(Method m)
 	{
 		if (! m.getName().startsWith(GETTER)) {
 			throw new IllegalArgumentException("Method is not a property getter");
@@ -83,7 +91,7 @@ public class JavaBeanUtil
 	}
 
 	
-	public static final String[] getPropertiesNameFromMethod()
+	public static String[] getPropertiesNameFromMethod()
 	{
 		ArrayList<String> props = new ArrayList<String>();
 		Object bean = new Object();
@@ -107,7 +115,7 @@ public class JavaBeanUtil
 	 * 
 	 * @return The mapping.
 	 */
-	public static final Map mapBean(Object bean)
+	public static Map mapBean(Object bean)
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
@@ -142,7 +150,7 @@ public class JavaBeanUtil
 	 * 
 	 * @return The mapping.
 	 */
-	public static final Map<String, Object> mapBeanUsingFields(Object bean)
+	public static Map<String, Object> mapBeanUsingFields(Object bean)
 	{
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		HashMap<String, String> fieldsMap = new HashMap<String, String>();
@@ -154,11 +162,7 @@ public class JavaBeanUtil
 			String value = null;
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(DbAnnotations.PROPERTY_ANNOTATION)) {
-//				Object[] annotations = f.getDeclaredAnnotations();
-//				Property ann = (Property)ArrayUtil.find(annotations, DbAnnotations.PROPERTY_ANNOTATION);
 				Property ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
-							
-				// TODO: Why ann is null? 
 				key = ann.value();
 				try {
 					value = (String) f.get(bean);					
@@ -208,7 +212,7 @@ public class JavaBeanUtil
 	}
 	
 	
-	public static final Map<String, Method> mapBeanPropertiesToSetMethods(Class clazz)
+	public static Map<String, Method> mapBeanPropertiesToSetMethods(Class clazz)
 	{
 		HashMap<String, Method> map = new HashMap<String, Method>();
 		Field[] fields = clazz.getDeclaredFields();
@@ -222,7 +226,6 @@ public class JavaBeanUtil
 
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(Property.class)) {
-				// Property ann = (Property)ArrayUtil.find(f.getDeclaredAnnotations(), Property.class);
 				ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
 				value = ann.value();
 			// Otherwise, we try to guess.
@@ -257,7 +260,7 @@ public class JavaBeanUtil
 		return map;
 	}
 
-	public static final Map<String, Method> mapBeanPropertiesToGetMethods(Class clazz)
+	public static Map<String, Method> mapBeanPropertiesToGetMethods(Class clazz)
 	{
 		HashMap<String, Method> map = new HashMap<String, Method>();
 		Field[] fields = clazz.getDeclaredFields();
@@ -271,7 +274,6 @@ public class JavaBeanUtil
 
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(Property.class)) {
-				// Property ann = (Property)ArrayUtil.find(f.getDeclaredAnnotations(), Property.class);
 				ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
 				value = ann.value();
 			// Otherwise, we try to guess.
@@ -308,7 +310,7 @@ public class JavaBeanUtil
 
 	
 	/*
-	public static final Map<String, Method> mapBeanPropertiesToMethods(Class clazz)
+	public static Map<String, Method> mapBeanPropertiesToMethods(Class clazz)
 	{
 		HashMap<String, Method> map = new HashMap<String, Method>();
 		Field[] fields = clazz.getDeclaredFields();
@@ -357,7 +359,7 @@ public class JavaBeanUtil
 	}
 	*/
 	
-	public static final String[] getBeanProperties(Class clazz)
+	public static String[] getBeanProperties(Class clazz)
 	{
 		Field[] fields = clazz.getDeclaredFields();
 		ArrayList<String> propertyFields = new ArrayList<String>();
@@ -366,7 +368,6 @@ public class JavaBeanUtil
 			String key = null;
 			// If we have annotated the class, that's the way to go.
 			if (f.isAnnotationPresent(Property.class)) {
-				// Property ann = (Property)ArrayUtil.find(f.getAnnotations(), Property.class);
 				Property ann = (Property)f.getAnnotation(DbAnnotations.PROPERTY_ANNOTATION);
 				key = ann.value();
 			// Otherwise, we try to guess.

@@ -1,25 +1,28 @@
 /*
-Wiki/RE - A requirements engineering wiki
-Copyright (C) 2005 Marco Aurélio Graciotto Silva
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-
+ 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
+ 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+Copyright (C) 2005 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 package net.sf.ideais.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -38,7 +41,7 @@ public final class IoUtil
 	{
 	}
 	
-	public static final int BUFFER_SIZE = 8192;
+	public static int BUFFER_SIZE = 8192;
 	
 	/**
 	 * Check if a file exists.
@@ -93,12 +96,59 @@ public final class IoUtil
 		return file;
 	}
 
+	/**
+	 * Move a file.
+	 * 
+	 * @param src Source file.
+	 * @param dest Destination file.
+	 */
+	public static void moveFile(String src, String dest) throws IOException
+	{
+		File srcFile = new File(src);
+		File destFile = new File(dest);
+		moveFile(srcFile, destFile);
+	}
+
+	/**
+	 * Move a file.
+	 * 
+	 * @param src Source file.
+	 * @param dest Destination file.
+	 */
+	public static void moveFile(File src, File dest) throws IOException
+	{
+		boolean result = false;
+		
+		result = src.renameTo(dest);
+	    if (! result) {
+    		copyFile(src.getAbsolutePath(), dest.getAbsolutePath());
+    		src.delete();
+	    }
+	}
+	
+	/**
+	 * Sync a file stream to disk.
+	 * 
+	 * @param fileStream The file stream to be synchronized to disk.
+	 */
+	public static void syncFile(FileOutputStream fileStream)
+	{
+		try {
+			FileDescriptor fd = fileStream.getFD();
+			fileStream.flush();
+			// Block until the system buffers have been written to disk.
+			fd.sync();
+		} catch (IOException e) {
+		}
+	}
 	
 	/**
 	 * Copy the source file to the destination file.
 	 * 
-	 * @param srcFilename The source filename.
-	 * @param destFilename The destination filename.
+	 * @param srcFilename
+	 *            The source filename.
+	 * @param destFilename
+	 *            The destination filename.
 	 */
 	public static void copyFile( String srcFilename, String destFilename )
 		throws IOException

@@ -28,6 +28,14 @@ import java.util.Comparator;
 public final class ArrayUtil
 {
 	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private ArrayUtil()
+	{
+	}
+	
+	/**
 	 * Check if an array has the given object. If the object is 'null', it will
 	 * always return False
 	 * 
@@ -259,6 +267,13 @@ public final class ArrayUtil
 		return (T[])result;
 	}
 	
+	/**
+	 * Shortcut to create an array of objects.
+	 * 
+	 * @param <T> The type of the objects to be stored in the array
+	 * @param elements The objects to save into the array.
+	 * @return The array.
+	 */
     public static <T> T[] array(T... elements)
     {
     	return elements;

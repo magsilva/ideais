@@ -1,7 +1,4 @@
 /*
-Wiki/RE - A requirements engineering wiki
-Copyright (C) 2005 Marco Aurélio Graciotto Silva
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -15,6 +12,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2005 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 package net.sf.ideais.util;
@@ -57,19 +56,19 @@ import org.w3c.dom.Node;
  * @author Marco Aurélio Graciotto Silva
  *
  */
-public class DataSourceConfiguration
+public final class HibernateConfigurationUtil
 {
 	/**
 	* Commons Logging instance.
 	*/
-	private static Log log = LogFactory.getLog( DataSourceConfiguration.class );
+	private static Log log = LogFactory.getLog( HibernateConfigurationUtil.class );
 	
 	private String contextPath;
 	
-	private static final String configFileSufix = File.separator + "WEB-INF" +
+	private static String configFileSufix = File.separator + "WEB-INF" +
 		File.separator + "classes" + File.separator + "hibernate.cfg.xml"; 
 	
-	private static final String templateFileSufix =  File.separator + "WEB-INF" +
+	private static String templateFileSufix =  File.separator + "WEB-INF" +
 		File.separator + "classes" + File.separator + "hibernate.cfg.xml.orig";
 	
 	private File configFile;
@@ -80,29 +79,28 @@ public class DataSourceConfiguration
 	
 	private Document config;
 	
-	public static final String JDBC_TYPE = "JDBC";
-	public static final String JNDI_TYPE = "JNDI";
+	public static String JDBC_TYPE = "JDBC";
+	public static String JNDI_TYPE = "JNDI";
 	
 	
 	/**
 	 * 
 	 */
-	public DataSourceConfiguration( String contextPath )
+	public HibernateConfigurationUtil(String contextPath)
 	{
-		super();
 		this.contextPath = contextPath;
 		log.debug( "Context path set to " + this.contextPath );
 
 		this.preferences = new HashMap<String, String>();
-		preferences.put( "connection.driver_class", null );
-		preferences.put( "connection.url", null );
-		preferences.put( "connection.username", null );
-		preferences.put( "connection.password", null );
-		preferences.put( "dialect", null );
-		preferences.put( "hibernate.connection.datasource", null );
-		preferences.put( "hibernate.connection.username", null );
-		preferences.put( "hibernate.connection.password", null );
-		preferences.put( "currentDatasource", null );
+		preferences.put("connection.driver_class", null);
+		preferences.put("connection.url", null);
+		preferences.put("connection.username", null);
+		preferences.put("connection.password", null);
+		preferences.put("dialect", null);
+		preferences.put("hibernate.connection.datasource", null);
+		preferences.put("hibernate.connection.username", null);
+		preferences.put("hibernate.connection.password", null);
+		preferences.put("currentDatasource", null);
 		
 		load();
 	}
@@ -112,99 +110,99 @@ public class DataSourceConfiguration
 	 */
 	public void load()
 	{
-		File configFile = new File( contextPath + configFileSufix );
+		File configFile = new File(contextPath + configFileSufix);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder parser = null;
 		
-		log.debug( "Loading configuration from file " + configFile.getAbsolutePath() );
+		log.debug("Loading configuration from file " + configFile.getAbsolutePath());
 		try {
-			factory.setValidating( true );
-			factory.setNamespaceAware( false );
+			factory.setValidating(true);
+			factory.setNamespaceAware(false);
 			// BUG 1: It try to validate.
 			// BUG 2: 'null', following the specification, is a valid value. Unfortunately,
 			// the current implementation fails on it.
 			// factory.setSchema( null );
 			parser = factory.newDocumentBuilder();
-			parser.setEntityResolver( new DTDEntityResolver() );
-			config = parser.parse( configFile );
-		} catch ( Exception e ) {
+			parser.setEntityResolver(new DTDEntityResolver());
+			config = parser.parse(configFile);
+		} catch (Exception e) {
 			log.debug( "Error loading the configuration: ", e );
 		}
-		NodeList propertiesNodes = config.getElementsByTagName( "property" );
-		for ( int i = 0; i < propertiesNodes.getLength(); i++ ) {
-			Node propertyNode = propertiesNodes.item( i );
+		NodeList propertiesNodes = config.getElementsByTagName("property");
+		for (int i = 0; i < propertiesNodes.getLength(); i++) {
+			Node propertyNode = propertiesNodes.item(i);
 			
 			// Get the property name 
 			NamedNodeMap attributesNodes = propertyNode.getAttributes();
-			Node attributeNode = attributesNodes.getNamedItem( "name" );
+			Node attributeNode = attributesNodes.getNamedItem("name");
 			String property = attributeNode.getNodeValue();
 			
 			// Get the property value
 			NodeList childrenNodes = propertyNode.getChildNodes();
 			String value = null;
-			for ( int j = 0; j < childrenNodes.getLength(); j++ ) {
-				Node childNode = childrenNodes.item( j );
-				if ( childNode.getNodeType() == Node.TEXT_NODE ) {
+			for (int j = 0; j < childrenNodes.getLength(); j++) {
+				Node childNode = childrenNodes.item(j);
+				if (childNode.getNodeType() == Node.TEXT_NODE) {
 					value = childNode.getNodeValue();
 					break;
 				}
 			}
 
-			if ( property.equals( "connection.driver_class" ) ||
-					property.equals( "connection.url" ) ||
-					property.equals( "connection.username" ) ||
-					property.equals( "connection.password" ) ||
-					property.equals( "dialect" ) || 
-					property.equals( "hibernate.connection.datasource" ) ||
-					property.equals( "hibernate.connection.username" ) ||
-					property.equals( "hibernate.connection.password" )
+			if ( property.equals("connection.driver_class") ||
+					property.equals("connection.url") ||
+					property.equals("connection.username") ||
+					property.equals("connection.password") ||
+					property.equals("dialect") || 
+					property.equals("hibernate.connection.datasource") ||
+					property.equals("hibernate.connection.username") ||
+					property.equals("hibernate.connection.password")
 				) { 
-				preferences.put( property, value ); 
+				preferences.put(property, value); 
 			}
 		}
 	}
 	
 	public void save()
 	{
-		NodeList propertiesNodes = config.getElementsByTagName( "property" );
-		Node parentNode = config.getElementsByTagName( "session-factory" ).item( 0 );
+		NodeList propertiesNodes = config.getElementsByTagName("property");
+		Node parentNode = config.getElementsByTagName("session-factory").item(0);
 		
-		for ( int i = 0; i < propertiesNodes.getLength(); i++ ) {
-			Node propertyNode = propertiesNodes.item( i );
+		for (int i = 0; i < propertiesNodes.getLength(); i++) {
+			Node propertyNode = propertiesNodes.item(i);
 			
 			// Get the property name 
 			NamedNodeMap attributesNodes = propertyNode.getAttributes();
-			Node attributeNode = attributesNodes.getNamedItem( "name" );
+			Node attributeNode = attributesNodes.getNamedItem("name");
 			String property = attributeNode.getNodeValue();
 			
-			if ( property.equals( "connection.driver_class" ) ||
-					property.equals( "connection.url" ) ||
-					property.equals( "connection.username" ) ||
-					property.equals( "connection.password" ) ||
-					property.equals( "dialect" ) || 
-					property.equals( "hibernate.connection.datasource" ) ||
-					property.equals( "hibernate.connection.username" ) ||
-					property.equals( "hibernate.connection.password" )
+			if ( property.equals("connection.driver_class") ||
+					property.equals("connection.url") ||
+					property.equals("connection.username") ||
+					property.equals("connection.password") ||
+					property.equals("dialect") || 
+					property.equals("hibernate.connection.datasource") ||
+					property.equals("hibernate.connection.username") ||
+					property.equals("hibernate.connection.password")
 				) { 
-				parentNode.removeChild( propertyNode );
+				parentNode.removeChild(propertyNode);
 			}
 		}
 		
-		for ( Map.Entry property : preferences.entrySet() ) {
-			if ( property.getValue() != null ) {
-				Element propertyNode = config.createElement( "property" );
-				propertyNode.setAttribute( "name", (String) property.getKey() );
-				propertyNode.setTextContent( (String) property.getValue() );
-				parentNode.appendChild( propertyNode );
+		for (Map.Entry property : preferences.entrySet()) {
+			if (property.getValue() != null) {
+				Element propertyNode = config.createElement("property");
+				propertyNode.setAttribute("name", (String) property.getKey());
+				propertyNode.setTextContent((String) property.getValue());
+				parentNode.appendChild(propertyNode);
 			}
 		}
 		
 		try {
-			File configFile = new File( contextPath + configFileSufix );
+			File configFile = new File(contextPath + configFileSufix);
 			Transformer t = TransformerFactory.newInstance().newTransformer();
-			t.transform( new DOMSource( config ), new StreamResult( configFile ) );
-		} catch ( TransformerConfigurationException tce ) {
-		} catch ( TransformerException te ) {
+			t.transform( new DOMSource(config), new StreamResult(configFile));
+		} catch (TransformerConfigurationException tce) {
+		} catch (TransformerException te) {
 		}
 		
 	}
@@ -214,16 +212,16 @@ public class DataSourceConfiguration
 	 */
 	public String getDialect()
 	{
-		return preferences.get( "dialect" );
+		return preferences.get("dialect");
 	}
 	
 	/**
 	 * Set current dialect in use.
 	 */
-	public void setDialect( String dialect )
+	public void setDialect(String dialect)
 	{
-		log.debug( "Set the dialect to " + dialect );
-		preferences.put( "dialect", dialect );
+		log.debug("Set the dialect to " + dialect);
+		preferences.put("dialect", dialect);
 	}
 	
 	/**
@@ -233,11 +231,11 @@ public class DataSourceConfiguration
 	 */
 	public String getDataSourceType()
 	{
-		if ( preferences.containsKey( "connection.driver_class" ) ) {
-			return DataSourceConfiguration.JNDI_TYPE;
+		if (preferences.containsKey("connection.driver_class")) {
+			return HibernateConfigurationUtil.JNDI_TYPE;
 		}
-		if ( preferences.containsKey( "hibernate.connection.datasource" ) ) {
-			return DataSourceConfiguration.JDBC_TYPE;
+		if (preferences.containsKey("hibernate.connection.datasource")) {
+			return HibernateConfigurationUtil.JDBC_TYPE;
 		}
 		return null;
 	}
@@ -247,7 +245,7 @@ public class DataSourceConfiguration
 	 */
 	public String getJDBCDriver()
 	{
-		return preferences.get( "connection.driver_class" );
+		return preferences.get("connection.driver_class");
 	}
 	
 	/**
@@ -255,11 +253,11 @@ public class DataSourceConfiguration
 	 * 
 	 * @param driver The class name for the JDBC driver to be used.
 	 */
-	public void setJDBCDriver( String driver )
+	public void setJDBCDriver(String driver)
 	{
-		log.debug( "Set the JDBC driver to " + driver );
-		preferences.remove( "hibernate.connection.datasource" );
-		preferences.put( "connection.driver_class", driver );
+		log.debug("Set the JDBC driver to " + driver);
+		preferences.remove("hibernate.connection.datasource");
+		preferences.put("connection.driver_class", driver);
 	}
 	
 	/**
@@ -267,7 +265,7 @@ public class DataSourceConfiguration
 	 */
 	public String getDataSourceName()
 	{
-		return preferences.get( "hibernate.connection.datasource" );
+		return preferences.get("hibernate.connection.datasource");
 	}
 	
 	/**
@@ -275,11 +273,11 @@ public class DataSourceConfiguration
 	 * 
 	 * @param name The data source name.
 	 */
-	public void setDataSourceName( String name )
+	public void setDataSourceName(String name)
 	{
-		log.debug( "Set the JNDI data source name to " + name );
-		preferences.remove( "connection.driver_class" );
-		preferences.put( "hibernate.connection.datasource", name );
+		log.debug("Set the JNDI data source name to " + name);
+		preferences.remove("connection.driver_class");
+		preferences.put("hibernate.connection.datasource", name);
 	}
 	
 	
@@ -288,7 +286,7 @@ public class DataSourceConfiguration
 	 */
 	public String getURL()
 	{
-		return preferences.get( "connection.url" );
+		return preferences.get("connection.url");
 	}
 	
 	/**
@@ -296,10 +294,10 @@ public class DataSourceConfiguration
 	 * 
 	 * @param url The URL used to connect to the data source (usually a JDBC style URL).
 	 */
-	public void setURL( String url )
+	public void setURL(String url)
 	{
-		log.debug( "Set the URL to " + url );
-		preferences.put( "connection.url", url );
+		log.debug("Set the URL to " + url);
+		preferences.put("connection.url", url);
 	}
 	
 	
@@ -308,11 +306,11 @@ public class DataSourceConfiguration
 	 */
 	public String getUsername()
 	{
-		if ( preferences.containsKey( "connection.username" ) ) {
-			return preferences.get( "connection.username" );
+		if ( preferences.containsKey("connection.username")) {
+			return preferences.get("connection.username");
 		}
-		if ( preferences.containsKey( "hibernate.connection.username" ) ) {
-			return preferences.get( "hibernate.connection.username" );
+		if (preferences.containsKey("hibernate.connection.username")) {
+			return preferences.get("hibernate.connection.username");
 		}
 		return null;
 	}
@@ -330,10 +328,10 @@ public class DataSourceConfiguration
 		preferences.remove( "connection.username" );
 		preferences.remove( "hibernate.connection.username" );
 		
-		if ( getDataSourceType().equals( DataSourceConfiguration.JNDI_TYPE ) ) {
+		if ( getDataSourceType().equals( HibernateConfigurationUtil.JNDI_TYPE ) ) {
 			preferences.put( "hibernate.connection.username", username );
 		}
-		if ( getDataSourceType().equals( DataSourceConfiguration.JDBC_TYPE ) ) {
+		if ( getDataSourceType().equals( HibernateConfigurationUtil.JDBC_TYPE ) ) {
 			preferences.put( "connection.username", username );
 		}
 	}
@@ -366,10 +364,10 @@ public class DataSourceConfiguration
 		preferences.remove( "connection.password" );
 		preferences.remove( "hibernate.connection.password" );
 		
-		if ( getDataSourceType().equals( DataSourceConfiguration.JNDI_TYPE ) ) {
+		if ( getDataSourceType().equals( HibernateConfigurationUtil.JNDI_TYPE ) ) {
 			preferences.put( "hibernate.connection.password", password );
 		}
-		if ( getDataSourceType().equals( DataSourceConfiguration.JDBC_TYPE ) ) {
+		if ( getDataSourceType().equals( HibernateConfigurationUtil.JDBC_TYPE ) ) {
 			preferences.put( "connection.password", password );
 		}
 	}

@@ -1,7 +1,4 @@
 /*
-Wiki/RE - A requirements engineering wiki
-Copyright (C) 2005 Marco Aurélio Graciotto Silva
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -15,22 +12,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2005 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
 */
 
 package net.sf.ideais.util;
 
 /**
  * Some constants.
- * 
- * @author Marco Aurélio Graciotto Silva
  */
-public interface SoftwareLicenseUtil
+public final class SoftwareLicenseUtil
 {
+	// TODO: deprecated licenses
+	// TODO: read licenses from files
+	// TODO: get licenses listing in runtime.
+	
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private SoftwareLicenseUtil()
+	{
+	}
+	
 	int DEFAULT_SEED = 37;
 	
 	/**
 	 * Approved open source licenses. The ones listed here are approved by the
-	 * OSI - Open Source Initiative (http://www.osi.org).
+	 * Open Source Initiative (http://www.opensource.org).
 	 */
 	String[] OSI_APPROVED_LICENSES = {
 			"Academic Free License\n" +

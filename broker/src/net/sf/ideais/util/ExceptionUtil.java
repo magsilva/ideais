@@ -24,19 +24,34 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-final public class ExceptionUtil
+public final class ExceptionUtil
 {
 	/**
 	* Commons Logging instance.
 	*/
 	private static Log log = LogFactory.getLog(ExceptionUtil.class);
 	
-	final public static void dumpStackTrace(StackTraceElement[] st)
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private ExceptionUtil()
 	{
-		log.debug("");
+	}
+	
+	public static void dumpStackTrace(StackTraceElement[] st)
+	{
+		for (StackTraceElement ste : st) {
+			if (ste.isNativeMethod()) {
+				log.debug(ste.getFileName() + ":" + ste.getLineNumber() + " - " + ste.getClassName() + "." + ste.getMethodName());
+			} else {
+				log.debug(ste.getFileName() + ":" + ste.getLineNumber() + " - " + ste.getClassName() + "." + ste.getMethodName() + "[Native method]");
+			}
+		}
+		
 	}
 
-	final public static void dumpException(Throwable e)
+	public static void dumpException(Throwable e)
 	{
 		log.error(e.getClass().getName() + " " + e.getMessage());
 		if (e instanceof SQLException) {
