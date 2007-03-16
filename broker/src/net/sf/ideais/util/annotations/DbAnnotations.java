@@ -21,13 +21,19 @@ package net.sf.ideais.util.annotations;
 import java.lang.annotation.Annotation;
 
 
-
-
 public final class DbAnnotations
 {
-	public static final Class<? extends Annotation> IDENTIFICATOR_ANNOTATION = Identificator.class;
+	/**
+	 * We really don't want an instance of this class, so we create this
+	 * private constructor.
+	 */
+	private DbAnnotations()
+	{
+	}
 	
-	public static final Class<? extends Annotation> PROPERTY_ANNOTATION = Property.class;
+	public static Class<? extends Annotation> IDENTIFICATOR_ANNOTATION = Identificator.class;
 	
-	public static final Class<? extends Annotation> TABLE_ANNOTATION = Table.class;
+	public static Class<? extends Annotation> PROPERTY_ANNOTATION = Property.class;
+	
+	public static Class<? extends Annotation> TABLE_ANNOTATION = Table.class;
 }

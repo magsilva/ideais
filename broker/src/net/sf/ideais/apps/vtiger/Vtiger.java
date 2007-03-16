@@ -94,21 +94,22 @@ public class Vtiger implements WebApplication
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public DAO getDAO(Class<? extends VtigerObject> clazz)
 	{
 		String daoName = clazz.getName() + "DAO";
-		Class daoClass = null;
+		Class<? extends DAO<VtigerObject, Integer>> daoClass = null;
 		DAO dao = null;
 
 		try {
-			daoClass = Class.forName(daoName);
+			daoClass = (Class<? extends DAO<VtigerObject, Integer>>) Class.forName(daoName);
 		} catch (ClassNotFoundException e1) {
 			throw new IllegalArgumentException();
 		}
 
 		
 		try {
-			Constructor<DAO> constructor = daoClass.getConstructor(Configuration.class);
+			Constructor<DAO> constructor = (Constructor<DAO>) daoClass.getConstructor(Configuration.class);
 			dao = constructor.newInstance(conf);
 		} catch (NoSuchMethodException e) {
 		} catch (InstantiationException e) {

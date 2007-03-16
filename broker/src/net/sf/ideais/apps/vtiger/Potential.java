@@ -20,7 +20,6 @@ package net.sf.ideais.apps.vtiger;
 
 import java.util.Date;
 
-import net.sf.ideais.apps.ApplicationObject;
 import net.sf.ideais.util.annotations.Identificator;
 import net.sf.ideais.util.annotations.Property;
 import net.sf.ideais.util.annotations.Table;

@@ -250,6 +250,9 @@ public class Ideais
 		*/
 		// dpProject = dpProjectDao.findById(1);
 		controller.process(dpProject);
+		controller.process(dpProject);
+		controller.process(dpProject);
+		controller.process(dpProject);
 		dpProject.setDescription(dpProject.getDescription() + "teste 1 2 3");
 		dpProjectDao.update(dpProject);
 		
