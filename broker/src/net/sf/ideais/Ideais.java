@@ -229,7 +229,7 @@ public class Ideais
 	    Vtiger vApp = (Vtiger) appManager.get(Vtiger.class, getVtigerDefaultConfiguration());
 	
 		PurchaseOrderDAO vtPurchaseDao = (PurchaseOrderDAO) vApp.getDAO(PurchaseOrder.class);
-		PurchaseOrder vtPO = vtPurchaseDao.findById(80);
+		PurchaseOrder vtPO = vtPurchaseDao.findById(130);
 		controller.process(vtPO);
 		
 		ProjectDAO dpProjectDao = (ProjectDAO) dpApp.getDAO(Project.class);
