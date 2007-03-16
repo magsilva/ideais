@@ -72,10 +72,13 @@ public final class ReflectionUtil
 		List<String> paths = new ArrayList<String>();
 		String[] defaultPaths = {"java.ext.dir", "java.endorsed.dirs", "java.class.path"};
 		
-		for (String path : defaultPaths) {
-			String[] splittedPaths = props.getProperty(path).split((String)props.get("path.separator"));
-			for (String str : splittedPaths) {
-				paths.add(str);
+		for (String pathProperty : defaultPaths) {
+			String path = props.getProperty(pathProperty);
+			if (path != null) {
+				String[] splittedPaths = path.split((String)props.get("path.separator"));
+				for (String str : splittedPaths) {
+					paths.add(str);
+				}
 			}
 		}
 		
