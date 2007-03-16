@@ -117,21 +117,21 @@ source code. A Contributor may choose to distribute the Program in
 object code form under its own license agreement, provided that:
 
 a. it complies with the terms and conditions of this License; and 
-b. its license agreement: 
-	i. effectively disclaims on behalf of all Contributors all warranties and 
-	conditions, express and implied, including warranties or conditions of title
-	and non-infringement, and implied warranties or conditions of 
-	merchantability and fitness for a particular purpose, to the maximum extent
-	permitted by applicable law;
-	ii. effectively excludes on behalf of all Contributors all liability for 
-	damages, including direct, indirect, special, incidental and consequential 
-	damages, such as lost profits, to the maximum extent permitted by applicable
-	law; 
-	iii. states that any provisions which are inconsistent with this License are
-	offered by that Contributor alone and not by any other party; and 
-	iv. states that source code for the Program is available from such 
-	Contributor at the cost of distribution, and informs licensees how to obtain
-	it in a reasonable manner.
+b. its license agreement:
+  i. effectively disclaims on behalf of all Contributors all warranties and
+  conditions, express and implied, including warranties or conditions of
+  title and non-infringement, and implied warranties or conditions of
+  merchantability and fitness for a particular purpose, to the maximum
+  extent permitted by applicable law;
+  ii. effectively excludes on behalf of all Contributors all liability for
+  damages, including direct, indirect, special, incidental and consequential
+  damages, such as lost profits, to the maximum extent permitted by applicable
+  law;
+  iii. states that any provisions which are inconsistent with this License are
+  offered by that Contributor alone and not by any other party; and
+  iv. states that source code for the Program is available from such
+  Contributor at the cost of distribution, and informs licensees how to
+  obtain it in a reasonable manner.
 
 3.2 When the Program is made available in source code form:
 
