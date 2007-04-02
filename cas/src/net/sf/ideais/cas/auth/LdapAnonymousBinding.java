@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
-import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -57,8 +56,22 @@ public class LdapAnonymousBinding extends LdapAuthenticatedBinding
 	
 	public void bind(String username, String password)
 	{
-		env.put(Context.PROVIDER_URL, "ldap://" + serverName + "/" + baseDN);
+		if (baseDN == null) {
+			throw new IllegalArgumentException("You haven't set a base directory name");
+		}
 		
+		if (username == null || password == null) {
+			throw new IllegalArgumentException("You cannot authenticate with the user or password set as NULL. You must use the LdapAnonymousBind to bind anonymously.");
+		}
+
+		String ldapURL = null;
+		setBindSecurityParameters(username, password);
+		if (useSecureConnection) {
+			ldapURL = DEFAULT_SECURE_PROTOCOL + serverName + "/" + baseDN;
+		} else {
+			ldapURL = DEFAULT_PROTOCOL + serverName + "/" + baseDN;
+		}
+		env.put(Context.PROVIDER_URL, ldapURL);
 		
 		try {
 			ctx = new InitialDirContext(env);
@@ -72,17 +85,18 @@ public class LdapAnonymousBinding extends LdapAuthenticatedBinding
 			SearchResult srs = (SearchResult) answer.next();
 			Attributes attrs = srs.getAttributes();
 			Attribute uid = attrs.get(userFilter);
+			Attribute cn = attrs.get("cn");
 			if (username.equals(uid.get())) {
-				String username2 = String.format(usernameFormat, (String) uid.get(), baseDN);
+				String username2 = String.format(usernameFormat, (String) cn.get(), baseDN);
 				Properties p = (Properties) env.clone();
 				p.put(Context.SECURITY_PRINCIPAL, username2);
 				p.put(Context.SECURITY_CREDENTIALS, password);
 				InitialDirContext ctx = new InitialDirContext(env);
 			}
-		} catch (NameAlreadyBoundException nabe) {
-			System.err.println("value has already been bound!");
+		} catch (AuthenticationException e) {
+			throw new IllegalArgumentException("Could not establish a connection to the LDAP server (wrong username or password)", e);
 		} catch (NamingException e) {
-			System.err.println(e);
+			throw new IllegalArgumentException("Could not establish a connection to the LDAP server (invalid base directory name)", e);
 		}
 	}
 	
