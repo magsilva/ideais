@@ -23,10 +23,10 @@
 int addrdnvalues_preop_init(Slapi_PBlock *pb);
 
 static Slapi_PluginDesc pluginDescription = {
-	"addrdnvalues-plugin",
-	"PADL",
+	"modification-publisher",
+	"ideais.sf.net",
 	"1.0",
-	"RDN values addition plugin"
+	"Publishes any modification in the LDAP server"
 };
 
 static int addrdnvalues_preop_add(Slapi_PBlock *pb)
@@ -34,9 +34,10 @@ static int addrdnvalues_preop_add(Slapi_PBlock *pb)
 	int rc;
 	Slapi_Entry *e;
 
+	slapi_log_error(SLAPI_LOG_PLUGIN, "Post-operation add plugin", "Begin");
+
 	if (slapi_pblock_get(pb, SLAPI_ADD_ENTRY, &e) != 0) {
-		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_add",
-				"Error retrieving target entry\n");
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_add", "Error retrieving target entry\n");
 		return -1;
 	}
 
@@ -55,11 +56,35 @@ static int addrdnvalues_preop_add(Slapi_PBlock *pb)
 
 int addrdnvalues_preop_init(Slapi_PBlock *pb)
 {
-	if (slapi_pblock_set(pb, SLAPI_PLUGIN_VERSION, SLAPI_PLUGIN_VERSION_03) != 0 ||
-	    slapi_pblock_set(pb, SLAPI_PLUGIN_DESCRIPTION, &pluginDescription) != 0 ||
-	    slapi_pblock_set(pb, SLAPI_PLUGIN_PRE_ADD_FN, (void *)addrdnvalues_preop_add) != 0) {
-		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init",
-				"Error registering %s\n", pluginDescription.spd_description);
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_VERSION, SLAPI_PLUGIN_VERSION_03) != 0) {
+	       return -1;
+	}
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_DESCRIPTION, &pluginDescription) != 0) {
+		return -1;
+	}
+
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_POST_ADD_FN, (void *)addrdnvalues_preop_add) != 0) {
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init", "Error registering %s\n", pluginDescription.spd_description);
+		return -1;
+	}
+
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_POST_MODIFY_FN, (void *)addrdnvalues_preop_add) != 0) {
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init", "Error registering %s\n", pluginDescription.spd_description);
+		return -1;
+	}
+
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_POST_MODRDN_FN, (void *)addrdnvalues_preop_add) != 0) {
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init", "Error registering %s\n", pluginDescription.spd_description);
+		return -1;
+	}
+
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_POST_DELETE_FN, (void *)addrdnvalues_preop_add) != 0) {
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init", "Error registering %s\n", pluginDescription.spd_description);
+		return -1;
+	}
+
+	if (slapi_pblock_set(pb, SLAPI_PLUGIN_POST_ABANDON_FN, (void *)addrdnvalues_preop_add) != 0) {
+		slapi_log_error(SLAPI_LOG_PLUGIN, "addrdnvalues_preop_init", "Error registering %s\n", pluginDescription.spd_description);
 		return -1;
 	}
 

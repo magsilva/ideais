@@ -16,7 +16,7 @@ to your slapd configuration file.
 
 No Makefile is provided. Use a command line similar to:
 
-gcc -shared -I../../../include -Wall -g -o libaddrdnvalues-plugin.so addrdnvalues.c
+gcc -shared -I. -Wall -g -o libaddrdnvalues-plugin.so addrdnvalues.c
 
 to compile this plugin.
 
