@@ -72,19 +72,6 @@ public abstract class JMSAgent
 		
 		try {
 			connection = connectionFactory.createConnection();
-			/*
-			 * AUTO_ACKNOWLEDGE: The session automatically acknowledges a client's receipt of a
-			 * message either when the session has successfully returned from a call to receive
-			 * or when the message listener the session has called to process the message
-			 * successfully returns.
-			 * CLIENT_ACKNOWLEDGE: The client acknowledges a consumed message by calling the
-			 * message's acknowledge method.
-			 * DUPS_OK_ACKNOWLEDGE: Instructs the session to lazily acknowledge the delivery of
-			 * messages.
-			 * SESSION_TRANSACTED: This value is returned from the method getAcknowledgeMode if
-			 * the session is transacted.
-			 */
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
 		}
 		
@@ -92,6 +79,26 @@ public abstract class JMSAgent
 		startSession();
 	}
 	
+	/**
+	 * Create a JMS session.
+	 * 
+	 * The JMS API supports several message acknowledge methods:
+	 * - AUTO_ACKNOWLEDGE: The session automatically acknowledges a client's receipt of a
+	 * message either when the session has successfully returned from a call to receive
+	 * or when the message listener the session has called to process the message
+	 * successfully returns.
+	 * - CLIENT_ACKNOWLEDGE: The client acknowledges a consumed message by calling the
+	 * message's acknowledge method.
+	 * - DUPS_OK_ACKNOWLEDGE: Instructs the session to lazily acknowledge the delivery of
+	 * messages.
+	 * - SESSION_TRANSACTED: This value is returned from the method getAcknowledgeMode if
+	 * the session is transacted.
+	 * 
+	 * We default to AUTO_ACKNOWLEDGE, but the library explicit calls the acknowledge()
+	 * method for every message received (so that using CLIENT_ACKNOWLEDGE) should also
+	 * work. Actually, we tie to AUTO_ACKNOWLEDGE for performance and compatibility
+	 * issues.
+	 */
 	protected void establishSession()
 	{
 		try {

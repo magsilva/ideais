@@ -17,6 +17,26 @@ public class JMSSubscriber extends JMSAgent
 
 	protected MessageConsumer consumer;
 	
+	/**
+	 * Start a JMS subscriber for a temporary topic.
+	 * 
+	 * @param topicName The topic the agent will subscribe to.
+	 */
+	public JMSSubscriber(String topicName)
+	{
+		this(topicName, null);
+	}
+
+	/**
+	 * Start a JMS agent for a durable topic.
+	 * 
+	 * @param topicName The topic the agent will subscribe or publish to.
+	 * @param subscriptionName The subscription name.
+	 */
+	public JMSAgent(String topicName, String subscriptionName)
+	{
+
+	
 	protected void startSession()
 	{
 		try {
