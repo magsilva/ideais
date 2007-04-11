@@ -23,14 +23,12 @@ import javax.jms.Destination;
 import javax.jms.MessageProducer;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
-import javax.jms.Topic;
 
 public class JMSPublisher extends JMSAgent
 {
 	public JMSPublisher(String topicName, String subscriptionName)
 	{
 		super(topicName, subscriptionName);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected void startSession()
@@ -52,6 +50,5 @@ public class JMSPublisher extends JMSAgent
 			} catch (JMSException e) {
 			}
 		}
-
 	}
 }

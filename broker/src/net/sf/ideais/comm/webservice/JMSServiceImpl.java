@@ -37,7 +37,7 @@ public class JMSServiceImpl implements JMSService
 		Hashtable<String, String> properties = new Hashtable<String,String>();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
 		properties.put(Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-//		properties.put(Context.PROVIDER_URL, "jnp://localhost:1099");
+		properties.put(Context.PROVIDER_URL, "jnp://localhost:1099");
 //		properties.put(Context.SECURITY_PRINCIPAL, "admin");
 //		properties.put(Context.SECURITY_CREDENTIALS, "admin");
 				
