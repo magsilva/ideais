@@ -1,0 +1,21 @@
+Format: 1.7
+Date: Wed, 11 Apr 2007 15:01:26 -0300
+Source: openldap2.2
+Binary: slapd ldap-utils libldap-2.2-7
+Architecture: source
+Version: 2.2.26-5ubuntu3
+Distribution: dapper
+Urgency: low
+Maintainer: Torsten Landschoff <torsten@debian.org>
+Changed-By: Marco Aurelio Graciotto Silva <magsilva@gmail.com>
+Description: 
+ ldap-utils - OpenLDAP utilities
+ libldap-2.2-7 - OpenLDAP libraries
+ slapd      - OpenLDAP server (slapd)
+Changes: 
+ openldap2.2 (2.2.26-5ubuntu3) dapper; urgency=low
+ .
+   * Enabled the SLAPI support (--enable-slapi).
+Files: 
+ d8af92f70420d7029b7b148d5fb39ed7 706 net optional openldap2.2_2.2.26-5ubuntu3.dsc
+ 65256f861b2b3f5ad9d74e854f013b0d 2853804 net optional openldap2.2_2.2.26-5ubuntu3.tar.gz
