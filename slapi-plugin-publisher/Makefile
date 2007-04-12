@@ -1,8 +1,18 @@
-CC = cc
+CC = gcc
 LD = ld
 INCLUDE_FLAGS = -I.
-CFLAGS = $(INCLUDE_FLAGS) -D_REENTRANT -fPIC
-LDFLAGS = -g -shared
+
+# GSOAP_CFLAGS = pkg-config --cflags gsoap)
+GSOAP_CFLAGS = -DLINUX -DWITH_DOM
+# GSOAP_LDFLAGS = pkg-config --libs gsoap
+GSOAP_LIBS = -lgsoap
+CFLAGS = $(INCLUDE_FLAGS) $(GSOAP_CFLAGS) -D_REENTRANT -fPIC -O2 -g
+
+# SLAPI
+SLAPI_LIBS = -lslapi-2.2
+
+LDFLAGS = -shared
+LIBS = $(GSOAP_LIBS) $(SLAPI_LIBS)
 OBJS = slapi-plugin-publisher.o
 TARGET = /usr/lib/ldap
 WSDL = http://localhost:8191/JMSService?wsdl
@@ -20,7 +30,7 @@ install: all
 	cp slapi-plugin-publisher.so $(TARGET)/plugin-publisher.so
 
 slapi-plugin-publisher.so: $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
