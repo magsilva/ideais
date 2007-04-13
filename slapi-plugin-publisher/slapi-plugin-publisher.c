@@ -19,7 +19,9 @@
 #include <lber.h>
 
 #include <slapi-plugin.h>
-#include <ws/soapClient.c>
+
+#include <ws/soapH.h>
+#include <ws/ns3.nsmap>
 
 static Slapi_PluginDesc modification_publisher_plugin_description = {
 	"modification-publisher",

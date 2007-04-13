@@ -2,39 +2,42 @@ CC = gcc
 LD = ld
 INCLUDE_FLAGS = -I.
 
-# GSOAP_CFLAGS = pkg-config --cflags gsoap)
-GSOAP_CFLAGS = -DLINUX -DWITH_DOM
-# GSOAP_LDFLAGS = pkg-config --libs gsoap
-GSOAP_LIBS = -lgsoap
-CFLAGS = $(INCLUDE_FLAGS) $(GSOAP_CFLAGS) -D_REENTRANT -fPIC -O2 -g
+GSOAP_CFLAGS = $(shell pkg-config --cflags gsoap)
+GSOAP_LIBS = $(shell pkg-config --libs gsoap)
+GSOAP_CLIENT_OBJS = ws/soapClient.o ws/soapC.o
+
+CFLAGS = $(INCLUDE_FLAGS) $(GSOAP_CFLAGS) -D_REENTRANT -O2 -g
 
 # SLAPI
-SLAPI_LIBS = -lslapi-2.2
+SLAPI_LIBS = -lslapi 
 
-LDFLAGS = -shared
-LIBS = $(GSOAP_LIBS) $(SLAPI_LIBS)
+LDFLAGS = 
+LIBS = $(GSOAP_LIBS) -shared $(SLAPI_LIBS)
+
 OBJS = slapi-plugin-publisher.o
 TARGET = /usr/lib/ldap
 WSDL = http://localhost:8191/JMSService?wsdl
 
 
-all: ws slapi-plugin-publisher.so
+all: plugin
 
 ws:
 	-mkdir ws
 	wsdl2h -c -o ws/jms2webservice.h $(WSDL)
 	soapcpp2 -C -c -x -w -d ws ws/jms2webservice.h
+
+plugin: ws $(GSOAP_CLIENT_OBJS) $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o slapi-plugin-publisher.so $(OBJS) $(GSOAP_CLIENT_OBJS) $(LIBS)
+
 	
 
-install: all
+install: plugin
 	cp slapi-plugin-publisher.so $(TARGET)/plugin-publisher.so
 
-slapi-plugin-publisher.so: $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
-
-.c.o:
-	$(CC) $(CFLAGS) -c $<
+%.c.%.o:
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	-rm -f *.o *.so
-	-rm -rf ws
+	-rm -f *.o
+	-rm -f ws/*.o
+	-rm -f *.so
