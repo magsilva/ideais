@@ -1,4 +1,6 @@
-#include <ws/soapClient.c>
+#include <ws/soapH.h>
+#include <ws/ns3.nsmap>
+
 
 int main()
 {
@@ -14,6 +16,13 @@ int main()
 		return 1;
 	}
 
+	/*
+	if (*soap.error) {
+		soap_print_fault(soap, stderr);
+		exit(1);
+	}
+	*/
+	
 	soap_destroy(soap);
 	soap_end(soap);
 	soap_done(soap);
