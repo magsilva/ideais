@@ -1,0 +1,11 @@
+--- gsoap-2.7_old/soapcpp2/stdsoap2.cpp	2007-04-01 23:25:19.000000000 -0300
++++ gsoap-2.7/soapcpp2/stdsoap2.cpp	2007-04-12 14:02:58.640793056 -0300
+@@ -3948,7 +3981,7 @@
+             if (ext_str && !strcmp(ext_str, "subjectAltName"))
+             { X509V3_EXT_METHOD *meth = X509V3_EXT_get(ext);
+ 	      void *ext_data;
+-#if (OPENSSL_VERSION_NUMBER >= 0x0090805fL)
++#if (OPENSSL_VERSION_NUMBER >= 0x00907000L)
+               const unsigned char *data;
+ #else
+               unsigned char *data;

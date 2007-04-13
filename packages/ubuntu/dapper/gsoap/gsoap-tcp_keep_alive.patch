@@ -1,0 +1,143 @@
+Index: gsoap/soapcpp2/stdsoap2.cpp
+===================================================================
+--- gsoap/soapcpp2/stdsoap2.cpp	(revision 14968)
++++ gsoap/soapcpp2/stdsoap2.cpp	(working copy)
+@@ -3547,7 +3547,7 @@
+ #endif
+     return SOAP_INVALID_SOCKET;
+   }
+-  if (soap->keep_alive && setsockopt((SOAP_SOCKET)fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&set, sizeof(int)))
++  if ((soap->keep_alive || soap->tcp_keep_alive) && setsockopt((SOAP_SOCKET)fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&set, sizeof(int)))
+   { soap->errnum = soap_socket_errno(fd);
+     soap_set_sender_error(soap, tcp_error(soap), "setsockopt SO_KEEPALIVE failed in tcp_connect()", SOAP_TCP_ERROR);
+     soap->fclosesocket(soap, (SOAP_SOCKET)fd);
+@@ -3574,6 +3574,39 @@
+ #endif
+     return SOAP_INVALID_SOCKET;
+   }
++#ifdef TCP_KEEPIDLE
++  if (soap->tcp_keepidle && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPIDLE, (unsigned int*)&(soap->tcp_keepidle), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPIDLE failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
++#ifdef TCP_KEEPINTVL
++  if (soap->tcp_keepintvl && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPINTVL, (unsigned int*)&(soap->tcp_keepintvl), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPINTVL failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
++#ifdef TCP_KEEPCNT
++  if (soap->tcp_keepcnt && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPCNT, (unsigned int*)&(soap->tcp_keepcnt), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPCNT failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
+ #ifdef TCP_NODELAY
+   if (!(soap->omode & SOAP_IO_UDP) && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_NODELAY, (char*)&set, sizeof(int)))
+   { soap->errnum = soap_socket_errno(fd);
+@@ -6399,6 +6432,10 @@
+   soap->proxy_http_version = "1.0";
+   soap->http_content = NULL;
+   soap->actor = NULL;
++  soap->tcp_keep_alive = 0;
++  soap->tcp_keepidle = 0;
++  soap->tcp_keepintvl = 0;
++  soap->tcp_keepcnt = 0;
+   soap->max_keep_alive = SOAP_MAXKEEPALIVE;
+   soap->keep_alive = 0;
+   soap->recv_timeout = 0;
+Index: gsoap/soapcpp2/stdsoap2.c
+===================================================================
+--- gsoap/soapcpp2/stdsoap2.c	(revision 14968)
++++ gsoap/soapcpp2/stdsoap2.c	(working copy)
+@@ -3547,7 +3547,7 @@
+ #endif
+     return SOAP_INVALID_SOCKET;
+   }
+-  if (soap->keep_alive && setsockopt((SOAP_SOCKET)fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&set, sizeof(int)))
++  if ((soap->keep_alive || soap->tcp_keep_alive) && setsockopt((SOAP_SOCKET)fd, SOL_SOCKET, SO_KEEPALIVE, (char*)&set, sizeof(int)))
+   { soap->errnum = soap_socket_errno(fd);
+     soap_set_sender_error(soap, tcp_error(soap), "setsockopt SO_KEEPALIVE failed in tcp_connect()", SOAP_TCP_ERROR);
+     soap->fclosesocket(soap, (SOAP_SOCKET)fd);
+@@ -3574,6 +3574,39 @@
+ #endif
+     return SOAP_INVALID_SOCKET;
+   }
++#ifdef TCP_KEEPIDLE
++  if (soap->tcp_keepidle && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPIDLE, (unsigned int*)&(soap->tcp_keepidle), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPIDLE failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
++#ifdef TCP_KEEPINTVL
++  if (soap->tcp_keepintvl && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPINTVL, (unsigned int*)&(soap->tcp_keepintvl), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPINTVL failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
++#ifdef TCP_KEEPCNT
++  if (soap->tcp_keepcnt && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_KEEPCNT, (unsigned int*)&(soap->tcp_keepcnt), sizeof(int)))
++  { soap->errnum = soap_socket_errno(fd);
++    soap_set_sender_error(soap, tcp_error(soap), "setsockopt TCP_KEEPCNT failed in tcp_connect()", SOAP_TCP_ERROR);
++    soap->fclosesocket(soap, (SOAP_SOCKET)fd);
++#ifdef WITH_IPV6
++    freeaddrinfo(ressave);
++#endif
++    return SOAP_INVALID_SOCKET;
++  }
++#endif
+ #ifdef TCP_NODELAY
+   if (!(soap->omode & SOAP_IO_UDP) && setsockopt((SOAP_SOCKET)fd, IPPROTO_TCP, TCP_NODELAY, (char*)&set, sizeof(int)))
+   { soap->errnum = soap_socket_errno(fd);
+@@ -6399,6 +6432,10 @@
+   soap->proxy_http_version = "1.0";
+   soap->http_content = NULL;
+   soap->actor = NULL;
++  soap->tcp_keep_alive = 0;
++  soap->tcp_keepidle = 0;
++  soap->tcp_keepintvl = 0;
++  soap->tcp_keepcnt = 0;
+   soap->max_keep_alive = SOAP_MAXKEEPALIVE;
+   soap->keep_alive = 0;
+   soap->recv_timeout = 0;
+Index: gsoap/soapcpp2/stdsoap2.h
+===================================================================
+--- gsoap/soapcpp2/stdsoap2.h	(revision 14968)
++++ gsoap/soapcpp2/stdsoap2.h	(working copy)
+@@ -1604,6 +1604,10 @@
+   char *prolog;			/* XML declaration prolog */
+   unsigned long ip;		/* IP number */
+   int port;			/* port number */
++  short tcp_keep_alive;		/* enable SO_KEEPALIVE */
++  unsigned int tcp_keepidle; 	/* set TCP_KEEPIDLE */
++  unsigned int tcp_keepintvl; 	/* set TCP_KEEPINTVL */
++  unsigned int tcp_keepcnt; 	/* set TCP_KEEPCNT */
+   unsigned int max_keep_alive;
+   const char *proxy_http_version;/* HTTP version of proxy "1.0" or "1.1" */
+   const char *proxy_host;	/* Proxy Server host name */
