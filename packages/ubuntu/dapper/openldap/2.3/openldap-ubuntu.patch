@@ -1878,6 +1878,7 @@ diff -urN openldap-2.3.35/debian/configure.options openldap-2.3.35_new/debian/co
 +#    --enable-crypt	  enable crypt(3) passwords [no]
 +--enable-crypt
 +#    --enable-lmpasswd	  enable LAN Manager passwords [no]
++--enable-lmpasswd
 +## XXX: disabled, needs OpenSSL
 +#    --enable-spasswd	  enable (Cyrus) SASL password verification [no]
 +--enable-spasswd
@@ -1888,6 +1889,7 @@ diff -urN openldap-2.3.35/debian/configure.options openldap-2.3.35_new/debian/co
 +#    --enable-rlookups	  enable reverse lookups of client hostnames [no]
 +--enable-rlookups
 +#    --enable-slapi        enable SLAPI support (experimental) [no]
++--enable-slapi
 +#    --enable-slp          enable SLPv2 support [no]
 +--enable-slp
 +#    --enable-wrappers	  enable tcp wrapper support [no]
@@ -1899,7 +1901,6 @@ diff -urN openldap-2.3.35/debian/configure.options openldap-2.3.35_new/debian/co
 +#    --enable-dnssrv	  enable dnssrv backend no|yes|mod [no]
 +--enable-dnssrv=mod
 +#    --enable-hdb	  enable Hierarchical DB backend no|yes|mod [no]
-+# XXX: new, let's see if it builds  -- Torsten
 +--enable-hdb=mod
 +#    --enable-ldap	  enable ldap backend no|yes|mod [no]
 +# XXX: build statically because meta and ldap depend on each other
@@ -3598,10 +3599,8 @@ diff -urN openldap-2.3.35/debian/move_files openldap-2.3.35_new/debian/move_file
 +install_stuff usr/lib/ldap
 +install_stuff usr/share/man/man5/slapd*
 +install_stuff usr/share/man/man5/slapo*
-+install_stuff usr/share/man/man5/ldap.conf.*
 +install_stuff usr/share/man/man8
-+install_stuff etc/ldap/schema
-+install_stuff etc/ldap/schema.14852
++install_stuff etc/ldap/schema*
 +install -m644 debian/slapd.conf debian/slapd/usr/share/slapd/slapd.conf
 +install -m644 debian/DB_CONFIG debian/slapd/usr/share/slapd/DB_CONFIG
 +install -m755 debian/fix_ldif debian/slapd/usr/share/slapd/fix_ldif
@@ -3609,7 +3608,7 @@ diff -urN openldap-2.3.35/debian/move_files openldap-2.3.35_new/debian/move_file
 +rm -f debian/tmp/var/openldap-data/DB_CONFIG.example
 +rm -f debian/tmp/etc/ldap/DB_CONFIG.example
 +rm -f debian/tmp/etc/ldap/slapd.conf
-+
++rm -f debian/tmp/usr/share/man/man5/ldap.conf.*
 +
 +set_target ldap-utils
 +install_stuff usr/bin
