@@ -64,5 +64,7 @@
 	<classpathentry path="/opt/hibernate-entitymanager-3.3.0/hibernate-entitymanager.jar" kind="lib"/>
 	<classpathentry path="/opt/hibernate-entitymanager-3.3.0/lib/jboss-archive-browsing.jar" kind="lib"/>
 	<classpathentry path="/opt/hibernate-annotations-3.3.0/hibernate-annotations.jar" kind="lib"/>
+	<classpathentry path="/usr/share/java/svn-javahl.jar" kind="lib"/>
+	<classpathentry path="/opt/ostermillerutils-1.06.01/ostermillerutils_1_06_01.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

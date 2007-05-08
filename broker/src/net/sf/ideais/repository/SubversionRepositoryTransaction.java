@@ -1,7 +1,4 @@
 /*
-Wiki/RE - A requirements engineering wiki
-Copyright (C) 2005 Marco Aurélio Graciotto Silva
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -15,6 +12,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2005 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 */
 
 
@@ -86,6 +85,8 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	 * The last revision this tree has been merged to.
 	 */
 	private Revision merged;
+	
+	String rootDir;
 
 	
 	/**
@@ -115,19 +116,17 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	{
 		super(repository);
 		client = new SVNClientSynchronized();
-		UserIF user = getUser();
-		if ( user.getHome() != null ) {
-			try {
-				client.setConfigDirectory( user.getHome() );
-			} catch ( ClientException e ) {
-				log.debug( e.getMessage() );
-				throw new RepositoryTransactionError(
-						"exception.repositoryTransaction.transactionInitialization", e );
-			}
+		rootDir = "/";
+		try {
+			client.setConfigDirectory(rootDir);
+		} catch ( ClientException e ) {
+			log.debug( e.getMessage() );
+			throw new RepositoryTransactionError(
+				"exception.repositoryTransaction.transactionInitialization", e );
 		}
-		setUrl( project.getRepository().getLocation() );
-		setUsername( project.getRepository().getUsername() );
-		setPassword( project.getRepository().getPassword() );
+		setUrl( repository.getLocation() );
+		setUsername( repository.getUsername() );
+		setPassword( repository.getPassword() );
 		
 		client.notification2( notifier );
 	}
@@ -578,5 +577,11 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	{
 		client.dispose();
 		super.abort();
+	}
+
+	public TransactionStatus getStatus()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

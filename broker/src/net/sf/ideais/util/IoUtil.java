@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.Ostermiller.util.RandPass;
+
 /**
  * Methods useful for file manipulations (what a shame Java doesn't have them
  * in its standard library).
@@ -174,7 +176,7 @@ public final class IoUtil
 		srcFileStream.close();
 		destFileStream.close();
 	}
-	
+
 	/**
 	 * Copy the files in the source directory to the destination directory.
 	 * 
@@ -277,6 +279,12 @@ public final class IoUtil
 		}
 	}
 
+	public static File createTempDir() throws IOException
+	{
+		String randomPrefix = new RandPass(RandPass.LOWERCASE_LETTERS_AND_NUMBERS_ALPHABET).getPass(8);
+		return IoUtil.createTempDir(randomPrefix);
+	}
+
 	/**
 	 * Create a temporary directory.
 	 * 
@@ -284,10 +292,9 @@ public final class IoUtil
 	 * @return Temporary directory.
 	 * @throws IOException
 	 */
-	public static File createTempDir( String prefix )
-		throws IOException
+	public static File createTempDir(String prefix)	
 	{
-		return createTempDir( prefix, "" );
+		return IoUtil.createTempDir(prefix, "");
 	}
 	
 	/**
@@ -299,10 +306,9 @@ public final class IoUtil
 	 * @return Temporary directory.
 	 * @throws IOException
 	 */
-	public static File createTempDir( String prefix, String suffix )
-		throws IOException
+	public static File createTempDir(String prefix, String suffix) 
 	{
-		return createTempDir( prefix, suffix, null );
+		return IoUtil.createTempDir(prefix, suffix, null);
 	}
 
 	/**
@@ -315,15 +321,36 @@ public final class IoUtil
 	 * @return Temporary directory.
 	 * @throws IOException
 	 */
-	public static File createTempDir( String prefix, String suffix, File directory )
-		throws IOException
+	public static File createTempDir(String prefix, String suffix, String baseDirName)
 	{
-		File file = File.createTempFile( prefix, suffix, directory );
-		String name = file.getAbsolutePath();
-		file.delete();
-		file = new File( name );
-		file.mkdirs();
-		return file;
+		final int MAX_ATTEMPTS = 50;
+		
+		if (baseDirName == null) {
+			baseDirName = System.getProperty("java.io.tmpdir");
+		}
+		if (StringUtil.isEmpty(baseDirName)) {
+			throw new RuntimeException("Could not create a temporary directory.");
+		}
+		if (! baseDirName.endsWith(File.separator)) {
+			baseDirName += File.separator;
+		}
+		File baseDir = new File(baseDirName);
+
+		for (int i = 0; i < MAX_ATTEMPTS; i++) {
+			try {
+				File file = File.createTempFile(prefix, suffix, baseDir);
+				String name = file.getAbsolutePath();
+				file.delete();
+				file = new File(name);
+				file.mkdirs();
+				file.deleteOnExit();
+				return file;
+			} catch (IOException e) {
+			}
+		}
+
+		// throw new RuntimeException("Could not create a temporary directory.");
+		return null;
 	}
 
 	/**

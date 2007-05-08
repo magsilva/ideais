@@ -18,7 +18,6 @@ Copyright (C) 2005 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 
 package net.sf.ideais.repository;
 
-import net.sf.ideais.objects.SourceCodeRepository;
 import net.sf.ideais.repository.RepositoryError;
 
 import org.apache.commons.logging.Log;
@@ -50,7 +49,7 @@ import java.net.URL;
  *  
  * @author Marco Aurélio Graciotto Silva
  */
-public class SubversionRepository implements SourceCodeRepository
+public class SubversionRepository extends AbstractRepository
 {
 	/**
 	* Commons Logging instance.
