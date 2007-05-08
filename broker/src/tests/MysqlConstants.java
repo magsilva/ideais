@@ -18,42 +18,10 @@ Copyright (C) 2005 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 
 package tests;
 
-
-import net.sf.ideais.util.patterns.HibernateDataSource;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-
-public class HibernateTest
+public interface MysqlConstants
 {
-	SessionFactory sessionFactory = null;
-
-	@Before
-	public void setUp() throws Exception
-	{
-		HibernateDataSource bootstrap = new HibernateDataSource();
-		Configuration config = bootstrap.getConfig();
-		sessionFactory = config.buildSessionFactory();
-	}
-
-	@After
-	public void tearDown() throws Exception
-	{
-		sessionFactory.close();
-	}
-
-	@Test
-	public void testBootstrap()
-	{
-		Session session = sessionFactory.openSession();
-		assertNotNull(session);
-		session.close();
-	}
+	static final public String localHostname = "localhost";
+	static final public String localDatabase = "dotproject-dev";
+	static final public String localUsername = "test";
+	static final public String localPassword = "test";
 }

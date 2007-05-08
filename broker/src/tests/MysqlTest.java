@@ -1,7 +1,4 @@
 /*
-Wiki/RE - A requirements engineering wiki
-Copyright (C) 2005 Marco Aurélio Graciotto Silva
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -15,6 +12,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2005 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 */
 
 package tests;
@@ -30,60 +29,109 @@ import org.junit.Test;
 
 public class MysqlTest
 {
-	static final public String localHostname = "localhost";
-	static final public String localDatabase = "dotproject-dev";
-	static final public String localUsername = "test";
-	static final public String localPassword = "test";
-	
 	@Test
 	public void testDriver()
 	{
+		Class clazz = null;
+		try { 
+			clazz = Class.forName("com.mysql.jdbc.Driver");
+		} catch (Exception e) {
+		}
+		assertNotNull(clazz);
+	}
+
+	@Test
+	public void testDriverInitialization()
+	{
+		try {
+            Class.forName("com.mysql.jdbc.Driver");
+		} catch (ExceptionInInitializerError eiie) {
+			fail();
+		} catch (Exception e) {
+		}
+	}
+
+	@Test
+	public void testDriverLinkage()
+	{
+		try {
+            Class.forName("com.mysql.jdbc.Driver");
+		} catch (LinkageError le) {
+			fail();
+		} catch (Exception e) {
+		}
+	}
+
+	@Test
+	public void testDriverClassNotFound()
+	{
+		try {
+            Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException cnfe) {
+			fail();
+		} catch (Exception e) {
+		}
+	}
+
+	@Test
+	public void testConnection()
+	{
+		Connection conn = null;
 		try {
             Class.forName( "com.mysql.jdbc.Driver" );
-		} catch ( ExceptionInInitializerError eiie ) {
+			conn = DriverManager.getConnection( "jdbc:mysql://" +
+				MysqlConstants.localHostname + "/" +
+				MysqlConstants.localDatabase + "?" +
+				"user=" + MysqlConstants.localUsername + "&" +
+				"password=" + MysqlConstants.localPassword + "&" +
+				"&useCompression=true&autoReconnect=true" +
+				"&cacheCallableStmts=true&cachePrepStmts=true&cacheResultSetMetadata=true&" +
+				"useFastIntParsing=true&useNewIO=true"
+			);
+			assertNotNull(conn);
+		} catch (SQLException ex) {
 			fail();
-		} catch ( LinkageError le ) {
+		} catch (Exception e) {
 			fail();
-		} catch ( ClassNotFoundException cnfe ) {
-			fail();
+		} finally {
+			try {
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+			}
 		}
 	}
 	
 	@Test
-	public void testConnection()
+	public void testSimpleQueryStatement()
 	{
-		try {
-            Class.forName( "com.mysql.jdbc.Driver" );
-		} catch ( Exception e ) {
-		}
-
 		ResultSet rs = null;
+		Connection conn = null;
 		try {
-			Connection conn = DriverManager.getConnection( "jdbc:mysql://" +
-					localHostname + "/" +
-					localDatabase + "?" +
-					"user=" + localUsername + "&" +
-					"password=" + localPassword + "&" +
-					"&useCompression=true&autoReconnect=true" +
-					"&cacheCallableStmts=true&cachePrepStmts=true&cacheResultSetMetadata=true&" +
-					"useFastIntParsing=true&useNewIO=true"
-				);
+		    Class.forName( "com.mysql.jdbc.Driver" );
+			conn = DriverManager.getConnection( "jdbc:mysql://" +
+				MysqlConstants.localHostname + "/" +
+				MysqlConstants.localDatabase + "?" +
+				"user=" + MysqlConstants.localUsername + "&" +
+				"password=" + MysqlConstants.localPassword + "&" +
+				"&useCompression=true&autoReconnect=true" +
+				"&cacheCallableStmts=true&cachePrepStmts=true&cacheResultSetMetadata=true&" +
+				"useFastIntParsing=true&useNewIO=true"
+			);
 			Statement stmt = conn.createStatement();
-			stmt.execute( "SELECT 1" );
+			stmt.execute("SELECT 1");
 			rs = stmt.getResultSet();
-		} catch ( SQLException ex ) {
-			System.out.println( "SQLException: " + ex.getMessage() );
-			System.out.println( "SQLState: " + ex.getSQLState() );
-			System.out.println( "VendorError: " + ex.getErrorCode() );
+			assertNotNull(rs);
+		} catch (SQLException ex) {
+			fail();
+		} catch (Exception e) {
 			fail();
 		} finally {
-			if ( rs != null ) {
-				try {
-					rs.close();
-				} catch ( SQLException e ) {
-				}
+			try {
+				if (rs != null) rs.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
 			}
-			rs = null;
 		}
 	}
+
 }
