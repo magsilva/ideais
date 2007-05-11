@@ -16,24 +16,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Copyright (C) 2005 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 */
 
-package tests.net.sf.ideais.repository;
+package net.sf.ideais.repository;
 
-public interface SubversionRepositoryConstants
+public enum SubversionProtocol
 {
-	String HTTP_REPOSITORY = "http://www.magsilva.dynalias.net/svn/test";
-	String HTTPS_REPOSITORY = "https://www.magsilva.dynalias.net/svn/test";
-	String FILE_REPOSITORY = "file:///tmp/test";
-	
-	String SVN_REPOSITORY = "svn://www.magsilva.dynalias.net/svn/test";
-	String SVNSSH_REPOSITORY = "svn+ssh://www.magsilva.dynalias.net/svn/test";
-	
-	String DEFAULT_V1 = "1";
-	String DEFAULT_V2 = "2";
-	
-	int THREAD_COUNT = 10000;
-	
-	int TRANSACTION_COUNT = 10;
-	
-	String DEFAULT_USERNAME = "test";
-	String DEFAULT_PASSWORD = "test";
+	"file", "http", "https", "svn", "svn+ssh";
 }

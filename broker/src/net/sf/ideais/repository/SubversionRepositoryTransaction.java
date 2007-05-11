@@ -44,8 +44,11 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	/**
 	* Commons Logging instance.
 	*/
-	private static Log log = LogFactory.getLog( SubversionRepositoryTransaction.class );
+	private static Log log = LogFactory.getLog(SubversionRepositoryTransaction.class);
 	
+	/**
+	 * Subversion error handler.
+	 */
 	class SubversionNotifier implements Notify2
     {
         /**
@@ -81,12 +84,7 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	 */
 	private String url;
 	
-	/**
-	 * The last revision this tree has been merged to.
-	 */
-	private Revision merged;
-	
-	String rootDir;
+	private String rootDir;
 
 	
 	/**
@@ -101,7 +99,7 @@ public class SubversionRepositoryTransaction extends RepositoryTransaction
 	/**
 	 * Counter used by createTempFile.
 	 */
-	private static AtomicLong counter = new AtomicLong( Double.doubleToLongBits( Math.random() ) );
+	private static AtomicLong counter = new AtomicLong(Double.doubleToLongBits(Math.random()));
 
 	/**
 	* Create the repository transaction to access the Subversion.

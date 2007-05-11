@@ -25,10 +25,8 @@ import net.sf.ideais.repository.SubversionRepositoryTransaction;
 
 /**
  * Test cases for Subversion.
- * 
- * @author Marco Aurélio Graciotto Silva
  */
-public class SubversionRepositoryTransactionTest extends AbstractRepositoryTransactionTest
+public class SubversionHTTPSRepositoryTransactionTest extends AbstractRepositoryTransactionTest
 {
 	/**
 	 * Initialize a SubversionRepositoryTransaction and set the version1 and
@@ -39,10 +37,10 @@ public class SubversionRepositoryTransactionTest extends AbstractRepositoryTrans
 	protected RepositoryTransaction getRepositoryTransaction()
 	{
 		SubversionRepository repository = new SubversionRepository();
-		repository.setLocation( "http://www.magsilva.dynalias.net/svn/test" );
+		repository.setLocation(SubversionRepositoryConstants.HTTPS_REPOSITORY);
 		RepositoryTransaction rtx = new SubversionRepositoryTransaction(repository);
-		version1 = "1";
-		version2 = "2";
+		version1 = SubversionRepositoryConstants.DEFAULT_V1;
+		version2 = SubversionRepositoryConstants.DEFAULT_V2;
 		return rtx;
 	}
 }

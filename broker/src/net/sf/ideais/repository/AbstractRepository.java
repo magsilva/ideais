@@ -76,7 +76,7 @@ public abstract class AbstractRepository implements SourceCodeRepository
 		return this.location;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see safe.wikire.repository.RepositoryIF#setLocation(java.lang.String)
 	 */
 	public void setLocation( String location )

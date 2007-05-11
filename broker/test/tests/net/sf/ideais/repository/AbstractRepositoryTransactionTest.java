@@ -25,6 +25,8 @@ import java.util.Random;
 import java.util.Arrays;
 import java.security.SecureRandom;
 
+import junit.framework.TestCase;
+
 import net.sf.ideais.objects.ConfigurationItem;
 import net.sf.ideais.repository.RepositoryTransaction;
 import net.sf.ideais.util.IoUtil;
@@ -89,7 +91,7 @@ import org.junit.Test;
  * implementation detail needed in concrete repository transaction's
  * test cases, what makes the SCM use quite painless for Wiki/RE.
  */
-public abstract class AbstractRepositoryTransactionTest
+public abstract class AbstractRepositoryTransactionTest extends TestCase
 {
 	private RepositoryTransaction rtx;
 	
