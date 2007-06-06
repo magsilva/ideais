@@ -3,54 +3,30 @@ This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
- 
+
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
-Copyright (C) 2006 Marco Aurelio Graciotto Silva <magsilva@gmail.com>
+
+Copyright (C) 2007 Marco Aurélio Graciotto Silva <magsilva@gmail.com>
 */
 
-package net.sf.ideais.comm.jms;
+package net.sf.ideais.bus.comm.webservice;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.naming.NamingException;
 
-public class JMSSubscriberWithListener extends JMSSubscriber implements MessageListener
+public interface JMSService
 {
-
-	public JMSSubscriberWithListener(String topicName, String subscriptionName)
-	{
-		super(topicName, subscriptionName);
-	}
-
-	public void process()
-	{
-		try {
-			consumer.setMessageListener(this);
-		} catch (JMSException e) {
-		}
-	}
+	public TextMessage[] getMsgFromQueue(String queue) throws NamingException,JMSException;
+	public TextMessage postMsgToQueue(String queue,String msg) throws NamingException,JMSException;
 	
-	public void onMessage(Message m)
-	{
-		try {
-			if (m instanceof TextMessage)	{
-				TextMessage message = (TextMessage)m;
-				System.out.println(message.getText());
-			}
-		} catch (JMSException e) {
-			
-		} catch (Throwable t) {
-			
-		}
-	
-	}
+	public TextMessage[] getMsgFromTopic(String topic,String consumer) throws NamingException,JMSException;
+	public TextMessage postMsgToTopic(String topic,String msg) throws NamingException,JMSException;
 }

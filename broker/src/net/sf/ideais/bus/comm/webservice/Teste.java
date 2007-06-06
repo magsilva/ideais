@@ -1,4 +1,4 @@
-package net.sf.ideais.comm.webservice;
+package net.sf.ideais.bus.comm.webservice;
 
 import org.codehaus.xfire.XFire;
 import org.codehaus.xfire.XFireFactory;
