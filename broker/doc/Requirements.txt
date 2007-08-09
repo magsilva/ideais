@@ -1,0 +1,3 @@
+Usuário entra no Portal de Processo (com OpenID).
+
+Usuário entra no Portal de Conhecimento (com OpenID).
